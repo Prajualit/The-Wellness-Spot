@@ -1,23 +1,124 @@
-'use client'
-import { useState } from "react";
-import UserInfoForm from "@/components/UserInfoForm";
-import VerifyOTP from "@/components/VerifyOTP";
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import axios from "axios";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { sendOTP, confirmOTP } from "@/firebase/otp.js";
 
-export default function Login() {
-    const [step, setStep] = useState("userinfo"); // which step to show
-    const [userData, setUserData] = useState({}); // store name + phone from step 1
+export default function LoginPage() {
+    const [isOtpSent, setIsOtpSent] = useState(false);
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [otp, setOtp] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [confirmationResult, setConfirmationResult] = useState(null);
+
+    const sendOtp = async (e) => {
+        e.preventDefault();
+        try {
+            const fullPhone = "+91" + phone;
+            const result = await sendOTP(fullPhone);
+            setConfirmationResult(result);
+            setIsOtpSent(true);
+        } catch (err) {
+            console.error("Failed to send OTP:", err.message);
+        }
+    };
+
+    const handleVerifyOTP = async (e) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            const result = await confirmOTP(confirmationResult, otp);
+            const idToken = await result.user.getIdToken();
+
+            const response = await axios.post("/api/auth/login", {
+                idToken,
+                name,
+            });
+
+            if (response.status === 200) {
+                console.log("Login successful!");
+            } else {
+                console.error("Login failed: " + response.data.message);
+            }
+        } catch (error) {
+            console.error(
+                "OTP verification failed: " +
+                (error.response?.data?.message || error.message)
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
-        <div>
-            {step === "userinfo" && (
-                <UserInfoForm
-                    onNext={(data) => {
-                        setUserData(data);
-                        setStep("verify");
-                    }}
-                />
-            )}
-            {step === "verify" && <VerifyOTP name={userData.name} phone={userData.phone} />}
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+            <Card className="w-full max-w-md shadow-xl">
+                <CardHeader>
+                    <CardTitle className="text-center text-2xl">
+                        Login Your Account
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Tabs defaultValue="phone" className="w-full">
+                        <TabsContent value="phone">
+                            <form onSubmit={sendOtp} className="space-y-4">
+                                <div className="flex flex-col space-y-2">
+                                    <Label htmlFor="name">Name</Label>
+                                    <Input
+                                        id="name"
+                                        type="text"
+                                        placeholder="Enter your name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div className="flex flex-col space-y-2">
+                                    <Label htmlFor="phone">Phone</Label>
+                                    <Input
+                                        id="phone"
+                                        type="tel"
+                                        placeholder="Enter your phone number"
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <Button className="w-full" type="submit">Send OTP</Button>
+                            </form>
+                        </TabsContent>
+                    </Tabs>
+
+
+                    {isOtpSent && (
+                        <form onSubmit={handleVerifyOTP}>
+                            <Separator className="my-6" />
+                            <div className="space-y-4 flex flex-col">
+                                <Label htmlFor="otp">Enter OTP</Label>
+                                <Input
+                                    id="otp"
+                                    type="text"
+                                    placeholder="Enter the OTP sent to your phone"
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
+                                    required
+                                />
+                                <Button className="w-full" type="submit" disabled={loading}>
+                                    {loading ? "Verifying..." : "Verify OTP"}
+                                </Button>
+                            </div>
+                        </form>
+                    )}
+                </CardContent>
+            </Card>
+            <div id="recaptcha-container" />
         </div>
     );
 }

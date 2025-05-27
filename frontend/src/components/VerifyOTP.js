@@ -17,12 +17,10 @@ export default function VerifyOTP({ name, phone }) {
       const result = await confirmOTP(confirmationResult, otp);
       const idToken = await result.user.getIdToken();
 
-      // Send idToken and name to backend login API
       const response = await axios.post("/api/auth/login", { idToken, name });
 
       if (response.status === 200) {
         alert("Login successful!");
-        // You can redirect or update app state here as needed
       } else {
         alert("Login failed: " + response.data.message);
       }
