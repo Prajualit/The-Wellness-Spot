@@ -3,7 +3,7 @@ import { apiError } from "../utils/apiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 import { User } from "../models/user.model.js";
-import admin from "firebase-admin";
+import admin from "../lib/firebaseAdmin.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -31,10 +31,12 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new apiError(400, "ID Token is required");
   }
 
+  console.log("Received idToken:", idToken);
   let decodedToken;
   try {
     decodedToken = await admin.auth().verifyIdToken(idToken);
   } catch (error) {
+    console.error("Error verifying ID token:", error);
     throw new apiError(401, "Invalid or expired ID token");
   }
 

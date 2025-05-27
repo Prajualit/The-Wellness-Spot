@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,15 +31,14 @@ export default function LoginPage() {
 
     const handleVerifyOTP = async (e) => {
         e.preventDefault();
+        console.log("confirmationResult:", confirmationResult);
         try {
             setLoading(true);
             const result = await confirmOTP(confirmationResult, otp);
-            const idToken = await result.user.getIdToken();
+            const idToken = await result.user.getIdToken(true);
+            console.log("Sending idToken to backend:", idToken);
 
-            const response = await axios.post("/api/auth/login", {
-                idToken,
-                name,
-            });
+            const response = await axios.post("/api/v1/users/login", { idToken, name });
 
             if (response.status === 200) {
                 console.log("Login successful!");
