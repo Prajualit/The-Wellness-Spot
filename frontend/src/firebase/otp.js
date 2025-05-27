@@ -1,35 +1,35 @@
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 
-// Setup invisible reCAPTCHA once
 export const setupRecaptcha = () => {
+  if (typeof window === "undefined") return;
+
   if (!window.recaptchaVerifier) {
     window.recaptchaVerifier = new RecaptchaVerifier(
+      auth,
       "recaptcha-container",
       {
         size: "invisible",
         callback: (response) => {
-          console.log("reCAPTCHA solved");
+          console.log("reCAPTCHA solved:", response);
         },
-      },
-      auth
+        "expired-callback": () => {
+          console.log("reCAPTCHA expired");
+        },
+      }
     );
+    window.recaptchaVerifier.render().then((widgetId) => {
+      window.recaptchaWidgetId = widgetId;
+    });
   }
 };
 
-// Send OTP
 export const sendOTP = async (phoneNumber) => {
   setupRecaptcha();
   const appVerifier = window.recaptchaVerifier;
-  const confirmationResult = await signInWithPhoneNumber(
-    auth,
-    phoneNumber,
-    appVerifier
-  );
-  return confirmationResult;
+  return await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
 };
 
-// Confirm OTP
 export const confirmOTP = async (confirmationResult, otpCode) => {
   return await confirmationResult.confirm(otpCode);
 };
