@@ -9,6 +9,8 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { sendOTP, confirmOTP } from "@/firebase/otp.js";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/Store/userSlice.js";
 
 export default function LoginPage() {
     const [isOtpSent, setIsOtpSent] = useState(false);
@@ -32,6 +34,8 @@ export default function LoginPage() {
         }
     };
 
+    const dispatch = useDispatch();
+
     const handleVerifyOTP = async (e) => {
         e.preventDefault();
         try {
@@ -42,8 +46,8 @@ export default function LoginPage() {
             const response = await axios.post("/api/v1/users/login", { idToken, name });
 
             if (response.status === 200) {
-                console.log("Login successful!");
-                router.push("/");
+                dispatch(setUser(response.data.data.user));
+                router.push("/dashboard");
             } else {
                 console.error("Login failed: " + response.data.message);
             }
