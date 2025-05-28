@@ -31,7 +31,6 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new apiError(400, "ID Token is required");
   }
 
-  console.log("Received idToken:", idToken);
   let decodedToken;
   try {
     decodedToken = await admin.auth().verifyIdToken(idToken);

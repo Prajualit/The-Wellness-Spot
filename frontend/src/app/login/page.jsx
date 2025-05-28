@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { sendOTP, confirmOTP } from "@/firebase/otp.js";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
     const [isOtpSent, setIsOtpSent] = useState(false);
@@ -16,6 +17,8 @@ export default function LoginPage() {
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
     const [confirmationResult, setConfirmationResult] = useState(null);
+
+    const router = useRouter();
 
     const sendOtp = async (e) => {
         e.preventDefault();
@@ -31,17 +34,16 @@ export default function LoginPage() {
 
     const handleVerifyOTP = async (e) => {
         e.preventDefault();
-        console.log("confirmationResult:", confirmationResult);
         try {
             setLoading(true);
             const result = await confirmOTP(confirmationResult, otp);
             const idToken = await result.user.getIdToken(true);
-            console.log("Sending idToken to backend:", idToken);
 
             const response = await axios.post("/api/v1/users/login", { idToken, name });
 
             if (response.status === 200) {
                 console.log("Login successful!");
+                router.push("/");
             } else {
                 console.error("Login failed: " + response.data.message);
             }
