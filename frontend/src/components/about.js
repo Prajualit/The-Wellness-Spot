@@ -6,7 +6,7 @@ export default function About() {
 
 return(
     <div>
-        <section id="about-owner-section" className="w-full py-24 px-8 bg-white">
+        <section id="about" className="w-full py-24 px-8 bg-white">
         <div className="max-w-6xl mx-auto flex  flex-col md:flex-row items-center gap-12">
             <div className="flex-1 flex items-center justify-center" id="about-avatar-block">
                 <Image src={owner} alt="Owner" className="rounded-2xl shadow-lg w-56 h-56 object-cover border-4 border-primary"></Image>

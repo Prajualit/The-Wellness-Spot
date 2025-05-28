@@ -5,7 +5,7 @@ import trainer from '../app/assets/trainer.png';
 export default function Landing(){
     return(
         <div>
-            <main id="main-area" className="relative bg-gradient-to-r from-[#f3f3fa] via-[#e8f0fe] to-[#e3fcec] flex flex-col lg:flex-row items-center justify-between px-12 py-20 lg:py-32 gap-10">
+            <main id="home" className="relative bg-gradient-to-r from-[#f3f3fa] via-[#e8f0fe] to-[#e3fcec] flex flex-col lg:flex-row items-center justify-between px-12 py-20 lg:py-32 gap-10">
                 <div className="flex-1 flex flex-col gap-7 max-w-xl" id="main-hero-block">
                     <h1 className="text-5xl font-extrabold text-gray-900 mb-2 leading-tight font-[Montserrat]" >Unlock Your 
                         <span className="text-primary">Best Self</span> with <br></br>

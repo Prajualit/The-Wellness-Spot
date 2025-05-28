@@ -1,22 +1,24 @@
-import Image from "next/image";
+// components/Navbar.tsx
+"use client";
+
+import { useState } from "react";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Link from "next/link";
-import pp from "../app/assets/pp.png";
-import { useDispatch, useSelector } from "react-redux";
-import { setActiveNav } from "@/redux/navbar/navbarSlice.js";
+
+const navItems = [
+  { label: "Home", id: "home" },
+  { label: "About", id: "about" },
+  { label: "Products", id: "products" },
+  { label: "Contact", id: "footer" },
+];
 
 export default function Navbar() {
-  const activeNav = useSelector((state) => state.navbar.activeNav);
-  const dispatch = useDispatch();
-
-  const navItems = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Testimonials", href: "#testimonials" },
-    { name: "Products", href: "#products" },
-  ];
+  const [open, setOpen] = useState(false);
 
   return (
-    <header className="w-full flex items-center justify-between px-4 sm:px-8 py-4 bg-white shadow-md sticky top-0 z-50">
+    <header className="w-full flex items-center justify-between px-4 sm:px-8 py-4 bg-white shadow-md fixed top-0 z-50">
       <Link
         href="/"
         className="flex items-center gap-3 hover:opacity-80 transition-opacity"
@@ -26,40 +28,53 @@ export default function Navbar() {
           FitPro Trainer
         </span>
       </Link>
-
-      <nav className="hidden md:flex items-center gap-8">
-        {navItems.map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            className="text-gray-700 font-medium hover:text-gray-600 transition-colors"
-          >
-            {item.name}
+      <div className="flex items-center justify-center space-x-5">
+        <nav className="hidden md:flex gap-6">
+          {navItems.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className="text-muted-foreground hover:text-primary transition"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+        <Button
+          variant="outline"
+          className="cursor-pointer"
+          onClick={() => setOpen(false)}
+        >
+          <Link href="/login" className="flex items-center gap-2">
+            <LoginIcon />
+            Login
           </Link>
-        ))}
-      </nav>
+        </Button>
+      </div>
 
-      <div className="flex items-center gap-4">
-        <button
-          className="px-4 py-2 rounded-lg font-semibold text-gray-600 border border-gray-600 hover:bg-gray-600 hover:text-white transition-colors flex items-center gap-2"
-          aria-label="Login"
-        >
-          <LoginIcon />
-          <span>Login</span>
-        </button>
-        <button
-          className="w-10 h-10 rounded-full overflow-hidden border border-gray-600 hover:border-gray-600 transition-colors"
-          aria-label="User profile"
-        >
-          <Image
-            src={pp}
-            width={40}
-            height={40}
-            alt="Profile picture"
-            className="w-full h-full object-cover"
-            priority
-          />
-        </button>
+      {/* Mobile Nav */}
+      <div className="md:hidden">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="w-5 h-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[250px] p-6">
+            <div className="flex flex-col gap-4 mt-8">
+              {navItems.map((item) => (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  className="text-base font-medium text-muted-foreground hover:text-primary"
+                  onClick={() => setOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );
