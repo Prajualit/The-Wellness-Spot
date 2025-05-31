@@ -2,7 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: null, // Will hold user object after login
+  user: null,
 };
 
 const userSlice = createSlice({
