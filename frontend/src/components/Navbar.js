@@ -6,6 +6,7 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 const navItems = [
   { label: "Home", id: "home" },
@@ -17,66 +18,132 @@ const navItems = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
-  return (
-    <header className="w-full flex items-center justify-between px-4 sm:px-8 py-4 bg-white shadow-md fixed top-0 z-50">
-      <Link
-        href="/"
-        className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-      >
-        <DumbbellIcon />
-        <span className="font-black text-2xl tracking-tight text-gray-900">
-          FitPro Trainer
-        </span>
-      </Link>
-      <div className="flex items-center justify-center space-x-5">
-        <nav className="hidden md:flex gap-6">
-          {navItems.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className="text-muted-foreground hover:text-primary transition"
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-        <Button
-          variant="outline"
-          className="cursor-pointer"
-          onClick={() => setOpen(false)}
-        >
-          <Link href="/login" className="flex items-center gap-2">
-            <LoginIcon />
-            Login
-          </Link>
-        </Button>
-      </div>
+  const user = useSelector((state) => state.user.user);
 
-      {/* Mobile Nav */}
-      <div className="md:hidden">
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu className="w-5 h-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[250px] p-6">
-            <div className="flex flex-col gap-4 mt-8">
+  return (
+    <>
+      {user ? (
+        <header className="w-full flex items-center justify-between px-4 sm:px-8 py-4 bg-white shadow-md fixed top-0 z-50">
+          <Link
+            href="/"
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          >
+            <DumbbellIcon />
+            <span className="font-black text-2xl tracking-tight text-gray-900">
+              FitPro Trainer
+            </span>
+          </Link>
+          <div className="flex items-center justify-center space-x-5">
+            <nav className="hidden md:flex gap-6">
               {navItems.map((item) => (
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className="text-base font-medium text-muted-foreground hover:text-primary"
-                  onClick={() => setOpen(false)}
+                  className="text-muted-foreground hover:text-primary transition"
                 >
                   {item.label}
                 </a>
               ))}
-            </div>
-          </SheetContent>
-        </Sheet>
-      </div>
-    </header>
+            </nav>
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+              onClick={() => setOpen(false)}
+            >
+              <Link href="/login" className="flex items-center gap-2">
+                <LoginIcon />
+                Login
+              </Link>
+            </Button>
+          </div>
+
+          {/* Mobile Nav */}
+          <div className="md:hidden">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[250px] p-6">
+                <div className="flex flex-col gap-4 mt-8">
+                  {navItems.map((item) => (
+                    <a
+                      key={item.id}
+                      href={`#${item.id}`}
+                      className="text-base font-medium text-muted-foreground hover:text-primary"
+                      onClick={() => setOpen(false)}
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </header>
+      ) : (
+        <header className="w-full flex items-center justify-between px-4 sm:px-8 py-4 bg-white shadow-md fixed top-0 z-50">
+          <Link
+            href="/"
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          >
+            <DumbbellIcon />
+            <span className="font-black text-2xl tracking-tight text-gray-900">
+              FitPro Trainer
+            </span>
+          </Link>
+          <div className="flex items-center justify-center space-x-5">
+            <nav className="hidden md:flex gap-6">
+              {navItems.map((item) => (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  className="text-muted-foreground hover:text-primary transition"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+              onClick={() => setOpen(false)}
+            >
+              <Link href="/login" className="flex items-center gap-2">
+                <LoginIcon />
+                Login
+              </Link>
+            </Button>
+          </div>
+
+          {/* Mobile Nav */}
+          <div className="md:hidden">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[250px] p-6">
+                <div className="flex flex-col gap-4 mt-8">
+                  {navItems.map((item) => (
+                    <a
+                      key={item.id}
+                      href={`#${item.id}`}
+                      className="text-base font-medium text-muted-foreground hover:text-primary"
+                      onClick={() => setOpen(false)}
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </header>
+      )}
+    </>
   );
 }
 
