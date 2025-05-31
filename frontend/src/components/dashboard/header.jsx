@@ -1,8 +1,10 @@
 import React from 'react'
 import Link from 'next/link';
 import UserCircleSolidIcon from '@/components/svg/UserCircleSolidIcon';
+import { useSelector } from 'react-redux';
+import NextImage from 'next/image';
 
-const Header = (user) => {
+const Header = () => {
 
     const navLinks = [
         {
@@ -22,6 +24,8 @@ const Header = (user) => {
             href: 'community'
         }
     ];
+
+    const user = useSelector((state) => state.user.user);
 
     return (
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#eaeef1] px-10 py-3">
@@ -75,16 +79,14 @@ const Header = (user) => {
                 <div
                     className="flex items-center justify-center w-10 h-10 rounded-full bg-[#eaeef1]"
                 >
-                    {user?.profilePicture ? (
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            fill="currentColor"
-                            viewBox="0 0 256 256"
-                        >
-                            <path d="M128,144a48,48,0,1,0-48-48A48,48,0,0,0,128,144Zm0-80a32,32,0,1,1-32,32A32,32,0,0,1,128,64Zm80.8,112H47.2A16.2,16.2,0,0,0,31.2,192v16a16.2,16.2,0,0,0,16.2,16h160a16.2,16.2,0,0,0,16.2-16V192A16.2,16.2,0,0,0,208.8,176ZM224.8,192v16H31.2V192h193.6Z"></path>
-                        </svg>
+                    {user.avatarUrl ? (
+                        <NextImage
+                            width={20}
+                            height={20}
+                            src={user.avatarUrl}
+                            alt="Profile"
+                            className="w-full h-full rounded-full object-cover"
+                        />
                     ) :
 
                         <UserCircleSolidIcon size={24} color="black" />
