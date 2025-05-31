@@ -15,7 +15,7 @@ import axios from "@/lib/axios.js";
 
 
 
-const UpdateAvatar = ({ nav, activeNav }) => {
+const UpdateAvatar = () => {
     const [file, setFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const inputRef = useRef(null);
@@ -66,12 +66,16 @@ const UpdateAvatar = ({ nav, activeNav }) => {
         const formData = new FormData();
         formData.append("file", file);
 
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
         try {
             const response = await axios.post(
                 "/users/update-avatar",
                 formData,
                 { withCredentials: true }
             );
+
 
             if (response.status === 200) {
                 console.log("File uploaded successfully");
@@ -99,10 +103,13 @@ const UpdateAvatar = ({ nav, activeNav }) => {
                 <DialogHeader>
                     <DialogTitle>Change Profile Photo</DialogTitle>
                 </DialogHeader>
-                <DialogDescription className="flex flex-col space-y-5 justify-center items-center text-lg text-black">
-                    <MediaIcon />
-                    Upload a photo
-                </DialogDescription>
+                {!file && (
+                    <DialogDescription className="flex flex-col space-y-5 justify-center items-center text-lg text-black">
+                        <MediaIcon />
+                        Upload a photo
+                    </DialogDescription>
+                )}
+
 
                 <DialogFooter className="flex flex-col items-center justify-center">
                     <div className="py-4 flex flex-col justify-center items-center space-y-3">
