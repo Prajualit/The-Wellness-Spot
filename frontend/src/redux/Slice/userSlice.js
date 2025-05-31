@@ -13,20 +13,9 @@ const userSlice = createSlice({
       state.user = action.payload;
     },
     updateUser(state, action) {
-      if (!state.user) return;
-
-      if (action.payload.media) {
-        if (!Array.isArray(state.user.media)) {
-          state.user.media = [];
-        }
-
-        state.user.media.push(action.payload.media);
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
       }
-
-      state.user = {
-        ...state.user,
-        ...action.payload,
-      };
     },
     clearUser(state) {
       state.user = null;

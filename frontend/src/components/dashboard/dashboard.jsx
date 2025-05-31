@@ -9,6 +9,7 @@ import UpdateAvatar from "./updateAvatar";
 
 export default function Dashboard() {
   const user = useSelector((state) => state.user.user);
+  console.log("User in Dashboard:", user);
 
   return (
     <div
@@ -30,7 +31,7 @@ export default function Dashboard() {
                   <div
                     className="flex items-center justify-center w-32 h-32 rounded-full bg-[#eaeef1]"
                   >
-                    {user?.avatarUrl ? (
+                    {user.avatarUrl ? (
                       <NextImage
                         width={98}
                         height={98}
