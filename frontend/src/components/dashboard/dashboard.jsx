@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useRef } from "react";
 import Header from "@/components/dashboard/header.jsx";
 import Table from "@/components/dashboard/table.jsx";
 import UserCircleSolidIcon from '@/components/svg/UserCircleSolidIcon';
+import { Button } from "../ui/button";
+import NextImage from "next/image";
 import { useSelector } from "react-redux";
+import UpdateAvatar from "./updateAvatar";
 
 export default function Dashboard() {
-
   const user = useSelector((state) => state.user.user);
 
   return (
@@ -28,19 +30,17 @@ export default function Dashboard() {
                   <div
                     className="flex items-center justify-center w-32 h-32 rounded-full bg-[#eaeef1]"
                   >
-                    {user?.profilePicture ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="currentColor"
-                        viewBox="0 0 256 256"
-                      >
-                        <path d="M128,144a48,48,0,1,0-48-48A48,48,0,0,0,128,144Zm0-80a32,32,0,1,1-32,32A32,32,0,0,1,128,64Zm80.8,112H47.2A16.2,16.2,0,0,0,31.2,192v16a16.2,16.2,0,0,0,16.2,16h160a16.2,16.2,0,0,0,16.2-16V192A16.2,16.2,0,0,0,208.8,176ZM224.8,192v16H31.2V192h193.6Z"></path>
-                      </svg>
-                    ) :
+                    {user?.avatarUrl ? (
+                      <NextImage
+                        width={98}
+                        height={98}
+                        src={user.avatarUrl}
+                        alt="Profile"
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
                       <UserCircleSolidIcon size={98} color="#5c778a" />
-                    }
+                    )}
                   </div>
                   <div className="flex flex-col justify-center">
                     <p className="text-[#101518] text-[22px] font-bold leading-tight tracking-[-0.015em]">
@@ -54,9 +54,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="flex px-4 py-3 justify-start">
-              <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#eaeef1] text-[#101518] text-sm font-bold leading-normal tracking-[0.015em]">
-                <span className="truncate">Change Profile Photo</span>
-              </button>
+              <UpdateAvatar />
             </div>
             <div className="px-4 py-3 @container">
               <div className="flex overflow-hidden rounded-xl border border-[#d4dde2] bg-gray-50">

@@ -43,7 +43,7 @@ export default function LoginPage() {
             const result = await confirmOTP(confirmationResult, otp);
             const idToken = await result.user.getIdToken(true);
 
-            const response = await axios.post("/api/v1/users/login", { idToken, name });
+            const response = await axios.post("/users/login", { idToken, name });
 
             console.log("Login response:", response);
 
