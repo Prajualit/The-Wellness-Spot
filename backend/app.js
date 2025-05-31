@@ -12,9 +12,10 @@ app.use(cors({
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use("/temp", express.static("temp"));
 
 import userRouter from "./routes/user.route.js";
 
-app.use("/api/v1/users/", userRouter);
+app.use("/api/v1/users", userRouter);
 
 export { app };
