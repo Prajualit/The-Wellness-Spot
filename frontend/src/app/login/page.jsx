@@ -10,7 +10,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { sendOTP, confirmOTP } from "@/firebase/otp.js";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/redux/Store/userSlice.js";
+import { setUser } from "@/redux/Slice/userSlice.js";
 
 export default function LoginPage() {
     const [isOtpSent, setIsOtpSent] = useState(false);
@@ -44,6 +44,8 @@ export default function LoginPage() {
             const idToken = await result.user.getIdToken(true);
 
             const response = await axios.post("/api/v1/users/login", { idToken, name });
+
+            console.log("Login response:", response);
 
             if (response.status === 200) {
                 dispatch(setUser(response.data.data.user));

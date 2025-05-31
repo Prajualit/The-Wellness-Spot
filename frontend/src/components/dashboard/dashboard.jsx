@@ -2,8 +2,12 @@ import React from "react";
 import Header from "@/components/dashboard/header.jsx";
 import Table from "@/components/dashboard/table.jsx";
 import UserCircleSolidIcon from '@/components/svg/UserCircleSolidIcon';
+import { useSelector } from "react-redux";
 
-export default function Dashboard(user) {
+export default function Dashboard() {
+
+  const user = useSelector((state) => state.user.user);
+
   return (
     <div
       className="relative flex size-full min-h-screen flex-col bg-gray-50 group/design-root overflow-x-hidden"
@@ -40,7 +44,7 @@ export default function Dashboard(user) {
                   </div>
                   <div className="flex flex-col justify-center">
                     <p className="text-[#101518] text-[22px] font-bold leading-tight tracking-[-0.015em]">
-                      Olivia Bennett
+                      {user?.name}
                     </p>
                     <p className="text-[#5c778a] text-base font-normal leading-normal">
                       Age: 30, Height: 5&apos;6&apos;&apos;
