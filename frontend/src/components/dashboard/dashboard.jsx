@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import NextImage from "next/image";
 import { useSelector } from "react-redux";
 import UpdateAvatar from "./updateAvatar";
+import AddRecord from "./AddRecord";
 
 export default function Dashboard() {
   const user = useSelector((state) => state.user.user);
@@ -54,10 +55,11 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="flex px-4 py-3 justify-start">
+            <div className="flex px-4 py-3 justify-between">
               <UpdateAvatar />
+              <AddRecord />
             </div>
-            <div className="px-4 py-3 @container">
+            <div className="px-4 py-3 @container ">
               <div className="flex overflow-hidden rounded-xl border border-[#d4dde2] bg-gray-50">
                 <Table className="w-full" />
               </div>
