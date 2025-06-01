@@ -6,7 +6,6 @@ import {
     DialogHeader,
     DialogTitle,
     DialogDescription,
-    DialogFooter,
 } from "@/components/ui/dialog";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,34 +15,43 @@ import { Button } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
 import { updateUser } from "@/redux/Slice/userSlice.js";
 import axios from "@/lib/axios.js";
-
+import LoadingButton from "@/components/ui/LoadingButton.jsx";
 
 
 const AddRecord = () => {
-    const [file, setFile] = useState(null);
     const [weight, setWeight] = useState('');
     const [height, setHeight] = useState('');
+    const [age, setAge] = useState('');
+    const [pending, setPending] = useState(false);
 
-    const handleSubmitBMIdata = async () => {
+    const dispatch = useDispatch();
+
+    const handleSubmitBMIdata = async (e) => {
         try {
+            setPending(true);
             const response = await axios.post('/users/add-record', {
-                weight: weight,
-                height: height,
+                weight,
+                height,
+                age,
             });
 
             if (response.status === 200) {
-                alert("Record added successfully!");
-                dispatch(updateUser({ weight: response.data.data.weight, height: response.data.data.height }));
+                console.log("Record added successfully:", response.data);
+                const { newRecord, allRecords } = response.data.data;
+                dispatch(updateUser({ records: allRecords }));
                 setWeight('');
                 setHeight('');
+                setAge('');
             } else {
-                alert("Failed to add record: " + response.data.message);
+                console.log("Failed to add record: " + response.data.message);
             }
         } catch (error) {
             console.error("Error adding record:", error);
-            alert("An error occurred while adding the record.");
+        } finally {
+            setPending(false);
         }
     };
+
 
 
     return (
@@ -57,6 +65,7 @@ const AddRecord = () => {
             </DialogTrigger>
 
             <DialogContent className="bg-white h-fit w-[40%]">
+                <DialogHeader><DialogTitle></DialogTitle></DialogHeader>
                 <DialogDescription className="text-sm text-neutral-500">
                     <Card className="w-full border-none shadow-none ">
                         <CardHeader>
@@ -67,12 +76,15 @@ const AddRecord = () => {
                         <CardContent>
                             <Tabs defaultValue="phone" className="w-full">
                                 <TabsContent value="phone">
-                                    <form className="space-y-4">
+                                    <form className="space-y-4" onSubmit={(e) => {
+                                        e.preventDefault();
+                                        handleSubmitBMIdata();
+                                    }}>
                                         <div className="flex flex-col space-y-2">
                                             <Label htmlFor="Weight">Weight</Label>
                                             <Input
                                                 id="weight"
-                                                type="text"
+                                                type="number"
                                                 placeholder="Enter your weight (K/G)"
                                                 value={weight}
                                                 onChange={(e) => setWeight(e.target.value)}
@@ -83,14 +95,30 @@ const AddRecord = () => {
                                             <Label htmlFor="height">Height</Label>
                                             <Input
                                                 id="height"
-                                                type="text"
+                                                type="number"
                                                 placeholder="Enter your height (cm)"
                                                 value={height}
                                                 onChange={(e) => setHeight(e.target.value)}
                                                 required
                                             />
                                         </div>
-                                        <Button className="w-full" type="submit">Add Record</Button>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="age">Age</Label>
+                                            <Input
+                                                id="age"
+                                                type="number"
+                                                placeholder="Enter your age"
+                                                value={age}
+                                                onChange={(e) => setAge(e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <LoadingButton
+                                            type="submit"
+                                            pending={pending}
+                                            className="w-full">
+                                            Add Record
+                                        </LoadingButton>
                                     </form>
                                 </TabsContent>
                             </Tabs>
