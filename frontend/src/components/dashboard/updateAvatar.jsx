@@ -94,9 +94,9 @@ const UpdateAvatar = () => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#eaeef1] text-[#101518] text-sm font-bold leading-normal tracking-[0.015em]">
+                <Button className="cursor-pointer bg-[#eaeef1] text-[#101518] hover:bg-black hover:text-white duration-300 flex items-center justify-center overflow-hidden rounded-xl h-10 px-4 min-w-[84px] max-w-[480px]">
                     <span className="truncate">Change Profile Photo</span>
-                </button>
+                </Button>
             </DialogTrigger>
 
             <DialogContent className="bg-white h-[80%] w-[40%]">
@@ -112,7 +112,7 @@ const UpdateAvatar = () => {
 
 
                 <DialogFooter className="flex flex-col items-center justify-center">
-                    <div className="py-4 flex flex-col justify-center items-center space-y-3">
+                    <div className="py-4 flex flex-col w-full justify-center items-center space-y-3">
                         <input
                             ref={inputRef}
                             type="file"

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const table = () => {
+const Table = () => {
 
     const Thead = [
         'Date',
@@ -44,7 +44,7 @@ const table = () => {
                         135 lbs
                     </td>
                     <td className="table-952c22f1-0138-435f-b64e-7ec1d8771011-column-720 h-[72px] px-4 py-2 w-60 text-[#5c778a] text-sm font-bold leading-normal tracking-[0.015em]">
-                        Edit | Delete
+                        Delete
                     </td>
                 </tr>
             </tbody>
@@ -52,4 +52,4 @@ const table = () => {
     )
 }
 
-export default table
+export default Table
