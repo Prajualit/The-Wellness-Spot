@@ -16,18 +16,38 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
       return next(new apiError(401, "Unauthorized request"));
     }
 
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    try {
+      // 1️⃣ Verify the token
+      const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-    const user = await User.findById(decodedToken._id).select(
-      "-password -refreshToken"
-    );
-    if (!user) {
+      // 2️⃣ Fetch user
+      const user = await User.findById(decodedToken._id).select(
+        "-password -refreshToken"
+      );
+      if (!user) {
+        return next(new apiError(401, "Invalid Access token"));
+      }
+
+      req.user = user;
+      next();
+    } catch (err) {
+      // 3️⃣ Check if it's an expired token & logout route
+      if (
+        err.name === "TokenExpiredError" &&
+        req.originalUrl.includes("/logout")
+      ) {
+        // Let logout proceed without a valid user (no DB check)
+        return next();
+      }
+
+      if (err.name === "TokenExpiredError") {
+        return next(new apiError(401, "Access token expired"));
+      }
+
+      // 4️⃣ All other verification errors
       return next(new apiError(401, "Invalid Access token"));
     }
-
-    req.user = user;
-    next();
   } catch (error) {
-    return next(new apiError(401, error?.message || "Invalid Access token"));
+    return next(new apiError(401, error?.message || "Unauthorized request"));
   }
 });
