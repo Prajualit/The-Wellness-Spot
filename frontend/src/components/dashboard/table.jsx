@@ -5,7 +5,7 @@ import axios from '@/lib/axios.js';
 import { updateUser } from '@/redux/Slice/userSlice.js';
 
 const Table = () => {
-    const Thead = ['BMI', 'Weight', 'Height', 'Age', 'Actions'];
+    const Thead = ['Date', 'BMI', 'Weight', 'Height', 'Age', 'Actions'];
     const user = useSelector((state) => state.user.user);
     const dispatch = useDispatch();
 
@@ -51,7 +51,13 @@ const Table = () => {
                     </tr>
                 ) : (
                     user.records.map((item) => {
-                        const itemList = [item.bmi, item.weight, item.height, item.age];
+                        const itemList = [item?.createdAt
+                                ? new Date(item.createdAt).toLocaleDateString('en-GB', {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric',
+                                })
+                                : 'N/A' ,item.bmi, item.weight, item.height, item.age];
 
                         return (
                             <tr
