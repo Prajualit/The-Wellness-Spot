@@ -1,6 +1,6 @@
 import { loginUser, logoutUser } from "../controllers/user.controller.js";
 import { updateAvatar } from "../controllers/updateAvatar.controller.js";
-import { addRecord } from "../controllers/addRecord.controller.js";
+import { addRecord, removeRecord } from "../controllers/addRecord.controller.js";
 import { refreshAccessToken } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
@@ -14,6 +14,7 @@ router
   .route("/update-avatar")
   .post(verifyJWT, upload.single("file"), updateAvatar);
 router.route("/add-record").post(verifyJWT, addRecord);
+router.route("/remove-record/:recordId").delete(verifyJWT, removeRecord);
 router.route("/refresh-token").post(refreshAccessToken);
 
 export default router;
