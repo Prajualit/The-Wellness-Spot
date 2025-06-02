@@ -29,8 +29,7 @@ export default function TokenCheck() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Only check tokens on protected pages, not on /login
-    if (pathname === "/login") {
+    if (pathname === "/login" || pathname === "/") {
       console.log("On login page, skipping token check.");
       return;
     }
