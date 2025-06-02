@@ -14,11 +14,13 @@ const Table = () => {
             const response = await axios.delete(`/users/remove-record/${recordId}`);
             if (response.status === 200) {
                 console.log(response.data);
+                const { updatedUser } = response.data;
                 dispatch(updateUser(updatedUser));
                 console.log('Record deleted successfully');
             } else {
                 console.log('Failed to delete record: ' + response.data.message);
             }
+        } catch (error) {
             console.error('Error deleting record:', error);
         }
     };
@@ -27,7 +29,6 @@ const Table = () => {
         <table className="flex-1">
             <thead>
                 <tr className="bg-gray-50">
-                            </th>
                     {Thead.map((item, index) => (
                         <th
                             key={index}
