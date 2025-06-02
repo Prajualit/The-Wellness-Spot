@@ -3,13 +3,16 @@ import Link from 'next/link';
 import UserCircleSolidIcon from '@/components/svg/UserCircleSolidIcon';
 import { useSelector } from 'react-redux';
 import NextImage from 'next/image';
+import LoadingButton from '../ui/LoadingButton.jsx';
+import axios from '@/lib/axios.js';
+import { useRouter } from "next/navigation";
 
 const Header = () => {
 
     const navLinks = [
         {
-            label: 'Overview',
-            href: 'overview'
+            label: 'Dashboard',
+            href: 'dashboard'
         },
         {
             label: 'Workouts',
@@ -20,12 +23,26 @@ const Header = () => {
             href: 'nutrition'
         },
         {
-            label: 'Community',
-            href: 'community'
-        }
+            label: 'Products',
+            href: 'products'
+        },
     ];
 
+    const router = useRouter();
+
     const user = useSelector((state) => state.user.user);
+
+    const handleLogout = async () => {
+        try {
+            const response = await axios.post('/users/logout');
+            if (response.status === 200) {
+                console.log("Logout successful");
+                router.push('/login');
+            }
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    }
 
     return (
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#eaeef1] px-10 py-3">
@@ -46,18 +63,23 @@ const Header = () => {
                     FitTrack
                 </h2>
             </div>
-            <div className="flex flex-1 justify-end gap-8">
+            <div className="flex flex-1 justify-end items-center gap-8">
                 <div className="flex items-center gap-9">
                     {navLinks.map((link, index) => (
                         <Link
                             key={index}
                             className="text-[#101518] text-sm font-medium leading-normal"
-                            href={link.href}
+                            href={`/${link.href}`}
                         >
                             {link.label}
                         </Link>
                     ))}
                 </div>
+                <LoadingButton onClick={() => handleLogout()} >
+                    <span className="text-sm">
+                        Logout
+                    </span>
+                </LoadingButton>
                 <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 bg-[#eaeef1] text-[#101518] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
                     <div
                         className="text-[#101518]"
