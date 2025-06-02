@@ -66,7 +66,7 @@ const AddRecord = () => {
 
             <DialogContent className="bg-white h-fit w-[40%]">
                 <DialogHeader><DialogTitle></DialogTitle></DialogHeader>
-                <DialogDescription className="text-sm text-neutral-500">
+                <div className="text-sm text-neutral-500">
                     <Card className="w-full border-none shadow-none ">
                         <CardHeader>
                             <CardTitle className="text-center text-2xl">
@@ -124,7 +124,7 @@ const AddRecord = () => {
                             </Tabs>
                         </CardContent>
                     </Card>
-                </DialogDescription>
+                </div>
             </DialogContent>
         </Dialog>
     );
