@@ -49,7 +49,7 @@ export default function Dashboard() {
                       {user?.name}
                     </p>
                     <p className="text-[#5c778a] text-base font-normal leading-normal">
-                      Age: 30, Height: 5&apos;6&apos;&apos;
+                      Age: {user.records[0].age} Years <br /> Height: {user.records[0].height} cm
                     </p>
                   </div>
                 </div>
