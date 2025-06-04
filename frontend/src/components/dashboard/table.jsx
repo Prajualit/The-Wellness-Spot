@@ -28,7 +28,7 @@ const Table = () => {
     return (
         <table className="flex-1">
             <thead>
-                <tr className="bg-gray-50">
+                <tr className="bg-gray-50 ">
                     {Thead.map((item, index) => (
                         <th
                             key={index}
@@ -41,23 +41,23 @@ const Table = () => {
             </thead>
             <tbody>
                 {user.records.length === 0 ? (
-                    <tr>
+                    <tr className="border-t border-t-[#d4dde2]">
                         <td
-                            colSpan={5}
-                            className="text-center text-[#5c778a] text-sm font-normal leading-normal py-4"
+                            colSpan={6}
+                            className="text-center w-full border text-[#5c778a] text-sm font-normal leading-normal py-4"
                         >
-                            No records found
+                            No records found. Please add a new record.
                         </td>
                     </tr>
                 ) : (
                     user.records.map((item) => {
                         const itemList = [item?.createdAt
-                                ? new Date(item.createdAt).toLocaleDateString('en-GB', {
-                                    day: 'numeric',
-                                    month: 'long',
-                                    year: 'numeric',
-                                })
-                                : 'N/A' ,item.bmi, item.weight, item.height, item.age];
+                            ? new Date(item.createdAt).toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric',
+                            })
+                            : 'N/A', item.bmi, item.weight, item.height, item.age];
 
                         return (
                             <tr
