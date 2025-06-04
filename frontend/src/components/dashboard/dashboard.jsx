@@ -12,6 +12,8 @@ export default function Dashboard() {
   const user = useSelector((state) => state.user.user);
   console.log("User in Dashboard:", user);
 
+  const firstRecord = user.records?.[0];
+
   return (
     <div
       className="relative flex size-full min-h-screen flex-col bg-gray-50 group/design-root overflow-x-hidden"
@@ -48,8 +50,9 @@ export default function Dashboard() {
                     <p className="text-[#101518] text-[22px] font-bold leading-tight tracking-[-0.015em]">
                       {user?.name}
                     </p>
-                    <p className="text-[#5c778a] text-base font-normal leading-normal">
-                      Age: {user.records[0].age} Years <br /> Height: {user.records[0].height} cm
+                    <p>
+                      {firstRecord?.age && <>Age: {firstRecord.age} Years<br /></>}
+                      {firstRecord?.height && <>Height: {firstRecord.height} cm</>}
                     </p>
                   </div>
                 </div>
