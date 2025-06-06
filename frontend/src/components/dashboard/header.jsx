@@ -44,6 +44,16 @@ const Header = () => {
         }
     }
 
+    const AdminPanel = () =>
+        user.isAdmin ? (
+            <Link href="/admin">
+                <LoadingButton>
+                    <span className="text-sm">Admin Panel</span>
+                </LoadingButton>
+            </Link>
+        ) : null;
+
+
     return (
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#eaeef1] px-10 py-3">
             <div className="flex items-center gap-4 text-[#101518]">
@@ -75,6 +85,7 @@ const Header = () => {
                         </Link>
                     ))}
                 </div>
+                <AdminPanel />
                 <LoadingButton onClick={() => handleLogout()} >
                     <span className="text-sm">
                         Logout

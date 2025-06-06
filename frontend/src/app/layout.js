@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/redux/reduxProvider.js";
-import TokenCheck from "@/lib/tokenCheck.js"; // <--- Import the check component
+import TokenCheck from "@/lib/tokenCheck.js";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReduxProvider>
-          <TokenCheck /> {/* <--- Placed here to run on every load */}
+          <TokenCheck /> 
           {children}
         </ReduxProvider>
       </body>
