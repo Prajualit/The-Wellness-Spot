@@ -1,7 +1,14 @@
-import { loginUser, logoutUser } from "../controllers/user.controller.js";
+import {
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+} from "../controllers/user.controller.js";
 import { updateAvatar } from "../controllers/updateAvatar.controller.js";
-import { addRecord, removeRecord } from "../controllers/addRecord.controller.js";
-import { refreshAccessToken } from "../controllers/user.controller.js";
+import {
+  addRecord,
+  removeRecord,
+} from "../controllers/addRecord.controller.js";
+
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { Router } from "express";
