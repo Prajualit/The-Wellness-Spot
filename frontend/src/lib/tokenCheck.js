@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { usePathname } from "next/navigation"; // To detect current route
+import { useEffect, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios.js";
 
 function isTokenExpired(token) {
@@ -13,7 +13,6 @@ function isTokenExpired(token) {
   try {
     const payloadJson = atob(payloadBase64);
     const payload = JSON.parse(payloadJson);
-
     return payload.exp < Date.now() / 1000;
   } catch (err) {
     return true;
@@ -27,6 +26,8 @@ function getCookie(name) {
 
 export default function TokenCheck() {
   const pathname = usePathname();
+  const router = useRouter();
+  const isRefreshing = useRef(false);
 
   useEffect(() => {
     if (pathname === "/login" || pathname === "/") {
@@ -37,15 +38,19 @@ export default function TokenCheck() {
     const accessToken = getCookie("accessToken");
 
     if (!accessToken || isTokenExpired(accessToken)) {
+      if (isRefreshing.current) return;
+
+      isRefreshing.current = true;
       console.log("Access token expired or missing. Attempting to refresh...");
 
       axiosInstance
         .post("/users/refresh-token")
         .then((res) => {
-          console.log(
-            "Token refreshed successfully:",
-            res.data.data.accessToken
-          );
+          const newAccessToken = res.data.data.accessToken;
+          console.log("Token refreshed successfully:", newAccessToken);
+
+          // Update the cookie
+          document.cookie = `accessToken=${newAccessToken}; path=/; secure; sameSite=Strict`;
         })
         .catch(async (err) => {
           console.warn("Refresh token expired or failed. Logging out...");
@@ -54,12 +59,15 @@ export default function TokenCheck() {
           } catch (logoutErr) {
             console.error("Logout failed:", logoutErr);
           }
-          window.location.href = "/login";
+          router.push("/login");
+        })
+        .finally(() => {
+          isRefreshing.current = false;
         });
     } else {
       console.log("Access token is still valid.");
     }
-  }, [pathname]); // Runs again on page change
+  }, [pathname, router]);
 
   return null;
 }
