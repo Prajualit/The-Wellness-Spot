@@ -17,10 +17,7 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     }
 
     try {
-      // 1️⃣ Verify the token
       const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-
-      // 2️⃣ Fetch user
       const user = await User.findById(decodedToken._id).select(
         "-password -refreshToken"
       );
@@ -31,12 +28,16 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
       req.user = user;
       next();
     } catch (err) {
-      // 3️⃣ Check if it's an expired token & logout route
+      // 🔍 Add logging to debug
+      console.log("Token error:", err.name);
+      console.log("Request URL:", req.originalUrl);
+      console.log("Is logout route:", req.originalUrl.includes("/logout"));
+
       if (
         err.name === "TokenExpiredError" &&
         req.originalUrl.includes("/logout")
       ) {
-        // Let logout proceed without a valid user (no DB check)
+        console.log("Allowing logout with expired token");
         return next();
       }
 
@@ -44,7 +45,6 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
         return next(new apiError(401, "Access token expired"));
       }
 
-      // 4️⃣ All other verification errors
       return next(new apiError(401, "Invalid Access token"));
     }
   } catch (error) {
