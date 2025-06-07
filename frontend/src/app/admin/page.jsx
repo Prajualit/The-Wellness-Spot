@@ -7,6 +7,7 @@ import TokenCheck from "@/lib/tokenCheck";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import ViewRecord from "@/components/admin/ViewRecord.jsx";
+import UserCircleSolidIcon from '@/components/svg/UserCircleSolidIcon';
 
 export default function AdminDashboard() {
     const [users, setUsers] = useState(null);
@@ -110,13 +111,17 @@ export default function AdminDashboard() {
                                                                 />
                                                             ) : index === 0 ? (
                                                                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                                                    <span className="text-gray-500 text-xs">No Image</span>
+                                                                    <UserCircleSolidIcon size={30} color="gray" />
                                                                 </div>
                                                             ) :
                                                                 index === 5 ? (
                                                                     <div className="flex items-center gap-2">
-                                                                        {records.length > 0 && (
+                                                                        {records.length > 0 ? (
                                                                             <ViewRecord records={records} userName={user.name} />
+                                                                        ) : (
+                                                                            records.length === 0 && (
+                                                                                <span className="text-gray-500">No Records</span>
+                                                                            )
                                                                         )}
                                                                     </div>
                                                                 ) : (
