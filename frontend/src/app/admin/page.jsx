@@ -38,7 +38,7 @@ export default function AdminDashboard() {
             return;
         }
         try {
-            const response = await axios.delete(`/admin/delete/${userId}`);
+            const response = await axios.delete(`/admin/delete-user/${userId}`);
             if (response.status === 200) {
                 setUsers(users.filter(user => user._id !== userId));
                 console.log('User deleted successfully');
