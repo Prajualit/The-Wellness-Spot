@@ -4,6 +4,6 @@ import { Router } from "express";
 
 const router = Router();
 
-router.route("/get-all-users").get(verifyJWT, getAllUsers);
+router.route("/get-all-users").post(verifyJWT, getAllUsers);
 
 export default router;
