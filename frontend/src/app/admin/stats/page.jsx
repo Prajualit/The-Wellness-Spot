@@ -20,7 +20,7 @@ export default function StatsPage() {
     const mountedRef = useRef(true)
 
     // Create a fetch with timeout
-    const fetchWithTimeout = async (url, options, timeout = 10000) => {
+    const fetchWithTimeout = async (url, options, timeout = 15000) => {
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), timeout)
 
@@ -33,46 +33,61 @@ export default function StatsPage() {
             return response
         } catch (error) {
             clearTimeout(timeoutId)
+            if (error.name === 'AbortError') {
+                throw new Error('Request timeout - please try again')
+            }
             throw error
         }
     }
 
     // Fetch analytics data with timeout
     const fetchAnalyticsData = async (isRealTime = false) => {
+        if (!mountedRef.current) return
+
         try {
-            console.log('Fetching analytics data...')
+            console.log('Fetching analytics data...', { isRealTime })
             setError(null)
 
             const response = await fetchWithTimeout('/api/analytics', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
                 body: JSON.stringify({
                     startDate: '30daysAgo',
                     endDate: 'today',
                     metrics: ['activeUsers', 'screenPageViews', 'sessions'],
                     realTime: isRealTime
                 })
-            }, 15000) // 15 second timeout
+            }, 15000)
 
             if (!response.ok) {
-                const errorData = await response.json()
-                throw new Error(errorData.details || 'Failed to fetch analytics')
+                let errorMessage = 'Failed to fetch analytics'
+                try {
+                    const errorData = await response.json()
+                    errorMessage = errorData.message || errorData.details || errorMessage
+                } catch (e) {
+                    errorMessage = `HTTP ${response.status}: ${response.statusText}`
+                }
+                throw new Error(errorMessage)
             }
 
             const data = await response.json()
+            console.log('Analytics data received:', data)
 
             // Only update state if component is still mounted
             if (mountedRef.current) {
                 setAnalytics(prevData => ({
-                    ...prevData,
-                    ...data,
-                    // Keep previous data if new data is incomplete
-                    activeUsers: data.activeUsers ?? prevData.activeUsers,
-                    pageViews: data.pageViews ?? prevData.pageViews,
-                    sessions: data.sessions ?? prevData.sessions,
-                    topPages: data.topPages ?? prevData.topPages,
-                    realTimeUsers: data.realTimeUsers ?? prevData.realTimeUsers,
-                    recentActivity: data.recentActivity ?? prevData.recentActivity
+                    activeUsers: data.activeUsers ?? prevData.activeUsers ?? 0,
+                    pageViews: data.pageViews ?? prevData.pageViews ?? 0,
+                    sessions: data.sessions ?? prevData.sessions ?? 0,
+                    topPages: data.topPages ?? prevData.topPages ?? [],
+                    realTimeUsers: data.realTimeUsers ?? prevData.realTimeUsers ?? 0,
+                    recentActivity: data.recentActivity ?? prevData.recentActivity ?? [],
+                    bounceRate: data.bounceRate ?? prevData.bounceRate,
+                    avgSessionDuration: data.avgSessionDuration ?? prevData.avgSessionDuration,
+                    trafficSources: data.trafficSources ?? prevData.trafficSources ?? []
                 }))
                 setLastUpdated(new Date())
                 setIsLoading(false)
@@ -84,8 +99,8 @@ export default function StatsPage() {
                 setError(error.message)
                 setIsLoading(false)
 
-                // Set fallback data if no data exists
-                if (analytics.activeUsers === 0) {
+                // Set fallback data only if no data exists
+                if (analytics.activeUsers === 0 && analytics.pageViews === 0) {
                     setAnalytics({
                         activeUsers: 0,
                         pageViews: 0,
@@ -94,7 +109,7 @@ export default function StatsPage() {
                         realTimeUsers: 0,
                         recentActivity: [{
                             type: 'error',
-                            description: 'Unable to load data',
+                            description: 'Unable to load analytics data',
                             timestamp: new Date().toLocaleTimeString()
                         }]
                     })
@@ -103,67 +118,50 @@ export default function StatsPage() {
         }
     }
 
-    // Fetch real-time data specifically
-    const fetchRealTimeData = async () => {
-        try {
-            const response = await fetchWithTimeout('/api/analytics/realtime', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            }, 10000)
-
-            if (!response.ok) throw new Error('Failed to fetch real-time data')
-
-            const data = await response.json()
-
-            if (mountedRef.current) {
-                setAnalytics(prevData => ({
-                    ...prevData,
-                    realTimeUsers: data.realTimeUsers ?? prevData.realTimeUsers,
-                    recentActivity: data.recentActivity ?? prevData.recentActivity
-                }))
-                setLastUpdated(new Date())
-            }
-        } catch (error) {
-            console.error('Failed to fetch real-time data:', error)
-        }
-    }
-
     // Initial load
     useEffect(() => {
+        mountedRef.current = true
         fetchAnalyticsData()
 
         return () => {
             mountedRef.current = false
         }
-    }, [])
+    }, []) // Empty dependency array - only run once
 
     // Set up real-time updates
     useEffect(() => {
-        if (isRealTimeEnabled) {
-            // Fetch real-time data every 10 seconds
-            intervalRef.current = setInterval(() => {
-                fetchRealTimeData()
-            }, 10000)
-
-            // Fetch full analytics data every 5 minutes
-            const fullDataInterval = setInterval(() => {
-                fetchAnalyticsData(true)
-            }, 300000)
-
-            return () => {
-                if (intervalRef.current) clearInterval(intervalRef.current)
-                if (fullDataInterval) clearInterval(fullDataInterval)
+        if (!isRealTimeEnabled) {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current)
+                intervalRef.current = null
             }
-        } else {
+            return
+        }
+
+        // Clear any existing interval
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current)
+        }
+
+        // Set up interval for real-time updates
+        intervalRef.current = setInterval(() => {
+            if (mountedRef.current) {
+                fetchAnalyticsData(true)
+            }
+        }, 30000) // Update every 30 seconds instead of 10
+
+        return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current)
                 intervalRef.current = null
             }
         }
-    }, [isRealTimeEnabled])
+    }, [isRealTimeEnabled]) // Only depend on isRealTimeEnabled
 
     // Manual refresh
     const handleRefresh = () => {
+        if (isLoading) return // Prevent multiple simultaneous requests
+
         setIsLoading(true)
         setError(null)
         fetchAnalyticsData(true)
@@ -171,7 +169,7 @@ export default function StatsPage() {
 
     // Toggle real-time updates
     const toggleRealTime = () => {
-        setIsRealTimeEnabled(!isRealTimeEnabled)
+        setIsRealTimeEnabled(prev => !prev)
     }
 
     // Format timestamp
@@ -182,6 +180,14 @@ export default function StatsPage() {
             minute: '2-digit',
             second: '2-digit'
         })
+    }
+
+    // Format duration
+    const formatDuration = (seconds) => {
+        if (!seconds) return 'N/A'
+        const mins = Math.floor(seconds / 60)
+        const secs = seconds % 60
+        return `${mins}m ${secs}s`
     }
 
     if (isLoading && analytics.activeUsers === 0) {
@@ -253,7 +259,7 @@ export default function StatsPage() {
                 <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-3"></div>
                     <span className="text-green-800 text-sm font-medium">
-                        Live data updates every 10 seconds
+                        Live data updates every 30 seconds
                     </span>
                 </div>
             )}
@@ -285,23 +291,55 @@ export default function StatsPage() {
                 </div>
             </div>
 
+            {/* Additional Stats */}
+            {(analytics.bounceRate || analytics.avgSessionDuration) && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    {analytics.bounceRate && (
+                        <div className="bg-white p-6 rounded-lg shadow-md border">
+                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Bounce Rate</h3>
+                            <p className="text-3xl font-bold text-orange-600">
+                                {(analytics.bounceRate * 100).toFixed(1)}%
+                            </p>
+                            <p className="text-sm text-gray-500">Percentage of single-page sessions</p>
+                        </div>
+                    )}
+
+                    {analytics.avgSessionDuration && (
+                        <div className="bg-white p-6 rounded-lg shadow-md border">
+                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Avg Session Duration</h3>
+                            <p className="text-3xl font-bold text-indigo-600">
+                                {formatDuration(analytics.avgSessionDuration)}
+                            </p>
+                            <p className="text-sm text-gray-500">Average time per session</p>
+                        </div>
+                    )}
+                </div>
+            )}
+
             {/* Recent Activity Feed */}
             <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
                 <div className="space-y-3 max-h-64 overflow-y-auto">
                     {analytics.recentActivity && analytics.recentActivity.length > 0 ? (
                         analytics.recentActivity.map((activity, index) => (
-                            <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100">
+                            <div key={activity.id || index} className="flex items-center justify-between py-2 border-b border-gray-100">
                                 <div className="flex items-center">
                                     <div className={`w-2 h-2 rounded-full mr-3 ${activity.type === 'login' ? 'bg-green-500' :
-                                        activity.type === 'workout' ? 'bg-blue-500' :
-                                            activity.type === 'nutrition' ? 'bg-orange-500' :
-                                                activity.type === 'error' ? 'bg-red-500' :
-                                                    'bg-gray-500'
+                                            activity.type === 'workout' ? 'bg-blue-500' :
+                                                activity.type === 'nutrition' ? 'bg-orange-500' :
+                                                    activity.type === 'goal' ? 'bg-purple-500' :
+                                                        activity.type === 'registration' ? 'bg-indigo-500' :
+                                                            activity.type === 'error' ? 'bg-red-500' :
+                                                                'bg-gray-500'
                                         }`}></div>
                                     <span className="text-gray-700">{activity.description}</span>
                                 </div>
-                                <span className="text-xs text-gray-500">{activity.timestamp}</span>
+                                <span className="text-xs text-gray-500">
+                                    {typeof activity.timestamp === 'string' && activity.timestamp.includes('T')
+                                        ? new Date(activity.timestamp).toLocaleTimeString()
+                                        : activity.timestamp
+                                    }
+                                </span>
                             </div>
                         ))
                     ) : (
@@ -318,7 +356,12 @@ export default function StatsPage() {
                         analytics.topPages.map((page, index) => (
                             <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
                                 <span className="font-medium text-gray-700">{page.page}</span>
-                                <span className="text-blue-600 font-semibold">{page.views} views</span>
+                                <div className="flex items-center space-x-3">
+                                    <span className="text-blue-600 font-semibold">{page.views} views</span>
+                                    {page.percentage && (
+                                        <span className="text-gray-500 text-sm">({page.percentage}%)</span>
+                                    )}
+                                </div>
                             </div>
                         ))
                     ) : (
@@ -326,6 +369,24 @@ export default function StatsPage() {
                     )}
                 </div>
             </div>
+
+            {/* Traffic Sources */}
+            {analytics.trafficSources && analytics.trafficSources.length > 0 && (
+                <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-4">Traffic Sources</h3>
+                    <div className="space-y-3">
+                        {analytics.trafficSources.map((source, index) => (
+                            <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span className="font-medium text-gray-700">{source.source}</span>
+                                <div className="flex items-center space-x-3">
+                                    <span className="text-green-600 font-semibold">{source.visitors} visitors</span>
+                                    <span className="text-gray-500 text-sm">({source.percentage}%)</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* External Links */}
             <div className="bg-white p-6 rounded-lg shadow-md border">
