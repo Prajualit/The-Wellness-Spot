@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import ViewRecord from "@/components/admin/ViewRecord.jsx";
 import UserCircleSolidIcon from '@/components/svg/UserCircleSolidIcon';
+import Header from "@/components/dashboard/header";
 
 export default function AdminDashboard() {
     const [users, setUsers] = useState(null);
@@ -54,7 +55,8 @@ export default function AdminDashboard() {
         <>
             <TokenCheck />
             <AdminGuard>
-                <div className="p-10 flex flex-col space-y-6">
+                <Header />
+                <div className="p-14 px-20 flex flex-col space-y-6">
                     <h1 className="text-[36px] font-bold">Users</h1>
                     <div className="flex flex-col space-y-4 items-center justify-center">
                         <div className="w-full overflow-x-auto">
