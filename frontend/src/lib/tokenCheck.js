@@ -41,7 +41,6 @@ export default function TokenCheck() {
       if (isRefreshing.current) return;
 
       isRefreshing.current = true;
-      console.log("Access token expired or missing. Attempting to refresh...");
 
       axiosInstance
         .post("/users/refresh-token")
