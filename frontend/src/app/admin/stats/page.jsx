@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+import LoadingButton from '@/components/ui/LoadingButton.jsx'
 
 export default function StatsPage() {
     const [analytics, setAnalytics] = useState({
@@ -223,7 +225,7 @@ export default function StatsPage() {
                         Last updated: {formatLastUpdated(lastUpdated)}
                     </div>
 
-                    <button
+                    <LoadingButton
                         onClick={toggleRealTime}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isRealTimeEnabled
                             ? 'bg-green-100 text-green-800 hover:bg-green-200'
@@ -231,15 +233,20 @@ export default function StatsPage() {
                             }`}
                     >
                         {isRealTimeEnabled ? 'Real-time ON' : 'Real-time OFF'}
-                    </button>
+                    </LoadingButton>
 
-                    <button
+                    <LoadingButton
                         onClick={handleRefresh}
                         disabled={isLoading}
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium transition-colors"
                     >
                         {isLoading ? 'Refreshing...' : 'Refresh'}
-                    </button>
+                    </LoadingButton>
+                    <Link href="/admin">
+                        <LoadingButton>
+                            <span className="text-sm">Admin Panel</span>
+                        </LoadingButton>
+                    </Link>
                 </div>
             </div>
 
@@ -325,12 +332,12 @@ export default function StatsPage() {
                             <div key={activity.id || index} className="flex items-center justify-between py-2 border-b border-gray-100">
                                 <div className="flex items-center">
                                     <div className={`w-2 h-2 rounded-full mr-3 ${activity.type === 'login' ? 'bg-green-500' :
-                                            activity.type === 'workout' ? 'bg-blue-500' :
-                                                activity.type === 'nutrition' ? 'bg-orange-500' :
-                                                    activity.type === 'goal' ? 'bg-purple-500' :
-                                                        activity.type === 'registration' ? 'bg-indigo-500' :
-                                                            activity.type === 'error' ? 'bg-red-500' :
-                                                                'bg-gray-500'
+                                        activity.type === 'workout' ? 'bg-blue-500' :
+                                            activity.type === 'nutrition' ? 'bg-orange-500' :
+                                                activity.type === 'goal' ? 'bg-purple-500' :
+                                                    activity.type === 'registration' ? 'bg-indigo-500' :
+                                                        activity.type === 'error' ? 'bg-red-500' :
+                                                            'bg-gray-500'
                                         }`}></div>
                                     <span className="text-gray-700">{activity.description}</span>
                                 </div>

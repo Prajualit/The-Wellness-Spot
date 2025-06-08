@@ -52,11 +52,19 @@ const Header = () => {
 
         if (pathname === '/admin') {
             return (
-                <Link href="/dashboard">
-                    <LoadingButton>
-                        <span className="text-sm">Dashboard</span>
-                    </LoadingButton>
-                </Link>
+                <>
+                    <Link href="/dashboard">
+                        <LoadingButton>
+                            <span className="text-sm">Dashboard</span>
+                        </LoadingButton>
+                    </Link>
+                    <Link href="/admin/stats">
+                        <LoadingButton>
+                            <span className="text-sm">Analytics</span>
+                        </LoadingButton>
+                    </Link>
+
+                </>
             );
         }
 
