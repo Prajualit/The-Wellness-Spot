@@ -84,7 +84,7 @@ export default function Footer() {
               {/* Contact Info Cards */}
               <div className="space-y-4">
                 <a
-                  href="mailto:info@fitprotrainer.com"
+                  href="mailto:radhekrishna51@gmail.com"
                   className="flex items-center gap-4 p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-white/10 hover:border-blue-500/50 transition-all duration-300 group"
                 >
                   <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg group-hover:scale-110 transition-transform duration-300">
@@ -99,7 +99,7 @@ export default function Footer() {
                 </a>
 
                 <a
-                  href="tel:+1234567890"
+                  href="tel:+917807066646"
                   className="flex items-center gap-4 p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-white/10 hover:border-green-500/50 transition-all duration-300 group"
                 >
                   <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg group-hover:scale-110 transition-transform duration-300">
