@@ -13,7 +13,8 @@ import NextImage from "next/image";
 
 const navItems = [
   { label: "Home", id: "home" },
-  { label: "About", id: "about" },
+  { label: "Trainer", id: "about" },
+  { label: "Testimonials", id: "testimonials" },
   { label: "Products", id: "products" },
   { label: "Contact", id: "footer" },
 ];
@@ -40,6 +41,11 @@ export default function Navbar() {
       <LoadingButton onClick={handleLogout}>
         <span className="text-sm">Logout</span>
       </LoadingButton>
+      <Link href="/dashboard">
+        <LoadingButton>
+          <span className="text-sm">Dashboard</span>
+        </LoadingButton>
+      </Link>
       <div className="flex items-center space-x-2 ">
         <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#eaeef1]">
           <NextImage
@@ -50,7 +56,6 @@ export default function Navbar() {
             className="w-full h-full rounded-full object-cover"
           />
         </div>
-        <span>{user?.name}</span>
       </div>
     </>
   ) : (
@@ -80,7 +85,8 @@ export default function Navbar() {
             <a
               key={item.id}
               href={`#${item.id}`}
-              className="text-muted-foreground hover:text-primary transition"
+              className="text-black transition-all duration-300 hover:text-blue-600 
+                   hover:-translate-y-0.5 hover:opacity-80 cursor-pointer"
             >
               {item.label}
             </a>

@@ -59,12 +59,10 @@ export default function Footer() {
   };
 
   return (
-    <div className="relative">
+    <div id="footer" className="relative">
       <footer className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-8 py-20">
-          {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
-            {/* Brand Section */}
             <div className="lg:col-span-7 space-y-8">
               <div className="space-y-4">
                 <div className="flex items-center gap-3 group">

@@ -18,12 +18,8 @@ import "swiper/css/effect-coverflow";
 
 export default function Testimonials() {
   return (
-    <div>
-      <section
-        id="testimonials-section"
-        className="w-full py-32 px-8 bg-gradient-to-br from-[#e3fcec] via-white to-[#e8f0fe] relative overflow-hidden"
-      >
-        {/* Background decoration */}
+    <div id="testimonials">
+      <section className="w-full py-32 px-8 bg-gradient-to-br from-[#e3fcec] via-white to-[#e8f0fe] relative overflow-hidden">
         <div className="absolute inset-0 opacity-30">
           <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full blur-3xl animate-pulse delay-1000"></div>
@@ -31,7 +27,6 @@ export default function Testimonials() {
         </div>
 
         <div className="max-w-7xl mx-auto relative z-10">
-          {/* Header Section */}
           <div className="text-center mb-16">
             <div className="inline-block px-4 py-2 bg-emerald-100 text-emerald-800 rounded-full text-sm font-semibold mb-4 animate-fade-in">
               ✨ Success Stories
@@ -46,7 +41,6 @@ export default function Testimonials() {
             <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-blue-500 mx-auto mt-8 rounded-full"></div>
           </div>
 
-          {/* Swiper Section */}
           <div className="relative">
             <Swiper
               modules={[Navigation, Pagination, Autoplay, EffectCoverflow]}
@@ -59,7 +53,7 @@ export default function Testimonials() {
                 stretch: 0,
                 depth: 300,
                 modifier: 1,
-                slideShadows: true,
+                slideShadows: false, // Disabled Swiper's built-in shadows
               }}
               navigation={{
                 nextEl: ".swiper-button-next-custom",
@@ -97,12 +91,7 @@ export default function Testimonials() {
               {clientImages.map((image, index) => (
                 <SwiperSlide key={index} className="!w-auto">
                   <div className="group relative p-2">
-                    <div className="relative overflow-hidden rounded-3xl bg-white shadow-2xl transform group-hover:scale-105 transition-all duration-500 ease-out hover:shadow-emerald-200/50">
-                      {/* Gradient border effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
-                      <div className="absolute inset-1 bg-white rounded-3xl z-10"></div>
-
-                      {/* Image container */}
+                    <div className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-xl transform group-hover:scale-105 transition-all duration-500 ease-out">
                       <div className="relative z-20 p-6">
                         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100">
                           <Image
@@ -112,17 +101,11 @@ export default function Testimonials() {
                             height={400}
                             className="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110"
                           />
-
-                          {/* Overlay gradient */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                          {/* Badge */}
-                          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-emerald-600 shadow-lg">
+                          <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[11px] font-semibold text-emerald-600 shadow-sm">
                             Result #{index + 1}
                           </div>
                         </div>
-
-                        {/* Stats overlay */}
                         <div className="mt-4 text-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                           <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl p-4">
                             <h3 className="font-bold text-gray-800 mb-2">
@@ -146,7 +129,7 @@ export default function Testimonials() {
             </Swiper>
 
             {/* Custom Navigation Buttons */}
-            <button className="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white shadow-2xl rounded-full flex items-center justify-center text-emerald-600 hover:bg-emerald-50 hover:shadow-emerald-200/50 transition-all duration-300 group">
+            <button className="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white shadow-lg rounded-full flex items-center justify-center text-emerald-600 hover:bg-emerald-50 hover:shadow-emerald-200/50 transition-all duration-300 group">
               <svg
                 className="w-6 h-6 transform group-hover:-translate-x-1 transition-transform"
                 fill="none"
@@ -161,7 +144,7 @@ export default function Testimonials() {
                 />
               </svg>
             </button>
-            <button className="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white shadow-2xl rounded-full flex items-center justify-center text-emerald-600 hover:bg-emerald-50 hover:shadow-emerald-200/50 transition-all duration-300 group">
+            <button className="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white shadow-lg rounded-full flex items-center justify-center text-emerald-600 hover:bg-emerald-50 hover:shadow-emerald-200/50 transition-all duration-300 group">
               <svg
                 className="w-6 h-6 transform group-hover:translate-x-1 transition-transform"
                 fill="none"
@@ -238,7 +221,7 @@ export default function Testimonials() {
         }
 
         .testimonials-swiper .swiper-slide:not(.swiper-slide-active) {
-          opacity: 0.6;
+          opacity: 1;
           transform: scale(0.9);
         }
 
