@@ -1,130 +1,252 @@
+"use client";
+
 import Image from "next/image";
-import testim from "../app/assets/testim.jpg";
-import testim2 from "../app/assets/testim2.jpg";
-import testim3 from "../app/assets/testim3.jpg";
+import { Swiper, SwiperSlide } from "swiper/react";
+import {
+  Navigation,
+  Pagination,
+  Autoplay,
+  EffectCoverflow,
+} from "swiper/modules";
+import clientImages from "@/components/ui/clientImages";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/effect-coverflow";
 
 export default function Testimonials() {
-
-    return(
+  return (
     <div>
-        <section id="testimonials-section" className="w-full py-24 px-8 bg-gradient-to-br from-[#e3fcec] via-white to-[#e8f0fe]">
-        <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-black mb-12">What Clients Say</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10" id="testimonials-cards-block">
-                <div id="testimonial-card-1" className="rounded-2xl bg-white p-7 shadow-lg flex flex-col items-start gap-4">
-                    <div className="flex items-center gap-3">
-                        <Image src={testim} className="w-12 h-12 rounded-full object-cover border-2 border-black" alt="Testimonial 1"></Image>
-                        <div>
-                            <div className="font-bold text-gray-800">Sarah Lopez</div>
-                            <div className="text-xs text-gray-500">Business Analyst</div>
-                        </div>
-                    </div>
-                    <p className="text-gray-700">&quot;Alex helped me lose 30 pounds and build actual confidence! The sessions are motivating, personal, and fun. I can&apos;t recommend him enough!&rdquo;</p>
-                    <div className="flex text-yellow-400 text-lg">
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                    </div>
-                </div>
-                <div id="testimonial-card-2" className="rounded-2xl bg-white p-7 shadow-lg flex flex-col items-start gap-4">
-                    <div className="flex items-center gap-3">
-                        <Image src={testim2} className="w-12 h-12 rounded-full object-cover border-2 border-black" alt="Testimonial 2"></Image>
-                        <div>
-                            <div className="font-bold text-gray-800">Michael Lee</div>
-                            <div className="text-xs text-gray-500">Startup Founder</div>
-                        </div>
-                    </div>
-                    <p className="text-gray-700">&quot;I gained lean muscle and learned sustainable nutrition habits. Alex&apos;s programs are tailored and results-driven.&quot;</p>
-                    <div className="flex text-yellow-400 text-lg">
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star-half-stroke" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star-half-stroke" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M320 376.4l.1-.1 26.4 14.1 85.2 45.5-16.5-97.6-4.8-28.7 20.7-20.5 70.1-69.3-96.1-14.2-29.3-4.3-12.9-26.6L320.1 86.9l-.1 .3V376.4zm175.1 98.3c2 12-3 24.2-12.9 31.3s-23 8-33.8 2.3L320.1 439.8 191.8 508.3C181 514 167.9 513.1 158 506s-14.9-19.3-12.9-31.3L169.8 329 65.6 225.9c-8.6-8.5-11.7-21.2-7.9-32.7s13.7-19.9 25.7-21.7L227 150.3 291.4 18c5.4-11 16.5-18 28.8-18s23.4 7 28.8 18l64.3 132.3 143.6 21.2c12 1.8 22 10.2 25.7 21.7s.7 24.2-7.9 32.7L470.5 329l24.6 145.7z"></path>
-                            </svg>
-                        </i>
-                    </div>
-                </div>
-                <div id="testimonial-card-3" className="rounded-2xl bg-white p-7 shadow-lg flex flex-col items-start gap-4">
-                    <div className="flex items-center gap-3">
-                        <Image src={testim3} className="w-12 h-12 rounded-full object-cover border-2 border-black" alt="Testimonial 3"></Image>
-                        <div>
-                            <div className="font-bold text-gray-800">Jessica Wang</div>
-                            <div className="text-xs text-gray-500">Designer</div>
-                        </div>
-                    </div>
-                    <p className="text-gray-700">&quot;The group workouts are amazing and Alex always keeps me motivated. My energy level has never been higher!&quot;</p>
-                    <div className="flex text-yellow-400 text-lg">
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                        <i data-fa-i2svg="">
-                            <svg className="svg-inline--fa fa-star" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" role="Image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                <path fill="currentColor" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
-                            </svg>
-                        </i>
-                    </div>
-                </div>
-            </div>
+      <section
+        id="testimonials-section"
+        className="w-full py-32 px-8 bg-gradient-to-br from-[#e3fcec] via-white to-[#e8f0fe] relative overflow-hidden"
+      >
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-gradient-to-br from-green-300 to-green-500 rounded-full blur-2xl animate-bounce"></div>
         </div>
-    </section>
-    </div>    
-    );
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Header Section */}
+          <div className="text-center mb-16">
+            <div className="inline-block px-4 py-2 bg-emerald-100 text-emerald-800 rounded-full text-sm font-semibold mb-4 animate-fade-in">
+              ✨ Success Stories
+            </div>
+            <h2 className="text-5xl font-bold bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-6 animate-slide-up">
+              Amazing Transformations
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed animate-slide-up-delay">
+              Witness the incredible before and after results of our dedicated
+              clients who trusted their journey with us
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-blue-500 mx-auto mt-8 rounded-full"></div>
+          </div>
+
+          {/* Swiper Section */}
+          <div className="relative">
+            <Swiper
+              modules={[Navigation, Pagination, Autoplay, EffectCoverflow]}
+              effect="coverflow"
+              grabCursor={true}
+              centeredSlides={true}
+              slidesPerView="auto"
+              coverflowEffect={{
+                rotate: 15,
+                stretch: 0,
+                depth: 300,
+                modifier: 1,
+                slideShadows: true,
+              }}
+              navigation={{
+                nextEl: ".swiper-button-next-custom",
+                prevEl: ".swiper-button-prev-custom",
+              }}
+              pagination={{
+                clickable: true,
+                dynamicBullets: true,
+              }}
+              autoplay={{
+                delay: 4000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
+              breakpoints={{
+                320: {
+                  slidesPerView: 1,
+                  spaceBetween: 20,
+                },
+                640: {
+                  slidesPerView: 1.5,
+                  spaceBetween: 30,
+                },
+                768: {
+                  slidesPerView: 2,
+                  spaceBetween: 40,
+                },
+                1024: {
+                  slidesPerView: 3,
+                  spaceBetween: 50,
+                },
+              }}
+              className="testimonials-swiper pb-16"
+            >
+              {clientImages.map((image, index) => (
+                <SwiperSlide key={index} className="!w-auto">
+                  <div className="group relative p-2">
+                    <div className="relative overflow-hidden rounded-3xl bg-white shadow-2xl transform group-hover:scale-105 transition-all duration-500 ease-out hover:shadow-emerald-200/50">
+                      {/* Gradient border effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                      <div className="absolute inset-1 bg-white rounded-3xl z-10"></div>
+
+                      {/* Image container */}
+                      <div className="relative z-20 p-6">
+                        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100">
+                          <Image
+                            src={image}
+                            alt={`Client ${index + 1} transformation result`}
+                            width={400}
+                            height={400}
+                            className="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110"
+                          />
+
+                          {/* Overlay gradient */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                          {/* Badge */}
+                          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-emerald-600 shadow-lg">
+                            Result #{index + 1}
+                          </div>
+                        </div>
+
+                        {/* Stats overlay */}
+                        <div className="mt-4 text-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                          <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl p-4">
+                            <h3 className="font-bold text-gray-800 mb-2">
+                              Amazing Transformation
+                            </h3>
+                            <div className="flex justify-center space-x-4 text-sm">
+                              <span className="text-emerald-600 font-semibold">
+                                ✓ Achieved Goals
+                              </span>
+                              <span className="text-blue-600 font-semibold">
+                                ✓ Lasting Results
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+
+            {/* Custom Navigation Buttons */}
+            <button className="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white shadow-2xl rounded-full flex items-center justify-center text-emerald-600 hover:bg-emerald-50 hover:shadow-emerald-200/50 transition-all duration-300 group">
+              <svg
+                className="w-6 h-6 transform group-hover:-translate-x-1 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+            <button className="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 bg-white shadow-2xl rounded-full flex items-center justify-center text-emerald-600 hover:bg-emerald-50 hover:shadow-emerald-200/50 transition-all duration-300 group">
+              <svg
+                className="w-6 h-6 transform group-hover:translate-x-1 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <style jsx global>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slide-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.8s ease-out;
+        }
+
+        .animate-slide-up {
+          animation: slide-up 0.8s ease-out 0.2s both;
+        }
+
+        .animate-slide-up-delay {
+          animation: slide-up 0.8s ease-out 0.4s both;
+        }
+
+        .testimonials-swiper .swiper-pagination {
+          bottom: 0 !important;
+        }
+
+        .testimonials-swiper .swiper-pagination-bullet {
+          width: 12px;
+          height: 12px;
+          background: linear-gradient(45deg, #10b981, #3b82f6);
+          opacity: 0.5;
+          transition: all 0.3s ease;
+        }
+
+        .testimonials-swiper .swiper-pagination-bullet-active {
+          opacity: 1;
+          transform: scale(1.2);
+          box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .testimonials-swiper .swiper-slide {
+          transition: all 0.3s ease;
+        }
+
+        .testimonials-swiper .swiper-slide:not(.swiper-slide-active) {
+          opacity: 0.6;
+          transform: scale(0.9);
+        }
+
+        .testimonials-swiper .swiper-slide-active {
+          opacity: 1;
+          transform: scale(1);
+        }
+      `}</style>
+    </div>
+  );
 }

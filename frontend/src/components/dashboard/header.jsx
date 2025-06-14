@@ -58,7 +58,7 @@ const Header = () => {
                             <span className="text-sm">Dashboard</span>
                         </LoadingButton>
                     </Link>
-                    <Link href="/admin/stats">
+                    <Link href="/admin/analytics">
                         <LoadingButton>
                             <span className="text-sm">Analytics</span>
                         </LoadingButton>
