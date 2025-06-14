@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import LoadingButton from '@/components/ui/LoadingButton.jsx'
+import AdminGuard from "@/lib/AdminGuard";
+import TokenCheck from "@/lib/tokenCheck";
 
 export default function StatsPage() {
     const [analytics, setAnalytics] = useState({
@@ -215,217 +217,221 @@ export default function StatsPage() {
     }
 
     return (
-        <div className="p-6 max-w-6xl mx-auto">
-            {/* Header with controls */}
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-800">Real-time Analytics</h1>
+        <>
+            <TokenCheck />
+            <AdminGuard>
+                <div className="p-6 max-w-6xl mx-auto">
+                    <div className="flex justify-between items-center mb-8">
+                        <h1 className="text-3xl font-bold text-gray-800">Real-time Analytics</h1>
 
-                <div className="flex items-center space-x-4">
-                    <div className="text-sm text-gray-600">
-                        Last updated: {formatLastUpdated(lastUpdated)}
+                        <div className="flex items-center space-x-4">
+                            <div className="text-sm text-gray-600">
+                                Last updated: {formatLastUpdated(lastUpdated)}
+                            </div>
+
+                            <LoadingButton
+                                onClick={toggleRealTime}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isRealTimeEnabled
+                                    ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                    }`}
+                            >
+                                {isRealTimeEnabled ? 'Real-time ON' : 'Real-time OFF'}
+                            </LoadingButton>
+
+                            <LoadingButton
+                                onClick={handleRefresh}
+                                disabled={isLoading}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium transition-colors"
+                            >
+                                {isLoading ? 'Refreshing...' : 'Refresh'}
+                            </LoadingButton>
+                            <Link href="/admin">
+                                <LoadingButton>
+                                    <span className="text-sm">Admin Panel</span>
+                                </LoadingButton>
+                            </Link>
+                        </div>
                     </div>
 
-                    <LoadingButton
-                        onClick={toggleRealTime}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isRealTimeEnabled
-                            ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            }`}
-                    >
-                        {isRealTimeEnabled ? 'Real-time ON' : 'Real-time OFF'}
-                    </LoadingButton>
-
-                    <LoadingButton
-                        onClick={handleRefresh}
-                        disabled={isLoading}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium transition-colors"
-                    >
-                        {isLoading ? 'Refreshing...' : 'Refresh'}
-                    </LoadingButton>
-                    <Link href="/admin">
-                        <LoadingButton>
-                            <span className="text-sm">Admin Panel</span>
-                        </LoadingButton>
-                    </Link>
-                </div>
-            </div>
-
-            {/* Error Alert */}
-            {error && (
-                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <div className="flex items-center">
-                        <span className="text-yellow-800 text-sm">
-                            ⚠️ Using mock data - Analytics connection issue: {error}
-                        </span>
-                    </div>
-                </div>
-            )}
-
-            {/* Real-time indicator */}
-            {isRealTimeEnabled && !error && (
-                <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-3"></div>
-                    <span className="text-green-800 text-sm font-medium">
-                        Live data updates every 30 seconds
-                    </span>
-                </div>
-            )}
-
-            {/* Quick Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div className="bg-white p-6 rounded-lg shadow-md border">
-                    <h3 className="text-lg font-semibold text-gray-600 mb-2">Real-time Users</h3>
-                    <p className="text-3xl font-bold text-red-600">{analytics.realTimeUsers}</p>
-                    <p className="text-sm text-gray-500">Right now</p>
-                </div>
-
-                <div className="bg-white p-6 rounded-lg shadow-md border">
-                    <h3 className="text-lg font-semibold text-gray-600 mb-2">Active Users</h3>
-                    <p className="text-3xl font-bold text-blue-600">{analytics.activeUsers}</p>
-                    <p className="text-sm text-gray-500">Last 30 minutes</p>
-                </div>
-
-                <div className="bg-white p-6 rounded-lg shadow-md border">
-                    <h3 className="text-lg font-semibold text-gray-600 mb-2">Page Views</h3>
-                    <p className="text-3xl font-bold text-green-600">{analytics.pageViews}</p>
-                    <p className="text-sm text-gray-500">Last 30 days</p>
-                </div>
-
-                <div className="bg-white p-6 rounded-lg shadow-md border">
-                    <h3 className="text-lg font-semibold text-gray-600 mb-2">Sessions</h3>
-                    <p className="text-3xl font-bold text-purple-600">{analytics.sessions}</p>
-                    <p className="text-sm text-gray-500">Last 30 days</p>
-                </div>
-            </div>
-
-            {/* Additional Stats */}
-            {(analytics.bounceRate || analytics.avgSessionDuration) && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    {analytics.bounceRate && (
-                        <div className="bg-white p-6 rounded-lg shadow-md border">
-                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Bounce Rate</h3>
-                            <p className="text-3xl font-bold text-orange-600">
-                                {(analytics.bounceRate * 100).toFixed(1)}%
-                            </p>
-                            <p className="text-sm text-gray-500">Percentage of single-page sessions</p>
-                        </div>
-                    )}
-
-                    {analytics.avgSessionDuration && (
-                        <div className="bg-white p-6 rounded-lg shadow-md border">
-                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Avg Session Duration</h3>
-                            <p className="text-3xl font-bold text-indigo-600">
-                                {formatDuration(analytics.avgSessionDuration)}
-                            </p>
-                            <p className="text-sm text-gray-500">Average time per session</p>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* Recent Activity Feed */}
-            <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
-                <div className="space-y-3 max-h-64 overflow-y-auto">
-                    {analytics.recentActivity && analytics.recentActivity.length > 0 ? (
-                        analytics.recentActivity.map((activity, index) => (
-                            <div key={activity.id || index} className="flex items-center justify-between py-2 border-b border-gray-100">
-                                <div className="flex items-center">
-                                    <div className={`w-2 h-2 rounded-full mr-3 ${activity.type === 'login' ? 'bg-green-500' :
-                                        activity.type === 'workout' ? 'bg-blue-500' :
-                                            activity.type === 'nutrition' ? 'bg-orange-500' :
-                                                activity.type === 'goal' ? 'bg-purple-500' :
-                                                    activity.type === 'registration' ? 'bg-indigo-500' :
-                                                        activity.type === 'error' ? 'bg-red-500' :
-                                                            'bg-gray-500'
-                                        }`}></div>
-                                    <span className="text-gray-700">{activity.description}</span>
-                                </div>
-                                <span className="text-xs text-gray-500">
-                                    {typeof activity.timestamp === 'string' && activity.timestamp.includes('T')
-                                        ? new Date(activity.timestamp).toLocaleTimeString()
-                                        : activity.timestamp
-                                    }
+                    {/* Error Alert */}
+                    {error && (
+                        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <div className="flex items-center">
+                                <span className="text-yellow-800 text-sm">
+                                    ⚠️ Using mock data - Analytics connection issue: {error}
                                 </span>
                             </div>
-                        ))
-                    ) : (
-                        <p className="text-gray-500 text-center py-4">No recent activity</p>
+                        </div>
                     )}
-                </div>
-            </div>
 
-            {/* Top Pages */}
-            <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">Top Pages</h3>
-                <div className="space-y-3">
-                    {analytics.topPages && analytics.topPages.length > 0 ? (
-                        analytics.topPages.map((page, index) => (
-                            <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
-                                <span className="font-medium text-gray-700">{page.page}</span>
-                                <div className="flex items-center space-x-3">
-                                    <span className="text-blue-600 font-semibold">{page.views} views</span>
-                                    {page.percentage && (
-                                        <span className="text-gray-500 text-sm">({page.percentage}%)</span>
-                                    )}
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-gray-500 text-center py-4">No page data available</p>
+                    {/* Real-time indicator */}
+                    {isRealTimeEnabled && !error && (
+                        <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center">
+                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-3"></div>
+                            <span className="text-green-800 text-sm font-medium">
+                                Live data updates every 30 seconds
+                            </span>
+                        </div>
                     )}
-                </div>
-            </div>
 
-            {/* Traffic Sources */}
-            {analytics.trafficSources && analytics.trafficSources.length > 0 && (
-                <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-4">Traffic Sources</h3>
-                    <div className="space-y-3">
-                        {analytics.trafficSources.map((source, index) => (
-                            <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
-                                <span className="font-medium text-gray-700">{source.source}</span>
-                                <div className="flex items-center space-x-3">
-                                    <span className="text-green-600 font-semibold">{source.visitors} visitors</span>
-                                    <span className="text-gray-500 text-sm">({source.percentage}%)</span>
+                    {/* Quick Stats Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div className="bg-white p-6 rounded-lg shadow-md border">
+                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Real-time Users</h3>
+                            <p className="text-3xl font-bold text-red-600">{analytics.realTimeUsers}</p>
+                            <p className="text-sm text-gray-500">Right now</p>
+                        </div>
+
+                        <div className="bg-white p-6 rounded-lg shadow-md border">
+                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Active Users</h3>
+                            <p className="text-3xl font-bold text-blue-600">{analytics.activeUsers}</p>
+                            <p className="text-sm text-gray-500">Last 30 minutes</p>
+                        </div>
+
+                        <div className="bg-white p-6 rounded-lg shadow-md border">
+                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Page Views</h3>
+                            <p className="text-3xl font-bold text-green-600">{analytics.pageViews}</p>
+                            <p className="text-sm text-gray-500">Last 30 days</p>
+                        </div>
+
+                        <div className="bg-white p-6 rounded-lg shadow-md border">
+                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Sessions</h3>
+                            <p className="text-3xl font-bold text-purple-600">{analytics.sessions}</p>
+                            <p className="text-sm text-gray-500">Last 30 days</p>
+                        </div>
+                    </div>
+
+                    {/* Additional Stats */}
+                    {(analytics.bounceRate || analytics.avgSessionDuration) && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            {analytics.bounceRate && (
+                                <div className="bg-white p-6 rounded-lg shadow-md border">
+                                    <h3 className="text-lg font-semibold text-gray-600 mb-2">Bounce Rate</h3>
+                                    <p className="text-3xl font-bold text-orange-600">
+                                        {(analytics.bounceRate * 100).toFixed(1)}%
+                                    </p>
+                                    <p className="text-sm text-gray-500">Percentage of single-page sessions</p>
                                 </div>
+                            )}
+
+                            {analytics.avgSessionDuration && (
+                                <div className="bg-white p-6 rounded-lg shadow-md border">
+                                    <h3 className="text-lg font-semibold text-gray-600 mb-2">Avg Session Duration</h3>
+                                    <p className="text-3xl font-bold text-indigo-600">
+                                        {formatDuration(analytics.avgSessionDuration)}
+                                    </p>
+                                    <p className="text-sm text-gray-500">Average time per session</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Recent Activity Feed */}
+                    <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
+                        <div className="space-y-3 max-h-64 overflow-y-auto">
+                            {analytics.recentActivity && analytics.recentActivity.length > 0 ? (
+                                analytics.recentActivity.map((activity, index) => (
+                                    <div key={activity.id || index} className="flex items-center justify-between py-2 border-b border-gray-100">
+                                        <div className="flex items-center">
+                                            <div className={`w-2 h-2 rounded-full mr-3 ${activity.type === 'login' ? 'bg-green-500' :
+                                                activity.type === 'workout' ? 'bg-blue-500' :
+                                                    activity.type === 'nutrition' ? 'bg-orange-500' :
+                                                        activity.type === 'goal' ? 'bg-purple-500' :
+                                                            activity.type === 'registration' ? 'bg-indigo-500' :
+                                                                activity.type === 'error' ? 'bg-red-500' :
+                                                                    'bg-gray-500'
+                                                }`}></div>
+                                            <span className="text-gray-700">{activity.description}</span>
+                                        </div>
+                                        <span className="text-xs text-gray-500">
+                                            {typeof activity.timestamp === 'string' && activity.timestamp.includes('T')
+                                                ? new Date(activity.timestamp).toLocaleTimeString()
+                                                : activity.timestamp
+                                            }
+                                        </span>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-gray-500 text-center py-4">No recent activity</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Top Pages */}
+                    <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Top Pages</h3>
+                        <div className="space-y-3">
+                            {analytics.topPages && analytics.topPages.length > 0 ? (
+                                analytics.topPages.map((page, index) => (
+                                    <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
+                                        <span className="font-medium text-gray-700">{page.page}</span>
+                                        <div className="flex items-center space-x-3">
+                                            <span className="text-blue-600 font-semibold">{page.views} views</span>
+                                            {page.percentage && (
+                                                <span className="text-gray-500 text-sm">({page.percentage}%)</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-gray-500 text-center py-4">No page data available</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Traffic Sources */}
+                    {analytics.trafficSources && analytics.trafficSources.length > 0 && (
+                        <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
+                            <h3 className="text-xl font-semibold text-gray-800 mb-4">Traffic Sources</h3>
+                            <div className="space-y-3">
+                                {analytics.trafficSources.map((source, index) => (
+                                    <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
+                                        <span className="font-medium text-gray-700">{source.source}</span>
+                                        <div className="flex items-center space-x-3">
+                                            <span className="text-green-600 font-semibold">{source.visitors} visitors</span>
+                                            <span className="text-gray-500 text-sm">({source.percentage}%)</span>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        </div>
+                    )}
+
+                    {/* External Links */}
+                    <div className="bg-white p-6 rounded-lg shadow-md border">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">External Analytics</h3>
+                        <div className="space-y-3">
+                            <a
+                                href="https://analytics.google.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <span className="font-medium text-blue-800">Google Analytics Dashboard</span>
+                                    <span className="text-blue-600">→</span>
+                                </div>
+                                <p className="text-sm text-blue-600 mt-1">View detailed analytics and reports</p>
+                            </a>
+
+                            <a
+                                href="https://search.google.com/search-console"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <span className="font-medium text-green-800">Google Search Console</span>
+                                    <span className="text-green-600">→</span>
+                                </div>
+                                <p className="text-sm text-green-600 mt-1">Monitor search performance and indexing</p>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            )}
-
-            {/* External Links */}
-            <div className="bg-white p-6 rounded-lg shadow-md border">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">External Analytics</h3>
-                <div className="space-y-3">
-                    <a
-                        href="https://analytics.google.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
-                    >
-                        <div className="flex items-center justify-between">
-                            <span className="font-medium text-blue-800">Google Analytics Dashboard</span>
-                            <span className="text-blue-600">→</span>
-                        </div>
-                        <p className="text-sm text-blue-600 mt-1">View detailed analytics and reports</p>
-                    </a>
-
-                    <a
-                        href="https://search.google.com/search-console"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
-                    >
-                        <div className="flex items-center justify-between">
-                            <span className="font-medium text-green-800">Google Search Console</span>
-                            <span className="text-green-600">→</span>
-                        </div>
-                        <p className="text-sm text-green-600 mt-1">Monitor search performance and indexing</p>
-                    </a>
-                </div>
-            </div>
-        </div>
+            </AdminGuard>
+        </>
     )
 }
