@@ -1,4 +1,5 @@
 import { useState } from "react";
+import emailjs from '@emailjs/browser';
 import {
   Mail,
   Phone,
@@ -36,19 +37,16 @@ export default function Footer() {
     setSubmitStatus("");
 
     try {
-      // EmailJS configuration - replace with your own service ID, template ID, and public key
-      //   const emailjs = await import("https://cdn.emailjs.com/dist/email.min.js");
-
-      //   await emailjs.send(
-      //     "YOUR_SERVICE_ID", // Replace with your EmailJS service ID
-      //     "YOUR_TEMPLATE_ID", // Replace with your EmailJS template ID
-      //     {
-      //       from_name: formData.name,
-      //       from_email: formData.email,
-      //       message: formData.message,
-      //     },
-      //     "YOUR_PUBLIC_KEY" // Replace with your EmailJS public key
-      //   );
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+      );
 
       setSubmitStatus("Message sent successfully!");
       setFormData({ name: "", email: "", message: "" });
