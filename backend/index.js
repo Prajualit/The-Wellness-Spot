@@ -14,3 +14,5 @@ mongoDB()
   console.log("MongoDB Failed to Connect", error)
 })
 
+// console.log('GOOGLE_SERVICE_ACCOUNT_KEY from .env:', process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+

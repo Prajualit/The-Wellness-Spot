@@ -1,6 +1,9 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import queryRoutes from "./routes/query.js";
+import userRouter from "./routes/user.route.js";
+import adminRouter from "./routes/admin.route.js";
 
 const app = express();
 
@@ -16,10 +19,8 @@ app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/temp", express.static("temp"));
 
-import userRouter from "./routes/user.route.js";
-import adminRouter from "./routes/admin.route.js";
-
+app.use('/api', queryRoutes);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/admin", adminRouter);
-
+// console.log(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
 export { app };
