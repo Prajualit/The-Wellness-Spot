@@ -95,7 +95,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     req.cookies.refreshToken || req.body.refreshToken;
 
   if (!incomingRefreshToken) {
-    throw new apiError(401, "unauthorized request");
+    throw new apiError(401, "Unauthorized request");
   }
 
   try {
@@ -105,7 +105,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     );
 
     const user = await User.findById(decodedToken?._id);
-
     if (!user) {
       throw new apiError(401, "Invalid refresh token");
     }
@@ -114,10 +113,18 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new apiError(401, "Refresh token is expired or used");
     }
 
-    const options = { httpOnly: true, secure: false };
-
     const { accessToken, refreshToken: newRefreshToken } =
       await generateAccessAndRefreshTokens(user._id);
+
+    user.refreshToken = newRefreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    const isProduction = process.env.NODE_ENV === "production";
+    const options = {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
+    };
 
     return res
       .status(200)
@@ -131,6 +138,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
+    console.error("Refresh token error:", error);
     throw new apiError(401, error?.message || "Invalid refresh token");
   }
 });
