@@ -14,6 +14,8 @@ app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "http://localhost:3000",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -22,14 +24,13 @@ app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/temp", express.static("temp"));
 
-app.use('/api', queryRoutes);
+app.use("/api", queryRoutes);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api", sendSheetRouter);
 // console.log(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
 
-
-cron.schedule("0 0 * * *", async() => {
+cron.schedule("0 0 * * *", async () => {
   console.log("Cron job executed at", new Date().toLocaleString());
   try {
     await axios.post("http://localhost:5000/api/send-daily-sheet");
