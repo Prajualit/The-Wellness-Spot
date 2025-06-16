@@ -9,6 +9,10 @@ import admin from "../lib/firebaseAdmin.js";
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
+    if (!user) {
+      throw new apiError(404, "User not found");
+    }
+
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
@@ -57,7 +61,15 @@ const loginUser = asyncHandler(async (req, res) => {
   );
   const loggedInUser = await User.findById(user._id).select("-refreshToken");
 
-  const options = { httpOnly: true, secure: false };
+  // Use consistent cookie options for both development and production
+  const isProduction = process.env.NODE_ENV === "production";
+  const options = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "None" : "Lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    path: "/",
+  };
 
   return res
     .status(200)
@@ -76,12 +88,18 @@ const logoutUser = asyncHandler(async (req, res) => {
   if (req.user?._id) {
     await User.findByIdAndUpdate(
       req.user._id,
-      { $set: { refreshToken: undefined } },
+      { $unset: { refreshToken: 1 } }, // Use $unset instead of $set with undefined
       { new: true }
     );
   }
 
-  const options = { httpOnly: true, secure: false };
+  const isProduction = process.env.NODE_ENV === "production";
+  const options = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "None" : "Lax",
+    path: "/",
+  };
 
   res
     .status(200)
@@ -95,10 +113,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     req.cookies.refreshToken || req.body.refreshToken;
 
   if (!incomingRefreshToken) {
-    throw new apiError(401, "Unauthorized request");
+    throw new apiError(401, "Unauthorized request - No refresh token provided");
   }
 
   try {
+    // Verify the refresh token
     const decodedToken = jwt.verify(
       incomingRefreshToken,
       process.env.REFRESH_TOKEN_SECRET
@@ -106,24 +125,26 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const user = await User.findById(decodedToken?._id);
     if (!user) {
-      throw new apiError(401, "Invalid refresh token");
+      throw new apiError(401, "Invalid refresh token - User not found");
     }
 
+    // Check if the refresh token matches the one stored in database
     if (incomingRefreshToken !== user?.refreshToken) {
       throw new apiError(401, "Refresh token is expired or used");
     }
 
+    // Generate new tokens
     const { accessToken, refreshToken: newRefreshToken } =
       await generateAccessAndRefreshTokens(user._id);
 
-    user.refreshToken = newRefreshToken;
-    await user.save({ validateBeforeSave: false });
-
+    // Cookie options
     const isProduction = process.env.NODE_ENV === "production";
     const options = {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? "None" : "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
     };
 
     return res
@@ -134,13 +155,39 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         new apiResponse(
           200,
           { accessToken, refreshToken: newRefreshToken },
-          "Access token refreshed"
+          "Access token refreshed successfully"
         )
       );
   } catch (error) {
     console.error("Refresh token error:", error);
+
+    // Clear cookies if refresh token is invalid
+    const isProduction = process.env.NODE_ENV === "production";
+    const clearOptions = {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
+      path: "/",
+    };
+
+    res.clearCookie("accessToken", clearOptions);
+    res.clearCookie("refreshToken", clearOptions);
+
     throw new apiError(401, error?.message || "Invalid refresh token");
   }
 });
+
+// Additional helper function to validate environment variables
+const validateEnvironment = () => {
+  if (!process.env.REFRESH_TOKEN_SECRET) {
+    throw new Error("REFRESH_TOKEN_SECRET environment variable is not set");
+  }
+  if (!process.env.ACCESS_TOKEN_SECRET) {
+    throw new Error("ACCESS_TOKEN_SECRET environment variable is not set");
+  }
+};
+
+// Call validation on module load
+validateEnvironment();
 
 export { loginUser, logoutUser, refreshAccessToken };
