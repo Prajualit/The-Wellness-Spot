@@ -12,11 +12,11 @@ import { useRouter } from "next/navigation";
 import NextImage from "next/image";
 
 const navItems = [
-  { label: "Home", id: "home" },
-  { label: "Trainer", id: "about" },
-  { label: "Testimonials", id: "testimonials" },
-  { label: "Products", id: "products" },
-  { label: "Contact", id: "footer" },
+  { label: "Home", href: "/" },
+  { label: "Nutrition", href: "/nutrition" },
+  { label: "Testimonials", href: "#testimonials" },
+  { label: "Products", href: "/products" },
+  { label: "Contact", href: "#footer" },
 ];
 
 export default function Navbar() {
@@ -82,14 +82,14 @@ export default function Navbar() {
       <div className="flex items-center justify-center space-x-5">
         <nav className="hidden md:flex gap-6">
           {navItems.map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
+            <Link
+              key={item.label}
+              href={item.href}
               className="text-black transition-all duration-300 hover:text-blue-600 
                    hover:-translate-y-0.5 hover:opacity-80 cursor-pointer"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
         {AuthButton}
@@ -106,14 +106,14 @@ export default function Navbar() {
           <SheetContent side="right" className="w-[250px] p-6">
             <div className="flex flex-col gap-4 mt-8">
               {navItems.map((item) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
+                <Link
+                  key={item.label}
+                  href={item.href}
                   className="text-base font-medium text-muted-foreground hover:text-primary"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
               <div className="mt-4">{AuthButton}</div>
             </div>
