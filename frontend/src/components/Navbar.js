@@ -8,13 +8,13 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import LoadingButton from "@/components/ui/LoadingButton.jsx";
 import axios from "@/lib/axios.js";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import NextImage from "next/image";
 
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Nutrition", href: "/nutrition" },
-  { label: "Testimonials", href: "#testimonials" },
+  { label: "Testimonials", href: "#testimonials", showOnlyOnHome: true },
   { label: "Products", href: "/products" },
   { label: "Contact", href: "#footer" },
 ];
@@ -23,6 +23,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const user = useSelector((state) => state.user.user);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     try {
@@ -34,6 +35,16 @@ export default function Navbar() {
     } catch (error) {
       console.error("Logout failed:", error);
     }
+  };
+
+  // Filter nav items based on current path
+  const getVisibleNavItems = () => {
+    return navItems.filter((item) => {
+      if (item.showOnlyOnHome) {
+        return pathname === "/";
+      }
+      return true;
+    });
   };
 
   const AuthButton = user ? (
@@ -81,7 +92,7 @@ export default function Navbar() {
 
       <div className="flex items-center justify-center space-x-5">
         <nav className="hidden md:flex gap-6">
-          {navItems.map((item) => (
+          {getVisibleNavItems().map((item) => (
             <Link
               key={item.label}
               href={item.href}
@@ -105,7 +116,7 @@ export default function Navbar() {
           </SheetTrigger>
           <SheetContent side="right" className="w-[250px] p-6">
             <div className="flex flex-col gap-4 mt-8">
-              {navItems.map((item) => (
+              {getVisibleNavItems().map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}

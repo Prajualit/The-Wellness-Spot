@@ -20,18 +20,47 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-instance.interceptors.request.use((config) => {
-  const accessToken = getCookie("accessToken");
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
+// Robust cookie reader with error handling
+function getCookie(name) {
+  try {
+    if (typeof document === "undefined") return null;
+    const match = document.cookie.match(
+      new RegExp("(^| )" + name + "=([^;]+)")
+    );
+    return match ? decodeURIComponent(match[2]) : null;
+  } catch (error) {
+    console.warn("Error reading cookie:", error);
+    return null;
   }
-  return config;
-});
+}
+
+instance.interceptors.request.use(
+  (config) => {
+    // Skip adding auth header for login requests
+    if (config.url === "/users/login") {
+      return config;
+    }
+
+    const accessToken = getCookie("accessToken");
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+
+    // Skip refresh logic for login requests
+    if (originalRequest.url === "/users/login") {
+      return Promise.reject(error);
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
@@ -68,7 +97,9 @@ instance.interceptors.response.use(
         }
 
         // Optionally redirect to login page
-        window.location.href = "/login"; // Or your desired page
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
 
         return Promise.reject(refreshErr);
       } finally {
@@ -81,9 +112,3 @@ instance.interceptors.response.use(
 );
 
 export default instance;
-
-// Robust cookie reader
-function getCookie(name) {
-  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-  return match ? decodeURIComponent(match[2]) : null;
-}

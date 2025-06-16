@@ -12,8 +12,8 @@ const Header = () => {
 
     const navLinks = [
         {
-            label: 'Dashboard',
-            href: 'dashboard'
+            label: 'Home',
+            href: ''
         },
         {
             label: 'Workouts',
