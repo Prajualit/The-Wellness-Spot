@@ -16,8 +16,8 @@ const Header = () => {
             href: ''
         },
         {
-            label: 'Workouts',
-            href: 'workouts'
+            label: 'Query',
+            href: 'query'
         },
         {
             label: 'Nutrition',
