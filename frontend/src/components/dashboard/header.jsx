@@ -27,6 +27,10 @@ const Header = () => {
             label: 'Products',
             href: 'products'
         },
+        {
+            label: 'Contact',
+            href: 'dashboard/#footer'
+        }
     ];
 
     const router = useRouter();
@@ -101,7 +105,8 @@ const Header = () => {
                     {navLinks.map((link, index) => (
                         <Link
                             key={index}
-                            className="text-[#101518] text-sm font-medium leading-normal"
+                            className="text-black transition-all duration-300 hover:text-blue-600 
+                   hover:-translate-y-0.5 hover:opacity-80 cursor-pointer"
                             href={`/${link.href}`}
                         >
                             {link.label}
