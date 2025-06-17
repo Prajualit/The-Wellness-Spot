@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios.js";
@@ -24,10 +23,33 @@ function getCookie(name) {
   return match ? decodeURIComponent(match[2]) : null;
 }
 
+function clearAuthCookies() {
+  // Clear all auth-related cookies
+  document.cookie =
+    "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; sameSite=Strict";
+  document.cookie =
+    "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; sameSite=Strict";
+}
+
 export default function TokenCheck() {
   const pathname = usePathname();
   const router = useRouter();
   const isRefreshing = useRef(false);
+
+  const handleLogout = async () => {
+    try {
+      // Try to call logout endpoint, but don't wait for it if it fails
+      await axiosInstance.post("/users/logout");
+      console.log("Logout API called successfully");
+    } catch (logoutErr) {
+      console.error("Logout API failed:", logoutErr);
+      // Continue with client-side logout even if API fails
+    }
+
+    // Clear cookies and redirect regardless of API response
+    clearAuthCookies();
+    router.push("/login");
+  };
 
   useEffect(() => {
     if (pathname === "/login" || pathname === "/") {
@@ -41,24 +63,37 @@ export default function TokenCheck() {
       if (isRefreshing.current) return;
 
       isRefreshing.current = true;
+      console.log("Access token expired/missing, attempting refresh...");
 
       axiosInstance
         .post("/users/refresh-token")
         .then((res) => {
           const newAccessToken = res.data.data.accessToken;
-          console.log("Token refreshed successfully:", newAccessToken);
+          console.log("Token refreshed successfully");
 
-          // Update the cookie
-          document.cookie = `accessToken=${newAccessToken}; path=/; secure; sameSite=Strict`;
+          // Update the cookie with proper expiration
+          document.cookie = `accessToken=${newAccessToken}; path=/; secure; sameSite=Strict; max-age=86400`; // 24 hours
         })
         .catch(async (err) => {
-          console.warn("Refresh token expired or failed. Logging out...");
-          try {
-            await axiosInstance.post("/users/logout");
-          } catch (logoutErr) {
-            console.error("Logout failed:", logoutErr);
+          console.warn(
+            "Refresh token expired or failed:",
+            err.response?.status,
+            err.response?.data
+          );
+
+          // Check if it's specifically a 401/403 (unauthorized) or any other refresh failure
+          if (
+            err.response?.status === 401 ||
+            err.response?.status === 403 ||
+            !err.response
+          ) {
+            console.log("Refresh token is invalid, logging out...");
+            await handleLogout();
+          } else {
+            console.error("Unexpected error during token refresh:", err);
+            // You might want to handle other errors differently
+            await handleLogout();
           }
-          router.push("/login");
         })
         .finally(() => {
           isRefreshing.current = false;

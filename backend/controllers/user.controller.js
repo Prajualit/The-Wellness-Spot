@@ -85,95 +85,98 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-  if (req.user?._id) {
-    await User.findByIdAndUpdate(
-      req.user._id,
-      { $unset: { refreshToken: 1 } }, // Use $unset instead of $set with undefined
-      { new: true }
-    );
-  }
-
-  const isProduction = process.env.NODE_ENV === "production";
-  const options = {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "None" : "Lax",
-    path: "/",
-  };
-
-  res
-    .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
-    .json(new apiResponse(200, {}, "User logged out successfully"));
-});
-
-const refreshAccessToken = asyncHandler(async (req, res) => {
-  const incomingRefreshToken =
-    req.cookies.refreshToken || req.body.refreshToken;
-
-  if (!incomingRefreshToken) {
-    throw new apiError(401, "Unauthorized request - No refresh token provided");
-  }
-
   try {
-    // Verify the refresh token
-    const decodedToken = jwt.verify(
-      incomingRefreshToken,
-      process.env.REFRESH_TOKEN_SECRET
-    );
+    const refreshToken = req.cookies?.refreshToken;
 
-    const user = await User.findById(decodedToken?._id);
-    if (!user) {
-      throw new apiError(401, "Invalid refresh token - User not found");
+    if (refreshToken) {
+      // Try to find and update user, but don't fail if token is invalid
+      try {
+        const decodedToken = jwt.verify(
+          refreshToken,
+          process.env.REFRESH_TOKEN_SECRET
+        );
+        await User.findByIdAndUpdate(
+          decodedToken._id,
+          { $unset: { refreshToken: 1 } },
+          { new: true }
+        );
+      } catch (err) {
+        console.log("Token already expired during logout, proceeding...");
+      }
     }
 
-    // Check if the refresh token matches the one stored in database
-    if (incomingRefreshToken !== user?.refreshToken) {
-      throw new apiError(401, "Refresh token is expired or used");
-    }
-
-    // Generate new tokens
-    const { accessToken, refreshToken: newRefreshToken } =
-      await generateAccessAndRefreshTokens(user._id);
-
-    // Cookie options
-    const isProduction = process.env.NODE_ENV === "production";
     const options = {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "None" : "Lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    };
+
+    return res
+      .status(200)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
+      .json({
+        success: true,
+        message: "User logged out successfully",
+      });
+  } catch (error) {
+    // Even if there's an error, clear cookies and return success
+    const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    };
+
+    return res
+      .status(200)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
+      .json({
+        success: true,
+        message: "User logged out successfully",
+      });
+  }
+});
+
+// In your controller
+// controllers/user.controller.js
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  try {
+    const user = req.user; // Already verified by verifyRefreshToken middleware
+
+    const { accessToken, refreshToken: newRefreshToken } =
+      await user.generateAccessAndRefreshTokens();
+
+    // Update refresh token in database
+    user.refreshToken = newRefreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours for access token
+    };
+
+    const refreshOptions = {
+      ...options,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days for refresh token
     };
 
     return res
       .status(200)
       .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", newRefreshToken, options)
-      .json(
-        new apiResponse(
-          200,
-          { accessToken, refreshToken: newRefreshToken },
-          "Access token refreshed successfully"
-        )
-      );
+      .cookie("refreshToken", newRefreshToken, refreshOptions)
+      .json({
+        success: true,
+        data: {
+          accessToken,
+          refreshToken: newRefreshToken,
+        },
+        message: "Access token refreshed successfully",
+      });
   } catch (error) {
-    console.error("Refresh token error:", error);
-
-    // Clear cookies if refresh token is invalid
-    const isProduction = process.env.NODE_ENV === "production";
-    const clearOptions = {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "None" : "Lax",
-      path: "/",
-    };
-
-    res.clearCookie("accessToken", clearOptions);
-    res.clearCookie("refreshToken", clearOptions);
-
-    throw new apiError(401, error?.message || "Invalid refresh token");
+    throw new apiError(500, "Something went wrong while refreshing token");
   }
 });
 

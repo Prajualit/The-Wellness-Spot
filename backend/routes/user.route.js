@@ -11,6 +11,7 @@ import {
 
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
+import { verifyRefreshToken } from "../middleware/refreshAuth.middleware.js";
 import { Router } from "express";
 
 const router = Router();
@@ -22,6 +23,6 @@ router
   .post(verifyJWT, upload.single("file"), updateAvatar);
 router.route("/add-record").post(verifyJWT, addRecord);
 router.route("/remove-record/:recordId").delete(verifyJWT, removeRecord);
-router.route("/refresh-token").post(refreshAccessToken);
+router.route("/refresh-token").post(verifyRefreshToken, refreshAccessToken);
 
 export default router;
