@@ -2,6 +2,7 @@ import {
   loginUser,
   logoutUser,
   refreshAccessToken,
+  getCurrentUser,
 } from "../controllers/user.controller.js";
 import { updateAvatar } from "../controllers/updateAvatar.controller.js";
 import {
@@ -22,6 +23,7 @@ router
   .route("/update-avatar")
   .post(verifyJWT, upload.single("file"), updateAvatar);
 router.route("/add-record").post(verifyJWT, addRecord);
+router.get("/me", verifyJWT, getCurrentUser);
 router.route("/remove-record/:recordId").delete(verifyJWT, removeRecord);
 router.route("/refresh-token").post(verifyRefreshToken, refreshAccessToken);
 

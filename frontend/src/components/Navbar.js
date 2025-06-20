@@ -10,6 +10,8 @@ import LoadingButton from "@/components/ui/LoadingButton.jsx";
 import axios from "@/lib/axios.js";
 import { useRouter, usePathname } from "next/navigation";
 import NextImage from "next/image";
+import { clearUser } from '@/redux/Slice/userSlice';
+import { useDispatch } from "react-redux";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -25,10 +27,13 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const dispatch = useDispatch();
+
   const handleLogout = async () => {
     try {
       const response = await axios.post("/users/logout");
       if (response.status === 200) {
+        dispatch(clearUser()); 
         console.log("Logout successful");
         router.push("/login");
       }
@@ -62,7 +67,7 @@ export default function Navbar() {
           <NextImage
             width={20}
             height={20}
-            src={user.avatarUrl}
+            src={user?.avatarUrl}
             alt="Profile"
             className="w-full h-full rounded-full object-cover"
           />

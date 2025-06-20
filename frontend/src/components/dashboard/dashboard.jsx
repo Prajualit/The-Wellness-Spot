@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import Header from "@/components/dashboard/header.jsx";
 import Table from "@/components/dashboard/table.jsx";
 import UserCircleSolidIcon from '@/components/svg/UserCircleSolidIcon';
@@ -12,7 +12,7 @@ export default function Dashboard() {
   const user = useSelector((state) => state.user.user);
   console.log("User in Dashboard:", user);
 
-  const firstRecord = user.records?.[0];
+  const firstRecord = user?.records?.[0];
 
   return (
     <div
@@ -34,11 +34,11 @@ export default function Dashboard() {
                   <div
                     className="flex items-center justify-center w-32 h-32 rounded-full bg-[#eaeef1]"
                   >
-                    {user.avatarUrl ? (
+                    {user?.avatarUrl ? (
                       <NextImage
                         width={98}
                         height={98}
-                        src={user.avatarUrl}
+                        src={user?.avatarUrl}
                         alt="Profile"
                         className="w-full h-full rounded-full object-cover"
                       />

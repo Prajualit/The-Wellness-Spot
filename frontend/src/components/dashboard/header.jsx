@@ -2,11 +2,12 @@ import React from 'react'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import UserCircleSolidIcon from '@/components/svg/UserCircleSolidIcon';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import NextImage from 'next/image';
 import LoadingButton from '../ui/LoadingButton.jsx';
 import axios from '@/lib/axios.js';
 import { useRouter } from "next/navigation";
+import { clearUser } from '@/redux/Slice/userSlice';
 
 const Header = () => {
 
@@ -34,6 +35,7 @@ const Header = () => {
     ];
 
     const router = useRouter();
+    const dispatch = useDispatch();
     const pathname = usePathname();
     const user = useSelector((state) => state.user.user);
 
@@ -41,6 +43,7 @@ const Header = () => {
         try {
             const response = await axios.post('/users/logout');
             if (response.status === 200) {
+                dispatch(clearUser()); // Clear user from redux store
                 console.log("Logout successful");
                 router.push('/login');
             }
@@ -50,7 +53,7 @@ const Header = () => {
     }
 
     const AdminPanel = () => {
-        if (!user.isAdmin) {
+        if (!user?.isAdmin) {
             return null;
         }
 
@@ -122,11 +125,11 @@ const Header = () => {
                 <div
                     className="flex items-center justify-center w-10 h-10 rounded-full bg-[#eaeef1]"
                 >
-                    {user.avatarUrl ? (
+                    {user?.avatarUrl ? (
                         <NextImage
                             width={20}
                             height={20}
-                            src={user.avatarUrl}
+                            src={user?.avatarUrl}
                             alt="Profile"
                             className="w-full h-full rounded-full object-cover"
                         />

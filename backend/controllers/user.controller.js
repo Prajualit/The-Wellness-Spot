@@ -115,10 +115,7 @@ const logoutUser = asyncHandler(async (req, res) => {
       .status(200)
       .clearCookie("accessToken", options)
       .clearCookie("refreshToken", options)
-      .json({
-        success: true,
-        message: "User logged out successfully",
-      });
+      .json(new apiResponse(200, null, "User logged out successfully"));
   } catch (error) {
     // Even if there's an error, clear cookies and return success
     const options = {
@@ -167,14 +164,13 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .status(200)
       .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", newRefreshToken, refreshOptions)
-      .json({
-        success: true,
-        data: {
-          accessToken,
-          refreshToken: newRefreshToken,
-        },
-        message: "Access token refreshed successfully",
-      });
+      .json(
+        new apiResponse(
+          200,
+          { accessToken, refreshToken: newRefreshToken },
+          "Access token refreshed successfully"
+        )
+      );
   } catch (error) {
     throw new apiError(500, "Something went wrong while refreshing token");
   }
@@ -193,4 +189,21 @@ const validateEnvironment = () => {
 // Call validation on module load
 validateEnvironment();
 
-export { loginUser, logoutUser, refreshAccessToken };
+// ...existing imports...
+
+const getCurrentUser = asyncHandler(async (req, res) => {
+  // req.user should be set by your auth middleware
+  if (!req.user) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Not authenticated" });
+  }
+  res
+    .status(200)
+    .json(
+      new apiResponse(200, req.user, "Current user retrieved successfully")
+    );
+});
+
+// ...existing exports...
+export { loginUser, logoutUser, refreshAccessToken, getCurrentUser };

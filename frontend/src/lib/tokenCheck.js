@@ -57,50 +57,22 @@ export default function TokenCheck() {
       return;
     }
 
-    const accessToken = getCookie("accessToken");
-
-    if (!accessToken || isTokenExpired(accessToken)) {
-      if (isRefreshing.current) return;
-
-      isRefreshing.current = true;
-      console.log("Access token expired/missing, attempting refresh...");
-
-      axiosInstance
-        .post("/users/refresh-token")
-        .then((res) => {
-          const newAccessToken = res.data.data.accessToken;
-          console.log("Token refreshed successfully");
-
-          // Update the cookie with proper expiration
-          document.cookie = `accessToken=${newAccessToken}; path=/; secure; sameSite=Strict; max-age=86400`; // 24 hours
-        })
-        .catch(async (err) => {
-          console.warn(
-            "Refresh token expired or failed:",
-            err.response?.status,
-            err.response?.data
-          );
-
-          // Check if it's specifically a 401/403 (unauthorized) or any other refresh failure
-          if (
-            err.response?.status === 401 ||
-            err.response?.status === 403 ||
-            !err.response
-          ) {
-            console.log("Refresh token is invalid, logging out...");
-            await handleLogout();
-          } else {
-            console.error("Unexpected error during token refresh:", err);
-            // You might want to handle other errors differently
-            await handleLogout();
-          }
-        })
-        .finally(() => {
-          isRefreshing.current = false;
-        });
-    } else {
-      console.log("Access token is still valid.");
-    }
+    // Check authentication by calling a protected endpoint
+    axiosInstance
+      .get("/users/me") // Change to your actual user info endpoint if different
+      .then((res) => {
+        // User is authenticated, do nothing
+        localStorage.setItem("debug_authCheck", "success");
+      })
+      .catch(async (err) => {
+        // Not authenticated, redirect to login
+        localStorage.setItem("debug_authCheck", JSON.stringify({
+          status: err.response?.status,
+          data: err.response?.data,
+          message: err.message,
+        }));
+        await handleLogout();
+      });
   }, [pathname, router]);
 
   return null;

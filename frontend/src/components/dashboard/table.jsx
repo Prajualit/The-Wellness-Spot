@@ -40,7 +40,7 @@ const Table = () => {
                 </tr>
             </thead>
             <tbody>
-                {user.records.length === 0 ? (
+                {user?.records.length === 0 ? (
                     <tr className="border-t border-t-[#d4dde2]">
                         <td
                             colSpan={6}
@@ -50,7 +50,7 @@ const Table = () => {
                         </td>
                     </tr>
                 ) : (
-                    user.records.map((item) => {
+                    user?.records.map((item) => {
                         const itemList = [item?.createdAt
                             ? new Date(item.createdAt).toLocaleDateString('en-GB', {
                                 day: 'numeric',
