@@ -67,7 +67,7 @@ const loginUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? "None" : "Lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 10 * 24 * 60 * 60 * 1000, // 7 days
     path: "/",
   };
 
@@ -135,16 +135,13 @@ const logoutUser = asyncHandler(async (req, res) => {
   }
 });
 
-// In your controller
-// controllers/user.controller.js
 const refreshAccessToken = asyncHandler(async (req, res) => {
   try {
-    const user = req.user; // Already verified by verifyRefreshToken middleware
+    const user = req.user;
 
     const { accessToken, refreshToken: newRefreshToken } =
       await user.generateAccessAndRefreshTokens();
 
-    // Update refresh token in database
     user.refreshToken = newRefreshToken;
     await user.save({ validateBeforeSave: false });
 
@@ -152,12 +149,12 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours for access token
+      maxAge: 3 * 24 * 60 * 60 * 1000,
     };
 
     const refreshOptions = {
       ...options,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days for refresh token
+      maxAge: 10 * 24 * 60 * 60 * 1000, 
     };
 
     return res
@@ -176,23 +173,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-// Additional helper function to validate environment variables
-const validateEnvironment = () => {
-  if (!process.env.REFRESH_TOKEN_SECRET) {
-    throw new Error("REFRESH_TOKEN_SECRET environment variable is not set");
-  }
-  if (!process.env.ACCESS_TOKEN_SECRET) {
-    throw new Error("ACCESS_TOKEN_SECRET environment variable is not set");
-  }
-};
-
-// Call validation on module load
-validateEnvironment();
-
-// ...existing imports...
-
 const getCurrentUser = asyncHandler(async (req, res) => {
-  // req.user should be set by your auth middleware
   if (!req.user) {
     return res
       .status(401)
@@ -205,5 +186,4 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     );
 });
 
-// ...existing exports...
 export { loginUser, logoutUser, refreshAccessToken, getCurrentUser };
