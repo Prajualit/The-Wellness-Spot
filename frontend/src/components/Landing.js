@@ -7,7 +7,7 @@ export default function Landing() {
     <div>
       <main
         id="home"
-        className="relative bg-gradient-to-br from-[#e3fcec] via-white to-[#e8f0fe] flex flex-col lg:flex-row items-center justify-between border px-12 py-20 lg:py-32 w-full space-x-20"
+        className="relative bg-gradient-to-br from-[#e3fcec] via-white to-[#e8f0fe] flex flex-col lg:flex-row items-center justify-between px-12 py-20 lg:py-32 w-full space-x-20"
       >
         <div
           className="flex-1 flex flex-col gap-7 "
