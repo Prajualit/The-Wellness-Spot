@@ -5,7 +5,10 @@ import Link from "next/link";
 export default function About() {
   return (
     <div>
-      <section id="about" className="w-full py-24 px-8 bg-white">
+      <section
+        id="about"
+        className="w-full py-32 px-8 bg-gradient-to-tr from-[#e3fcec] via-white to-[#e8f0fe] relative overflow-hiddene"
+      >
         <div className="max-w-6xl mx-auto flex  flex-col md:flex-row items-center gap-12">
           <div
             className="flex-1 flex items-center justify-center"
@@ -92,9 +95,7 @@ export default function About() {
               </li>
             </ul>
             <div className="flex gap-4 text-black mt-2">
-              <Link
-                href=""
-              >
+              <Link href="">
                 <span className="text-primary hover:underline font-semibold flex items-center gap-1 cursor-pointer">
                   Instagram
                 </span>

@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 import Landing from "@/components/Landing";
 import About from "@/components/about";
 import Testimonials from "@/components/testimonials";
-import Product from "@/components/product";
+import Product from "@/components/Families";
 import Footer from "@/components/footer";
 import { useSelector } from "react-redux";
 
