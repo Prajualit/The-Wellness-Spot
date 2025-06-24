@@ -19,6 +19,7 @@ export default function LoginPage() {
     const [phone, setPhone] = useState("");
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
+    const [verifyLoading, setVerifyLoading] = useState(false)
     const [error, setError] = useState("");
     const [confirmationResult, setConfirmationResult] = useState(null);
 
@@ -110,7 +111,7 @@ export default function LoginPage() {
                 return;
             }
 
-            setLoading(true);
+            setVerifyLoading(true);
 
             console.log("Verifying OTP:", trimmedOTP);
             const result = await confirmOTP(confirmationResult, trimmedOTP);
@@ -159,15 +160,8 @@ export default function LoginPage() {
             }
 
         } finally {
-            setLoading(false);
+            setVerifyLoading(false);
         }
-    };
-
-    const resendOTP = async () => {
-        setError("");
-        setOtp("");
-        setIsOtpSent(false);
-        setConfirmationResult(null);
     };
 
     return (
@@ -278,16 +272,7 @@ export default function LoginPage() {
                                     type="submit"
                                     disabled={loading}
                                 >
-                                    {loading ? "Verifying..." : "Verify OTP"}
-                                </Button>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className="w-full"
-                                    onClick={resendOTP}
-                                    disabled={loading}
-                                >
-                                    Resend OTP
+                                    {verifyLoading ? "Verifying..." : "Verify OTP"}
                                 </Button>
                             </form>
                         </>
