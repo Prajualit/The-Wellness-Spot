@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/Slice/userSlice.js";
 
+
 export default function LoginPage() {
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [name, setName] = useState("");
@@ -170,8 +171,21 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-            <Card className="w-full max-w-md shadow-xl">
+        <div
+            className="min-h-screen flex items-center justify-center p-4 relative"
+            style={{
+                backgroundImage: 'url(/download.webp)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'left',
+                backgroundRepeat: 'repeat',
+                position: 'relative',
+            }}
+        >
+            {/* Background overlay for better contrast */}
+            <div className="absolute inset-0 bg-blue-900/40"></div>
+
+            {/* Content */}
+            <Card className="w-full max-w-md shadow-xl relative z-10">
                 <CardHeader>
                     <CardTitle className="text-center text-2xl">
                         Login Your Account
