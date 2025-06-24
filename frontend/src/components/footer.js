@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import emailjs from '@emailjs/browser';
+import Image from "next/image";
+import Wellnesslogo2 from "../app/assets/Wellnesslogo2.png";
 import {
   Mail,
   Phone,
@@ -67,12 +69,8 @@ export default function Footer() {
             <div className="lg:col-span-7 space-y-8">
               <div className="space-y-4">
                 <div className="flex items-center gap-3 group">
-                  <div className="p-2 bg-gradient-to-r from-neutral-200 to-neutral-700 rounded-xl group-hover:from-neutral-700 group-hover:to-neutral-200 transition-all duration-300">
-                    <Dumbbell className="w-6 h-6 text-white" />
-                  </div>
-                  <span className="font-bold text-3xl bg-gradient-to-r from-neutral-200 to-neutral-500 bg-clip-text text-transparent">
-                    FitPro Trainer
-                  </span>
+                  
+                  <Image src={Wellnesslogo2} width={500} alt="logo"></Image>
                 </div>
                 <p className="text-gray-300 text-lg leading-relaxed">
                   Transform your fitness journey with expert guidance,

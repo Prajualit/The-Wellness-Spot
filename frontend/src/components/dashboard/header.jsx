@@ -103,7 +103,7 @@ const Header = () => {
                     {navLinks.map((link, index) => (
                         <Link
                             key={index}
-                            className="text-black transition-all duration-300 hover:text-[#435c30] 
+                            className="text-black transition-all duration-300 hover:text-green-800 
                    hover:-translate-y-0.5 hover:opacity-80 cursor-pointer"
                             href={`/${link.href}`}
                         >
