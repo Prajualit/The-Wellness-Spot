@@ -94,7 +94,7 @@ const UpdateAvatar = () => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button className="cursor-pointer bg-[#eaeef1] text-[#101518] hover:bg-[#435c30] hover:text-white duration-300 flex items-center justify-center overflow-hidden rounded-xl h-10 px-4 min-w-[84px] max-w-[480px]">
+                <Button className="cursor-pointer bg-[#eaeef1] text-[#101518] hover:bg-green-600 hover:text-white duration-300 flex items-center justify-center overflow-hidden rounded-xl h-10 px-4 min-w-[84px] max-w-[480px]">
                     <span className="truncate">Change Profile Photo</span>
                 </Button>
             </DialogTrigger>
