@@ -7,7 +7,7 @@ export default function LoadingButton({
     return (
         <Button
             onClick={onClick}
-            className="w-fit cursor-pointer border rounded-[7px] hover:bg-white  hover:text-black bg-black text-white duration-300"
+            className="w-fit cursor-pointer border rounded-[7px] hover:bg-white  hover:text-black bg-[#435c30] text-white duration-300"
             type="submit"
             disabled={pending}
         >

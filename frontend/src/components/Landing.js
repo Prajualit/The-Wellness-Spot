@@ -1,6 +1,7 @@
 import Next from "next";
 import Image from "next/image";
 import trainer from "../app/assets/trainer.png";
+import homeimage from "../app/assets/homeimage.png";
 
 export default function Landing() {
   return (
@@ -56,33 +57,12 @@ export default function Landing() {
         >
           <div className="relative">
             <Image
-              className="rounded-2xl w-[350px] h-[420px] object-cover shadow-xl border-4 border-white"
-              src={trainer}
+              className="rounded-2xl  object-cover shadow-xl border-4 border-white"
+              src={homeimage}
+              height={350}
               alt="athletic fitness trainer male posing gym, motivational, high contrast, professional, editorial, dribbble style"
             ></Image>
-            <div className="absolute bottom-4 right-4 bg-white/90 px-4 py-2 rounded-lg shadow-md flex items-center gap-2">
-              <i className="text-yellow-400" data-fa-i2svg="">
-                <svg
-                  className="svg-inline--fa fa-bolt"
-                  aria-hidden="true"
-                  focusable="false"
-                  data-prefix="fas"
-                  data-icon="bolt"
-                  role="img"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                  data-fa-i2svg=""
-                >
-                  <path
-                    fill="currentColor"
-                    d="M349.4 44.6c5.9-13.7 1.5-29.7-10.6-38.5s-28.6-8-39.9 1.8l-256 224c-10 8.8-13.6 22.9-8.9 35.3S50.7 288 64 288H175.5L98.6 467.4c-5.9 13.7-1.5 29.7 10.6 38.5s28.6 8 39.9-1.8l256-224c10-8.8 13.6-22.9 8.9-35.3s-16.6-20.7-30-20.7H272.5L349.4 44.6z"
-                  ></path>
-                </svg>
-              </i>
-              <span className="text-sm font-semibold text-gray-700">
-                Certified Personal Trainer
-              </span>
-            </div>
+            
           </div>
         </div>
       </main>

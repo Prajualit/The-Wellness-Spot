@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "FitTrack - Your Fitness Companion",
+  title: "The Wellness Spot",
   description: "Track your workouts, nutrition, and fitness goals",
 };
 

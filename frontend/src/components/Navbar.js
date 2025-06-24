@@ -12,6 +12,8 @@ import { useRouter, usePathname } from "next/navigation";
 import NextImage from "next/image";
 import { clearUser } from '@/redux/Slice/userSlice';
 import { useDispatch } from "react-redux";
+import Wellnesslogo2 from "../app/assets/Wellnesslogo2.png";
+import Image from "next/image";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -89,10 +91,10 @@ export default function Navbar() {
         href="/"
         className="flex items-center gap-3 hover:opacity-80 transition-opacity"
       >
-        <DumbbellIcon />
-        <span className="font-black text-2xl tracking-tight text-gray-900">
-          FitPro Trainer
-        </span>
+        <Image
+          src={Wellnesslogo2} height={45} alt="Logo" ></Image>
+        
+        
       </Link>
 
       <div className="flex items-center justify-center space-x-5">
@@ -101,7 +103,7 @@ export default function Navbar() {
             <Link
               key={item.label}
               href={item.href}
-              className="text-black transition-all duration-300 hover:text-blue-600 
+              className="text-black transition-all duration-300 hover:text-[#435c30]
                    hover:-translate-y-0.5 hover:opacity-80 cursor-pointer"
             >
               {item.label}
@@ -137,20 +139,6 @@ export default function Navbar() {
         </Sheet>
       </div>
     </header>
-  );
-}
-
-function DumbbellIcon() {
-  return (
-    <svg
-      className="w-6 h-6 text-primary"
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 640 512"
-      fill="currentColor"
-    >
-      <path d="M96 64c0-17.7 14.3-32 32-32h32c17.7 0 32 14.3 32 32V224v64V448c0 17.7-14.3 32-32 32H128c-17.7 0-32-14.3-32-32V384H64c-17.7 0-32-14.3-32-32V288c-17.7 0-32-14.3-32-32s14.3-32 32-32V160c0-17.7 14.3-32 32-32H96V64zm448 0v64h32c17.7 0 32 14.3 32 32v64c17.7 0 32 14.3 32 32s-14.3 32-32 32v64c0 17.7-14.3 32-32 32H544v64c0 17.7-14.3 32-32 32H480c-17.7 0-32-14.3-32-32V288 224 64c0-17.7 14.3-32 32-32h32c17.7 0 32 14.3 32 32zM416 224v64H224V224H416z" />
-    </svg>
   );
 }
 

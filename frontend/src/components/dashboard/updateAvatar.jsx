@@ -94,7 +94,7 @@ const UpdateAvatar = () => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button className="cursor-pointer bg-[#eaeef1] text-[#101518] hover:bg-black hover:text-white duration-300 flex items-center justify-center overflow-hidden rounded-xl h-10 px-4 min-w-[84px] max-w-[480px]">
+                <Button className="cursor-pointer bg-[#eaeef1] text-[#101518] hover:bg-[#435c30] hover:text-white duration-300 flex items-center justify-center overflow-hidden rounded-xl h-10 px-4 min-w-[84px] max-w-[480px]">
                     <span className="truncate">Change Profile Photo</span>
                 </Button>
             </DialogTrigger>
@@ -123,7 +123,7 @@ const UpdateAvatar = () => {
                         <Button
                             variant="outline"
                             onClick={() => inputRef.current?.click()}
-                            className="rounded-[8px] hover:bg-black hover:text-white text-black duration-300"
+                            className="rounded-[8px] hover:bg-[#435c30] hover:text-white text-black duration-300"
                         >
                             {file ? "Change File" : "Select from Computer"}
                         </Button>
@@ -142,7 +142,7 @@ const UpdateAvatar = () => {
                         )}
 
                         <Button
-                            className="mt-2 bg-black text-white rounded-[8px] hover:bg-neutral-800"
+                            className="mt-2 bg-[#435c30] text-white rounded-[8px] hover:bg-neutral-800"
                             onClick={handleSubmitFile}
                             disabled={!file}
                         >

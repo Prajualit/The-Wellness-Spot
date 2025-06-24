@@ -106,7 +106,7 @@ export default function ProductsPage() {
     <div className="min-h-screen bg-gray-50">
         <Navbar/>
       {/* Hero Section */}
-      <div className="relative h-64 md:h-96 bg-blue-700 flex items-center justify-center">
+      <div className="relative h-64 md:h-96 bg-green-700 flex items-center justify-center">
         <img
           src="/images/hero-products.jpg"
           alt="Health Products"
@@ -115,7 +115,7 @@ export default function ProductsPage() {
         <div className="relative z-10 text-center px-4">
           <h1 className="text-3xl md:text-5xl font-bold text-white">Empower Your Health Journey</h1>
           <p className="mt-4 text-xl text-white">Premium Products & Services Tailored for You</p>
-          <button className="mt-6 bg-white text-blue-700 px-6 py-2 rounded-lg font-medium hover:bg-blue-100 transition">
+          <button className="mt-6 bg-white text-green-700 px-6 py-2 rounded-lg font-medium hover:bg-green-100 transition">
             Explore Our Offerings
           </button>
         </div>
@@ -139,18 +139,16 @@ export default function ProductsPage() {
               </div>
               <div className="p-6">
                 <div className="flex items-center mb-2">
-                  <span className="text-blue-600 mr-2">{product.icon}</span>
+                  <span className="text-green-600 mr-2">{product.icon}</span>
                   <h3 className="text-xl font-bold">{product.title}</h3>
                 </div>
                 <p className="text-gray-600 mb-3">{product.description}</p>
                 <div className="flex items-center mb-4">
-                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">
+                  <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-sm">
                     {product.highlight}
                   </span>
                 </div>
-                <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
-                  {product.action}
-                </button>
+                
               </div>
             </motion.div>
           ))}
@@ -163,21 +161,21 @@ export default function ProductsPage() {
           <h2 className="text-2xl font-bold text-center mb-8">Why Choose Us?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-sm flex items-start">
-              <FaMoneyBillWave className="text-blue-600 text-2xl mr-4" />
+              <FaMoneyBillWave className="text-green-600 text-2xl mr-4" />
               <div>
                 <h3 className="font-bold">Money Back Guarantee</h3>
                 <p className="text-gray-600">Not satisfied? Get your money back, no questions asked.</p>
               </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm flex items-start">
-              <FaUserAlt className="text-blue-600 text-2xl mr-4" />
+              <FaUserAlt className="text-green-600 text-2xl mr-4" />
               <div>
                 <h3 className="font-bold">2 Special Coaches</h3>
                 <p className="text-gray-600">Expert guidance from our dedicated coaches.</p>
               </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm flex items-start">
-              <FaCalendarAlt className="text-blue-600 text-2xl mr-4" />
+              <FaCalendarAlt className="text-green-600 text-2xl mr-4" />
               <div>
                 <h3 className="font-bold">4 Times One-to-One Consultation</h3>
                 <p className="text-gray-600">Ongoing support with regular check-ins.</p>
