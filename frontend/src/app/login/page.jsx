@@ -239,7 +239,7 @@ export default function LoginPage() {
                                     </div>
                                 </div>
                                 <Button
-                                    className="w-full"
+                                    className="w-full cursor-pointer"
                                     type="submit"
                                     disabled={isOtpSent || loading}
                                 >

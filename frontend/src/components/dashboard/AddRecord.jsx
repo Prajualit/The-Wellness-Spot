@@ -57,7 +57,7 @@ const AddRecord = () => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button className="cursor-pointer bg-[#eaeef1] text-[#101518] hover:bg-green-600 hover:text-white duration-300 h-10 rounded-xl px-4 ">
+                <Button className="cursor-pointer bg-[#eaeef1] text-[#101518] hover:bg-green-800 hover:text-white duration-300 h-10 rounded-xl px-4 ">
                     <span className="text-sm">
                         Add Record
                     </span>

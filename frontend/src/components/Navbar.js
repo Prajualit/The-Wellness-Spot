@@ -18,7 +18,7 @@ import Image from "next/image";
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Nutrition", href: "/nutrition" },
-  { label: "Query", href: "/query", showOnlyOnHome: true },
+  { label: "Query", href: "/query" },
   { label: "Products", href: "/products" },
   { label: "Contact", href: "#footer" },
 ];

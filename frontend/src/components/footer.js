@@ -63,7 +63,7 @@ export default function Footer() {
 
   return (
     <div id="footer" className="relative">
-      <footer className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-hidden">
+      <footer className="relative bg-gradient-to-br from-neutral-900 via-green-950 to-neutral-900 text-white overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-8 py-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
             <div className="lg:col-span-7 space-y-8">
@@ -188,9 +188,8 @@ export default function Footer() {
                   <button
                     onClick={handleSubmit}
                     disabled={isSubmitting}
-                    className="w-full relative overflow-hidden px-8 py-4 bg-gradient-to-r bg-white text-black rounded-xl font-semibold transition-all disabled:bg-neutral-600 disabled:text-white hover:text-white hover:bg-black duration-300 transform hover:scale-105 hover:shadow-2xl disabled:scale-100 disabled:shadow-none group"
+                    className="w-full relative overflow-hidden px-8 py-4 bg-gradient-to-r bg-white text-black rounded-xl font-semibold transition-all disabled:bg-neutral-600 disabled:text-white hover:text-white cursor-pointer hover:bg-green-800 duration-300 transform hover:scale-105 hover:shadow-2xl disabled:scale-100 disabled:shadow-none group"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r hover:bg-black opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="relative flex items-center justify-center gap-3">
                       {isSubmitting ? (
                         <>

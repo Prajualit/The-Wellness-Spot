@@ -198,7 +198,7 @@ export default function StatsPage() {
         return (
             <div className="p-6 max-w-6xl mx-auto">
                 <div className="flex items-center justify-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-4 border-green-700"></div>
                     <span className="ml-3 text-gray-600">Loading analytics data...</span>
                 </div>
                 {error && (
@@ -242,9 +242,9 @@ export default function StatsPage() {
                             <LoadingButton
                                 onClick={handleRefresh}
                                 disabled={isLoading}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium transition-colors"
+                                className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 disabled:opacity-50 text-sm font-medium transition-colors"
                             >
-                                {isLoading ? 'Refreshing...' : 'Refresh'}
+                                {isLoading ? 'Refreshing...' : 'Refresh'}   
                             </LoadingButton>
                             <Link href="/admin">
                                 <LoadingButton>
@@ -368,7 +368,7 @@ export default function StatsPage() {
                                     <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
                                         <span className="font-medium text-gray-700">{page.page}</span>
                                         <div className="flex items-center space-x-3">
-                                            <span className="text-blue-600 font-semibold">{page.views} views</span>
+                                            <span className="text-green-800 font-semibold">{page.views} views</span>
                                             {page.percentage && (
                                                 <span className="text-gray-500 text-sm">({page.percentage}%)</span>
                                             )}
