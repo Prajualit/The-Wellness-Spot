@@ -12,22 +12,27 @@ import banner from '../../app/assets/banner.jpg';
 export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-        <Navbar/>
+      <Navbar />
       {/* Hero Section */}
-      <div className="relative mt-16 h-64 md:h-96 bg-green-700 flex items-center justify-center">
-        <Image
-          src={banner}
-          alt="Health Products"
-          className="absolute w-full h-full  object-fill opacity-80"
-        />
-        <div className="relative z-10 text-center px-4">
+      <div className="relative h-64 md:h-84 flex items-center justify-center overflow-hidden">
+        {/* Blurred background image */}
+        <div
+          style={{
+            backgroundImage: `url(${"/download.webp"})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+          className="absolute inset-0 filter blur-sm scale-110"
+        ></div>
+
+        {/* Optional dark overlay for better text contrast */}
+        <div className="absolute inset-0 bg-black/30"></div>
+
+        {/* Content */}
+        <div className="relative mt-[5%] z-10 h-full text-center flex flex-col items-center justify-center">
           <h1 className="text-3xl md:text-5xl font-bold text-white">Empower Your Health Journey</h1>
-          <p className="mt-4 text-xl text-white">Premium Products & Services Tailored for You</p>
-          <Link href='#services' scroll={true}>
-            <button className="mt-6 bg-white text-green-700 px-6 py-2 rounded-lg font-medium hover:bg-green-100 transition">
-              Explore Our Offerings below
-            </button>
-          </Link>
+          <p className="text-xl mt-4 text-white">Premium Products & Services Tailored for You</p>
         </div>
       </div>
 
@@ -65,7 +70,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Footer */}
-      <Footer/>
+      <Footer />
     </div>
   );
 }

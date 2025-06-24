@@ -6,7 +6,7 @@ import { FaHeart, FaAppleAlt, FaChild, FaRunning, FaWeight, FaBalanceScale, FaMa
 import { FaWeightScale } from "react-icons/fa6";
 import { GiWeightLiftingUp, GiWeightScale, } from "react-icons/gi";
 import { IoIosBody } from "react-icons/io";
-import { AiFillSkin, AiOutlineSkin  } from "react-icons/ai";
+import { AiFillSkin, AiOutlineSkin } from "react-icons/ai";
 import yoga1 from '../../app/assets/yoga1.jpg';
 import yoga2 from '../../app/assets/yoga2.jpg';
 import yoga3 from '../../app/assets/yoga3.jpg';
@@ -14,7 +14,7 @@ import weightloss from '../../app/assets/weightloss.jpg';
 import weightgain from '../../app/assets/weightgain.jpg';
 import weightmaintainence from '../../app/assets/weightmaintainence.jpg';
 import jointhealth from '../../app/assets/jointhealth.jpg';
-import hearthealth from '../../app/assets/hearthealth.jpg'; 
+import hearthealth from '../../app/assets/hearthealth.jpg';
 import innerskin from '../../app/assets/innerskin.jpg';
 import outerskin from '../../app/assets/outerskin.jpg';
 import womenhealth from '../../app/assets/womenhealth.jpg';
@@ -23,6 +23,11 @@ import childrencare from '../../app/assets/childrencare.jpg';
 import sportsnutri from '../../app/assets/sportsnutri.jpg';
 import Footer from '../footer';
 import Navbar from '../Navbar';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 export default function HealthPage() {
   const [activeTab, setActiveTab] = useState('weight-loss');
@@ -67,24 +72,100 @@ export default function HealthPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <Navbar/>
-      
+      <Navbar />
 
-      {/* Hero Section */}
-      <div className="py-8 px-4 mt-16"> 
+      <div className="relative h-64 md:h-84 flex items-center justify-center overflow-hidden">
+        {/* Blurred background image */}
+        <div
+          style={{
+            backgroundImage: `url(${"/homeimage.png"})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+          className="absolute inset-0 filter blur-sm scale-110"
+        ></div>
+
+        {/* Optional dark overlay for better text contrast */}
+        <div className="absolute inset-0 bg-black/30"></div>
+
+        {/* Content */}
+        <div className="relative mt-[5%] z-10 h-full text-center flex flex-col items-center justify-center">
+          <h1 className="text-3xl md:text-[42px] font-bold text-white">Your Complete Guide to Health & Well-being</h1>
+          <p className="text-xl mt-4 text-white">
+            Explore our comprehensive resources for nutrition, fitness, and wellness
+          </p>
+        </div>
+      </div>
+
+      <div className="py-8 px-4">
         <div className="max-w-4xl mx-auto">
-          <Carousel autoPlay={false} interval={5000}>
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            spaceBetween={30}
+            slidesPerView={1}
+            navigation={true}
+            pagination={{ clickable: true }}
+            autoplay={false}
+            className="swiper-green-theme"
+          >
             {heroImages.map((img, i) => (
-              <Image
-                key={i}
-                src={img}
-                alt="Health & Wellness"
-                draggable={false}
-                className="w-full h-64 md:h-96 object-cover rounded-lg"
-              />
+              <SwiperSlide key={i}>
+                <Image
+                  src={img}
+                  alt="Health & Wellness"
+                  draggable={false}
+                  className="w-full h-64 md:h-96 object-cover rounded-lg"
+                />
+              </SwiperSlide>
             ))}
-          </Carousel>
-          <h2 className="mt-6 text-3xl font-bold text-center text-green-700">Your Complete Guide to Health & Well-being</h2>
+          </Swiper>
+
+          {/* Custom Swiper styling */}
+          <style jsx global>{`
+      .swiper-green-theme .swiper-button-next,
+      .swiper-green-theme .swiper-button-prev {
+        color: #166534;
+        background-color: rgba(255, 255, 255, 0.9);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-top: -25px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      .swiper-green-theme .swiper-button-next:hover,
+      .swiper-green-theme .swiper-button-prev:hover {
+        background-color: #166534;
+        color: white;
+        transform: scale(1.1);
+      }
+      
+      .swiper-green-theme .swiper-button-next:after,
+      .swiper-green-theme .swiper-button-prev:after {
+        font-size: 18px;
+        font-weight: bold;
+      }
+      
+      .swiper-green-theme .swiper-pagination-bullet {
+        background-color: #166534;
+        opacity: 0.4;
+        width: 12px;
+        height: 12px;
+        transition: all 0.3s ease;
+      }
+      
+      .swiper-green-theme .swiper-pagination-bullet-active {
+        opacity: 1;
+        transform: scale(1.2);
+        background-color: #166534;
+      }
+      
+      .swiper-green-theme .swiper-pagination {
+        bottom: -40px;
+      }
+    `}</style>
         </div>
       </div>
 
@@ -113,7 +194,7 @@ export default function HealthPage() {
                 <ul className="space-y-2">
                   {section.tips.map((tip, i) => (
                     <li key={i} className="flex items-center">
-                      <FaChevronRight className="text-green-500 mr-2" />
+                      <FaChevronRight className="text-green-600 mr-2" />
                       {tip}
                     </li>
                   ))}
@@ -125,7 +206,7 @@ export default function HealthPage() {
       </main>
 
       {/* Footer */}
-      <Footer/>
+      <Footer />
     </div>
   );
 }
