@@ -225,7 +225,7 @@ export default function Footer() {
           {/* Bottom Section */}
           <div className="pt-12 border-t border-white/10">
             <div className="flex flex-col text-gray-400 lg:flex-row items-center justify-between gap-6">
-              <span>© 2024 FitPro Trainer. All rights reserved.</span>
+              <span>© 2025 The Wellness Spot. All rights reserved.</span>
             </div>
           </div>
         </div>

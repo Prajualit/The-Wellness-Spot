@@ -23,7 +23,7 @@ const navItems = [
   { label: "Contact", href: "#footer" },
 ];
 
-export default function Navbar() {
+export default function   Navbar() {
   const [open, setOpen] = useState(false);
   const user = useSelector((state) => state.user.user);
   const router = useRouter();
@@ -103,7 +103,7 @@ export default function Navbar() {
             <Link
               key={item.label}
               href={item.href}
-              className="text-black transition-all duration-300 hover:text-[#435c30]
+              className="text-black transition-all duration-300 hover:text-green-600
                    hover:-translate-y-0.5 hover:opacity-80 cursor-pointer"
             >
               {item.label}

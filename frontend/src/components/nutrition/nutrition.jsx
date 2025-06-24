@@ -84,7 +84,7 @@ export default function HealthPage() {
               />
             ))}
           </Carousel>
-          <h2 className="mt-6 text-3xl font-bold text-center text-blue-700">Your Complete Guide to Health & Well-being</h2>
+          <h2 className="mt-6 text-3xl font-bold text-center text-green-700">Your Complete Guide to Health & Well-being</h2>
         </div>
       </div>
 
@@ -107,13 +107,13 @@ export default function HealthPage() {
               </div>
               <div className="p-6">
                 <div className="flex items-center mb-4">
-                  <span className="text-blue-600 mr-2">{section.icon}</span>
+                  <span className="text-green-600 mr-2">{section.icon}</span>
                   <h3 className="text-xl font-bold">{section.title}</h3>
                 </div>
                 <ul className="space-y-2">
                   {section.tips.map((tip, i) => (
                     <li key={i} className="flex items-center">
-                      <FaChevronRight className="text-blue-500 mr-2" />
+                      <FaChevronRight className="text-green-500 mr-2" />
                       {tip}
                     </li>
                   ))}
