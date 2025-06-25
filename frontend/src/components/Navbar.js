@@ -14,6 +14,7 @@ import { clearUser } from "@/redux/Slice/userSlice";
 import { useDispatch } from "react-redux";
 import Wellnesslogo2 from "../app/assets/Wellnesslogo2.png";
 import Image from "next/image";
+import UserCircleSolidIcon from "@/components/svg/UserCircleSolidIcon.jsx";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -65,14 +66,24 @@ export default function Navbar() {
         </LoadingButton>
       </Link>
       <div className="flex items-center space-x-2 max-sm:hidden ">
-        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#eaeef1]">
-          <NextImage
-            width={20}
-            height={20}
-            src={user?.avatarUrl}
-            alt="Profile"
-            className="w-full h-full rounded-full object-cover"
-          />
+        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#eaeef1] overflow-hidden">
+          {user?.avatarUrl ? (
+            <NextImage
+              src={user?.avatarUrl}
+              width={40}
+              height={40}
+              alt="Profile"
+              className="w-full h-full rounded-full object-cover"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
+            />
+          ) : (
+            <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center">
+              <UserCircleSolidIcon size={24} color="gray" />
+            </div>
+          )}
         </div>
       </div>
     </div>
