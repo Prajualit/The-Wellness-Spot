@@ -24,16 +24,16 @@ app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/temp", express.static("temp"));
 
-app.use("/api", queryRoutes);
+app.use("/api/v1", queryRoutes);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/admin", adminRouter);
-app.use("/api", sendSheetRouter);
+app.use("/api/v1", sendSheetRouter);
 // console.log(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
 
 cron.schedule("0 0 * * *", async () => {
   console.log("Cron job executed at", new Date().toLocaleString());
   try {
-    await axios.post("http://localhost:5000/api/send-daily-sheet");
+    await axios.post(`${process.env.SERVER_URL}/api/v1/send-daily-sheet`);
     console.log("Daily sheet email sent!");
   } catch (err) {
     console.error("Failed to send daily sheet email:", err);
