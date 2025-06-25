@@ -52,9 +52,10 @@ const loginUser = asyncHandler(async (req, res) => {
   let user = await User.findOne({ phone });
 
   if (!user) {
-    // Use frontend name if present, else fallback to "Unknown"
+    // User doesn't exist, create new user
     user = await User.create({ name: frontEndName || "Unknown", phone });
   }
+  // Note: Name validation is now handled by the /validate endpoint before OTP is sent
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
     user._id
@@ -186,4 +187,34 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     );
 });
 
-export { loginUser, logoutUser, refreshAccessToken, getCurrentUser };
+const validateUserDetails = asyncHandler(async (req, res) => {
+  const { name, phone } = req.body;
+
+  if (!name || !phone) {
+    throw new apiError(400, "Name and phone number are required");
+  }
+
+  // Format phone to match database format (assuming it's stored with +91)
+  const formattedPhone = phone.startsWith('+91') ? phone : `+91${phone}`;
+
+  const user = await User.findOne({ phone: formattedPhone });
+
+  if (user) {
+    // User exists, check if the provided name matches
+    if (user.name !== name.trim()) {
+      throw new apiError(
+        400, 
+        `Phone number is already registered with a different name.`
+      );
+    }
+  }
+
+  // If user doesn't exist or name matches, validation passes
+  return res
+    .status(200)
+    .json(
+      new apiResponse(200, null, "Validation successful")
+    );
+});
+
+export { loginUser, logoutUser, refreshAccessToken, getCurrentUser, validateUserDetails };

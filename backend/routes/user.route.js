@@ -3,6 +3,7 @@ import {
   logoutUser,
   refreshAccessToken,
   getCurrentUser,
+  validateUserDetails,
 } from "../controllers/user.controller.js";
 import { updateAvatar } from "../controllers/updateAvatar.controller.js";
 import {
@@ -17,6 +18,7 @@ import { Router } from "express";
 
 const router = Router();
 
+router.route("/validate").post(validateUserDetails);
 router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);
 router

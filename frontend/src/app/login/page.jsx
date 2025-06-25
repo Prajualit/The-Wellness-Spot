@@ -72,6 +72,28 @@ export default function LoginPage() {
             }
 
             setLoading(true);
+            
+            // Validate user details with backend before sending OTP
+            try {
+                await axios.post("/users/validate", {
+                    name: trimmedName,
+                    phone: trimmedPhone
+                });
+            } catch (validationError) {
+                console.error("Validation failed:", validationError);
+                
+                let errorMessage = "Validation failed. Please try again.";
+                if (validationError.response?.data?.message) {
+                    errorMessage = validationError.response.data.message;
+                } else if (validationError.message) {
+                    errorMessage = validationError.message;
+                }
+                
+                setError(errorMessage);
+                setLoading(false);
+                return;
+            }
+            
             const fullPhone = "+91" + trimmedPhone;
 
             console.log("Sending OTP to:", fullPhone);
