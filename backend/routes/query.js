@@ -6,8 +6,23 @@ import { google } from "googleapis";
 
 const router = express.Router();
 
-// Parse the service account key JSON string from the environment variable
-const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY_JSON);
+let credentials;
+try {
+  if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY_BASE64) {
+    throw new Error("GOOGLE_SERVICE_ACCOUNT_KEY_BASE64 is not set");
+  }
+
+  const credentialsString = Buffer.from(
+    process.env.GOOGLE_SERVICE_ACCOUNT_KEY_BASE64,
+    "base64"
+  ).toString("utf8");
+  credentials = JSON.parse(credentialsString);
+
+  console.log("Credentials parsed from base64 successfully");
+} catch (error) {
+  console.error("Failed to parse credentials:", error.message);
+  process.exit(1);
+}
 
 // Create GoogleAuth instance using credentials directly
 const auth = new google.auth.GoogleAuth({
