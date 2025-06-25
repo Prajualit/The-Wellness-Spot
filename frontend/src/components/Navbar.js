@@ -94,7 +94,7 @@ export default function Navbar() {
         <Image src={Wellnesslogo2} height={45} alt="Logo"></Image>
       </Link>
 
-      <div className="flex items-center sm:w-full border justify-end space-x-5">
+      <div className="flex items-center sm:w-full justify-end space-x-5">
         <nav className="hidden lg:flex gap-6">
           {getVisibleNavItems().map((item) => (
             <Link
