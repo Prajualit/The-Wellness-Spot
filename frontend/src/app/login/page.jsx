@@ -4,7 +4,7 @@ import axios from "@/lib/axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/LoadingButton";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { sendOTP, confirmOTP } from "@/firebase/otp.js";
@@ -233,11 +233,12 @@ export default function LoginPage() {
                                     </div>
                                 </div>
                                 <Button
-                                    className="w-full cursor-pointer"
+                                    className="!w-full cursor-pointer"
                                     type="submit"
-                                    disabled={isOtpSent || loading}
+                                    disabled={isOtpSent || loading || verifyLoading}
+                                    pending={loading}
                                 >
-                                    {loading ? "Sending..." : "Send OTP"}
+                                    Send OTP
                                 </Button>
                             </form>
                         </TabsContent>
@@ -268,11 +269,12 @@ export default function LoginPage() {
                                     </p>
                                 </div>
                                 <Button
-                                    className="w-full"
+                                    className="!w-full cursor-pointer"
                                     type="submit"
-                                    disabled={loading}
+                                    disabled={verifyLoading || !otp || otp.length < 6}
+                                    pending={verifyLoading}
                                 >
-                                    {verifyLoading ? "Verifying..." : "Verify OTP"}
+                                    Verify OTP
                                 </Button>
                             </form>
                         </>

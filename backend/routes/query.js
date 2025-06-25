@@ -1,42 +1,42 @@
 import dotenv from "dotenv";
 dotenv.config();
-import express from 'express';
-import { google } from 'googleapis';
-import path from 'path';
-import fs from 'fs';
+
+import express from "express";
+import { google } from "googleapis";
 
 const router = express.Router();
 
-// Log the GOOGLE_SERVICE_ACCOUNT_KEY and check if the file exists
-// console.log('GOOGLE_SERVICE_ACCOUNT_KEY:', process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-// console.log('File exists:', fs.existsSync(process.env.GOOGLE_SERVICE_ACCOUNT_KEY));
+// Parse the service account key JSON string from the environment variable
+const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY_JSON);
 
-// Load your service account key
+// Create GoogleAuth instance using credentials directly
 const auth = new google.auth.GoogleAuth({
-  keyFile: process.env.GOOGLE_SERVICE_ACCOUNT_KEY,
-  scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  credentials,
+  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
 
-const SPREADSHEET_ID = '14-5XEztwwHnWdh8t7I1sE0PcCeJS67oSS6oDI1v_4x4'; // Replace with your sheet ID
+const SPREADSHEET_ID = "14-5XEztwwHnWdh8t7I1sE0PcCeJS67oSS6oDI1v_4x4"; // Replace with your sheet ID
 
-router.post('/submit-query', async (req, res) => {
+router.post("/submit-query", async (req, res) => {
   const { name, email, query } = req.body;
+
   try {
     const client = await auth.getClient();
-    const sheets = google.sheets({ version: 'v4', auth: client });
+    const sheets = google.sheets({ version: "v4", auth: client });
+
     const result = await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'Sheet1!A:C', // Adjust if your sheet/range is different
-      valueInputOption: 'RAW',
+      range: "Sheet1!A:D", // Changed A:C → A:D to include timestamp
+      valueInputOption: "RAW",
       requestBody: {
         values: [[name, email, query, new Date().toISOString()]],
       },
     });
-    // console.log('Append result:', result.data);
+
     res.json({ success: true });
   } catch (err) {
-    console.error('Google Sheets error:', err);
-    res.status(500).json({ success: false, error: 'Failed to save query' });
+    console.error("Google Sheets error:", err);
+    res.status(500).json({ success: false, error: "Failed to save query" });
   }
 });
 
