@@ -14,6 +14,8 @@ export default function Dashboard() {
 
   const firstRecord = user?.records?.[0];
 
+
+
   return (
     <div
       className="relative flex size-full min-h-screen flex-col bg-gray-50 group/design-root overflow-x-hidden"
@@ -21,15 +23,15 @@ export default function Dashboard() {
     >
       <div className="layout-container flex h-full grow flex-col">
         <Header user={user} />
-        <div className="px-40 flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div className="flex flex-wrap justify-between gap-3 p-4">
+        <div className="xl:px-40 lg:px-30 md:px-20 sm:px-10 flex flex-1 justify-center py-5">
+          <div className="layout-content-container flex flex-col max-w-[960px] max-sm:justify-start max-sm:space-y-14 flex-1">
+            <div className="flex flex-wrap justify-between max-sm:hidden gap-3 py-4">
               <p className="text-[#101518] tracking-light text-[32px] font-bold leading-tight min-w-72">
                 Health Records
               </p>
             </div>
-            <div className="flex p-4 @container">
-              <div className="flex w-full flex-col gap-4 @[520px]:flex-row @[520px]:justify-between @[520px]:items-center">
+            <div className="flex flex-col @container">
+              <div className="flex px-4 w-full flex-col gap-4 @[520px]:flex-row @[520px]:justify-between @[520px]:items-center">
                 <div className="flex gap-4">
                   <div
                     className="flex items-center justify-center w-32 h-32 rounded-full bg-[#eaeef1]"
@@ -58,13 +60,15 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <div className="flex px-4 py-3 justify-between">
-              <UpdateAvatar />
-              <AddRecord />
-            </div>
-            <div className="px-4 py-3 @container ">
-              <div className="flex overflow-hidden rounded-xl border border-[#d4dde2] bg-gray-50">
-                <Table className="w-full" />
+            <div>
+              <div className="flex px-4 py-3 justify-between">
+                <UpdateAvatar />
+                <AddRecord />
+              </div>
+              <div className="md:px-4 py-3 @container ">
+                <div className="flex overflow-hidden sm:rounded-xl sm:border border-[#d4dde2] bg-gray-50">
+                  <Table className="w-full" />
+                </div>
               </div>
             </div>
           </div>

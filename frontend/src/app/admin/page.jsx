@@ -56,7 +56,7 @@ export default function AdminDashboard() {
             <TokenCheck />
             <AdminGuard>
                 <Header />
-                <div className="p-14 px-20 flex flex-col space-y-6">
+                <div className="lg:px-14 px-5 py-14 flex flex-col space-y-6">
                     <h1 className="text-[36px] font-bold">Users</h1>
                     <div className="flex flex-col space-y-4 items-center justify-center">
                         <div className="w-full overflow-x-auto">

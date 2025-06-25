@@ -90,7 +90,7 @@ export default function HealthPage() {
         <div className="absolute inset-0 bg-black/30"></div>
 
         {/* Content */}
-        <div className="relative mt-[5%] z-10 h-full text-center flex flex-col items-center justify-center">
+        <div className="relative md:mt-[5%] sm:mt-[10%] mt-[15%] z-10 h-full text-center flex flex-col items-center justify-center">
           <h1 className="text-3xl md:text-[42px] font-bold text-white">Your Complete Guide to Health & Well-being</h1>
           <p className="text-xl mt-4 text-white">
             Explore our comprehensive resources for nutrition, fitness, and wellness

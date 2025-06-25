@@ -196,7 +196,7 @@ export default function StatsPage() {
 
     if (isLoading && analytics.activeUsers === 0) {
         return (
-            <div className="p-6 max-w-6xl mx-auto">
+            <div className="p-4 sm:p-6 max-w-6xl mx-auto">
                 <div className="flex items-center justify-center h-64">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-4 border-green-700"></div>
                     <span className="ml-3 text-gray-600">Loading analytics data...</span>
@@ -220,44 +220,47 @@ export default function StatsPage() {
         <>
             <TokenCheck />
             <AdminGuard>
-                <div className="p-6 max-w-6xl mx-auto">
-                    <div className="flex justify-between items-center mb-8">
-                        <h1 className="text-3xl font-bold text-gray-800">Real-time Analytics</h1>
+                <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Real-time Analytics</h1>
 
-                        <div className="flex items-center space-x-4">
-                            <div className="text-sm text-gray-600">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+                            <div className="text-sm text-gray-600 order-3 sm:order-1">
                                 Last updated: {formatLastUpdated(lastUpdated)}
                             </div>
 
-                            <LoadingButton
-                                onClick={toggleRealTime}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isRealTimeEnabled
-                                    ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                    }`}
-                            >
-                                {isRealTimeEnabled ? 'Real-time ON' : 'Real-time OFF'}
-                            </LoadingButton>
-
-                            <LoadingButton
-                                onClick={handleRefresh}
-                                disabled={isLoading}
-                                className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 disabled:opacity-50 text-sm font-medium transition-colors"
-                            >
-                                {isLoading ? 'Refreshing...' : 'Refresh'}   
-                            </LoadingButton>
-                            <Link href="/admin">
-                                <LoadingButton>
-                                    <span className="text-sm">Admin Panel</span>
+                            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto order-1 sm:order-2">
+                                <LoadingButton
+                                    onClick={toggleRealTime}
+                                    className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors w-full sm:w-auto ${isRealTimeEnabled
+                                        ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        }`}
+                                >
+                                    {isRealTimeEnabled ? 'Real-time ON' : 'Real-time OFF'}
                                 </LoadingButton>
-                            </Link>
+
+                                <LoadingButton
+                                    onClick={handleRefresh}
+                                    disabled={isLoading}
+                                    className="px-3 sm:px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 disabled:opacity-50 text-sm font-medium transition-colors w-full sm:w-auto"
+                                >
+                                    {isLoading ? 'Refreshing...' : 'Refresh'}
+                                </LoadingButton>
+
+                                <Link href="/admin" className="w-full sm:w-auto">
+                                    <LoadingButton className="w-full sm:w-auto">
+                                        <span className="text-sm">Admin Panel</span>
+                                    </LoadingButton>
+                                </Link>
+                            </div>
                         </div>
                     </div>
 
                     {/* Error Alert */}
                     {error && (
                         <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                            <div className="flex items-center">
+                            <div className="flex items-start">
                                 <span className="text-yellow-800 text-sm">
                                     ⚠️ Using mock data - Analytics connection issue: {error}
                                 </span>
@@ -268,7 +271,7 @@ export default function StatsPage() {
                     {/* Real-time indicator */}
                     {isRealTimeEnabled && !error && (
                         <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center">
-                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-3"></div>
+                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-3 flex-shrink-0"></div>
                             <span className="text-green-800 text-sm font-medium">
                                 Live data updates every 30 seconds
                             </span>
@@ -276,39 +279,39 @@ export default function StatsPage() {
                     )}
 
                     {/* Quick Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                        <div className="bg-white p-6 rounded-lg shadow-md border">
-                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Real-time Users</h3>
-                            <p className="text-3xl font-bold text-red-600">{analytics.realTimeUsers}</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-600 mb-2">Real-time Users</h3>
+                            <p className="text-2xl sm:text-3xl font-bold text-red-600">{analytics.realTimeUsers}</p>
                             <p className="text-sm text-gray-500">Right now</p>
                         </div>
 
-                        <div className="bg-white p-6 rounded-lg shadow-md border">
-                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Active Users</h3>
-                            <p className="text-3xl font-bold text-blue-600">{analytics.activeUsers}</p>
+                        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-600 mb-2">Active Users</h3>
+                            <p className="text-2xl sm:text-3xl font-bold text-blue-600">{analytics.activeUsers}</p>
                             <p className="text-sm text-gray-500">Last 30 minutes</p>
                         </div>
 
-                        <div className="bg-white p-6 rounded-lg shadow-md border">
-                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Page Views</h3>
-                            <p className="text-3xl font-bold text-green-600">{analytics.pageViews}</p>
+                        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-600 mb-2">Page Views</h3>
+                            <p className="text-2xl sm:text-3xl font-bold text-green-600">{analytics.pageViews}</p>
                             <p className="text-sm text-gray-500">Last 30 days</p>
                         </div>
 
-                        <div className="bg-white p-6 rounded-lg shadow-md border">
-                            <h3 className="text-lg font-semibold text-gray-600 mb-2">Sessions</h3>
-                            <p className="text-3xl font-bold text-purple-600">{analytics.sessions}</p>
+                        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-600 mb-2">Sessions</h3>
+                            <p className="text-2xl sm:text-3xl font-bold text-purple-600">{analytics.sessions}</p>
                             <p className="text-sm text-gray-500">Last 30 days</p>
                         </div>
                     </div>
 
                     {/* Additional Stats */}
                     {(analytics.bounceRate || analytics.avgSessionDuration) && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
                             {analytics.bounceRate && (
-                                <div className="bg-white p-6 rounded-lg shadow-md border">
-                                    <h3 className="text-lg font-semibold text-gray-600 mb-2">Bounce Rate</h3>
-                                    <p className="text-3xl font-bold text-orange-600">
+                                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border">
+                                    <h3 className="text-base sm:text-lg font-semibold text-gray-600 mb-2">Bounce Rate</h3>
+                                    <p className="text-2xl sm:text-3xl font-bold text-orange-600">
                                         {(analytics.bounceRate * 100).toFixed(1)}%
                                     </p>
                                     <p className="text-sm text-gray-500">Percentage of single-page sessions</p>
@@ -316,9 +319,9 @@ export default function StatsPage() {
                             )}
 
                             {analytics.avgSessionDuration && (
-                                <div className="bg-white p-6 rounded-lg shadow-md border">
-                                    <h3 className="text-lg font-semibold text-gray-600 mb-2">Avg Session Duration</h3>
-                                    <p className="text-3xl font-bold text-indigo-600">
+                                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border">
+                                    <h3 className="text-base sm:text-lg font-semibold text-gray-600 mb-2">Avg Session Duration</h3>
+                                    <p className="text-2xl sm:text-3xl font-bold text-indigo-600">
                                         {formatDuration(analytics.avgSessionDuration)}
                                     </p>
                                     <p className="text-sm text-gray-500">Average time per session</p>
@@ -328,14 +331,14 @@ export default function StatsPage() {
                     )}
 
                     {/* Recent Activity Feed */}
-                    <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border mb-6 sm:mb-8">
+                        <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
                         <div className="space-y-3 max-h-64 overflow-y-auto">
                             {analytics.recentActivity && analytics.recentActivity.length > 0 ? (
                                 analytics.recentActivity.map((activity, index) => (
-                                    <div key={activity.id || index} className="flex items-center justify-between py-2 border-b border-gray-100">
-                                        <div className="flex items-center">
-                                            <div className={`w-2 h-2 rounded-full mr-3 ${activity.type === 'login' ? 'bg-green-500' :
+                                    <div key={activity.id || index} className="flex items-start sm:items-center justify-between py-2 border-b border-gray-100 space-y-1 sm:space-y-0">
+                                        <div className="flex items-start sm:items-center flex-1 min-w-0">
+                                            <div className={`w-2 h-2 rounded-full mr-3 mt-1 sm:mt-0 flex-shrink-0 ${activity.type === 'login' ? 'bg-green-500' :
                                                 activity.type === 'workout' ? 'bg-blue-500' :
                                                     activity.type === 'nutrition' ? 'bg-orange-500' :
                                                         activity.type === 'goal' ? 'bg-purple-500' :
@@ -343,9 +346,9 @@ export default function StatsPage() {
                                                                 activity.type === 'error' ? 'bg-red-500' :
                                                                     'bg-gray-500'
                                                 }`}></div>
-                                            <span className="text-gray-700">{activity.description}</span>
+                                            <span className="text-gray-700 text-sm sm:text-base break-words">{activity.description}</span>
                                         </div>
-                                        <span className="text-xs text-gray-500">
+                                        <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
                                             {typeof activity.timestamp === 'string' && activity.timestamp.includes('T')
                                                 ? new Date(activity.timestamp).toLocaleTimeString()
                                                 : activity.timestamp
@@ -360,15 +363,15 @@ export default function StatsPage() {
                     </div>
 
                     {/* Top Pages */}
-                    <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Top Pages</h3>
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border mb-6 sm:mb-8">
+                        <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Top Pages</h3>
                         <div className="space-y-3">
                             {analytics.topPages && analytics.topPages.length > 0 ? (
                                 analytics.topPages.map((page, index) => (
-                                    <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
-                                        <span className="font-medium text-gray-700">{page.page}</span>
-                                        <div className="flex items-center space-x-3">
-                                            <span className="text-green-800 font-semibold">{page.views} views</span>
+                                    <div key={index} className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-2 border-b border-gray-100 space-y-1 sm:space-y-0">
+                                        <span className="font-medium text-gray-700 break-all sm:break-normal text-sm sm:text-base">{page.page}</span>
+                                        <div className="flex items-center space-x-3 flex-shrink-0">
+                                            <span className="text-green-800 font-semibold text-sm sm:text-base">{page.views} views</span>
                                             {page.percentage && (
                                                 <span className="text-gray-500 text-sm">({page.percentage}%)</span>
                                             )}
@@ -383,14 +386,14 @@ export default function StatsPage() {
 
                     {/* Traffic Sources */}
                     {analytics.trafficSources && analytics.trafficSources.length > 0 && (
-                        <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-4">Traffic Sources</h3>
+                        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border mb-6 sm:mb-8">
+                            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Traffic Sources</h3>
                             <div className="space-y-3">
                                 {analytics.trafficSources.map((source, index) => (
-                                    <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
-                                        <span className="font-medium text-gray-700">{source.source}</span>
-                                        <div className="flex items-center space-x-3">
-                                            <span className="text-green-600 font-semibold">{source.visitors} visitors</span>
+                                    <div key={index} className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-2 border-b border-gray-100 space-y-1 sm:space-y-0">
+                                        <span className="font-medium text-gray-700 text-sm sm:text-base">{source.source}</span>
+                                        <div className="flex items-center space-x-3 flex-shrink-0">
+                                            <span className="text-green-600 font-semibold text-sm sm:text-base">{source.visitors} visitors</span>
                                             <span className="text-gray-500 text-sm">({source.percentage}%)</span>
                                         </div>
                                     </div>
@@ -400,8 +403,8 @@ export default function StatsPage() {
                     )}
 
                     {/* External Links */}
-                    <div className="bg-white p-6 rounded-lg shadow-md border">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-4">External Analytics</h3>
+                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border">
+                        <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">External Analytics</h3>
                         <div className="space-y-3">
                             <a
                                 href="https://analytics.google.com"
@@ -410,7 +413,7 @@ export default function StatsPage() {
                                 className="block p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                             >
                                 <div className="flex items-center justify-between">
-                                    <span className="font-medium text-blue-800">Google Analytics Dashboard</span>
+                                    <span className="font-medium text-blue-800 text-sm sm:text-base">Google Analytics Dashboard</span>
                                     <span className="text-blue-600">→</span>
                                 </div>
                                 <p className="text-sm text-blue-600 mt-1">View detailed analytics and reports</p>
@@ -423,7 +426,7 @@ export default function StatsPage() {
                                 className="block p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
                             >
                                 <div className="flex items-center justify-between">
-                                    <span className="font-medium text-green-800">Google Search Console</span>
+                                    <span className="font-medium text-green-800 text-sm sm:text-base">Google Search Console</span>
                                     <span className="text-green-600">→</span>
                                 </div>
                                 <p className="text-sm text-green-600 mt-1">Monitor search performance and indexing</p>

@@ -10,7 +10,7 @@ import LoadingButton from "@/components/ui/LoadingButton.jsx";
 import axios from "@/lib/axios.js";
 import { useRouter, usePathname } from "next/navigation";
 import NextImage from "next/image";
-import { clearUser } from '@/redux/Slice/userSlice';
+import { clearUser } from "@/redux/Slice/userSlice";
 import { useDispatch } from "react-redux";
 import Wellnesslogo2 from "../app/assets/Wellnesslogo2.png";
 import Image from "next/image";
@@ -18,12 +18,12 @@ import Image from "next/image";
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Nutrition", href: "/nutrition" },
-  { label: "Query", href: "/query" },
+  { label: "Query", href: "/query", showOnlyOnHome: true },
   { label: "Products", href: "/products" },
   { label: "Contact", href: "#footer" },
 ];
 
-export default function   Navbar() {
+export default function Navbar() {
   const [open, setOpen] = useState(false);
   const user = useSelector((state) => state.user.user);
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function   Navbar() {
     try {
       const response = await axios.post("/users/logout");
       if (response.status === 200) {
-        dispatch(clearUser()); 
+        dispatch(clearUser());
         console.log("Logout successful");
         router.push("/login");
       }
@@ -55,7 +55,7 @@ export default function   Navbar() {
   };
 
   const AuthButton = user ? (
-    <>
+    <div className="flex items-center space-x-4">
       <LoadingButton onClick={handleLogout}>
         <span className="text-sm">Logout</span>
       </LoadingButton>
@@ -64,7 +64,7 @@ export default function   Navbar() {
           <span className="text-sm">Dashboard</span>
         </LoadingButton>
       </Link>
-      <div className="flex items-center space-x-2 ">
+      <div className="flex items-center space-x-2 max-sm:hidden ">
         <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#eaeef1]">
           <NextImage
             width={20}
@@ -75,7 +75,7 @@ export default function   Navbar() {
           />
         </div>
       </div>
-    </>
+    </div>
   ) : (
     <Button variant="outline" className="cursor-pointer">
       <Link href="/login" className="flex items-center gap-2">
@@ -91,14 +91,11 @@ export default function   Navbar() {
         href="/"
         className="flex items-center gap-3 hover:opacity-80 transition-opacity"
       >
-        <Image
-          src={Wellnesslogo2} height={45} alt="Logo" ></Image>
-        
-        
+        <Image src={Wellnesslogo2} height={45} alt="Logo"></Image>
       </Link>
 
-      <div className="flex items-center justify-center space-x-5">
-        <nav className="hidden md:flex gap-6">
+      <div className="flex items-center sm:w-full border justify-end space-x-5">
+        <nav className="hidden lg:flex gap-6">
           {getVisibleNavItems().map((item) => (
             <Link
               key={item.label}
@@ -110,11 +107,11 @@ export default function   Navbar() {
             </Link>
           ))}
         </nav>
-        {AuthButton}
+        <div className="max-sm:hidden">{AuthButton}</div>
       </div>
 
       {/* Mobile Nav */}
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -133,7 +130,7 @@ export default function   Navbar() {
                   {item.label}
                 </Link>
               ))}
-              <div className="mt-4">{AuthButton}</div>
+              <div className="mt-4 sm:hidden">{AuthButton}</div>
             </div>
           </SheetContent>
         </Sheet>
