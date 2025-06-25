@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import LoadingButton from '@/components/ui/LoadingButton.jsx'
 import AdminGuard from "@/lib/AdminGuard";
-import TokenCheck from "@/lib/tokenCheck";
 
 export default function StatsPage() {
     const [analytics, setAnalytics] = useState({
@@ -217,12 +216,10 @@ export default function StatsPage() {
     }
 
     return (
-        <>
-            <TokenCheck />
-            <AdminGuard>
-                <div className="p-4 sm:p-6 max-w-6xl mx-auto">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
-                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Real-time Analytics</h1>
+        <AdminGuard>
+            <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Real-time Analytics</h1>
 
                         <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
                             <div className="text-sm text-gray-600 order-3 sm:order-1">
@@ -435,6 +432,5 @@ export default function StatsPage() {
                     </div>
                 </div>
             </AdminGuard>
-        </>
     )
 }

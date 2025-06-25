@@ -2,7 +2,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import ReduxProvider from "@/redux/reduxProvider.js";
-import TokenCheck from "@/lib/tokenCheck.js";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import { GA_TRACKING_ID } from "@/lib/gtag";
 
@@ -50,7 +49,6 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReduxProvider>
-          <TokenCheck />
           <AnalyticsProvider>{children}</AnalyticsProvider>
         </ReduxProvider>
       </body>

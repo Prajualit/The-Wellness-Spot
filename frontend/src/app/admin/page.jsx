@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AdminGuard from "@/lib/AdminGuard";
 import axios from "@/lib/axios.js";
-import TokenCheck from "@/lib/tokenCheck";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import ViewRecord from "@/components/admin/ViewRecord.jsx";
@@ -52,12 +51,10 @@ export default function AdminDashboard() {
     };
 
     return (
-        <>
-            <TokenCheck />
-            <AdminGuard>
-                <Header />
-                <div className="lg:px-14 px-5 py-14 flex flex-col space-y-6">
-                    <h1 className="text-[36px] font-bold">Users</h1>
+        <AdminGuard>
+            <Header />
+            <div className="lg:px-14 px-5 py-14 flex flex-col space-y-6">
+                <h1 className="text-[36px] font-bold">Users</h1>
                     <div className="flex flex-col space-y-4 items-center justify-center">
                         <div className="w-full overflow-x-auto">
                             <table className="w-full border-collapse">
@@ -160,6 +157,5 @@ export default function AdminDashboard() {
                     </div>
                 </div>
             </AdminGuard>
-        </>
     );
 }
