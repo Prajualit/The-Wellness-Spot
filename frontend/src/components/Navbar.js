@@ -57,10 +57,10 @@ export default function Navbar() {
 
   const AuthButton = user ? (
     <div className="flex items-center space-x-4">
-      <LoadingButton onClick={handleLogout}>
+      <LoadingButton onClick={handleLogout} aria-label="Logout from account">
         <span className="text-sm">Logout</span>
       </LoadingButton>
-      <Link href="/dashboard">
+      <Link href="/dashboard" aria-label="Go to dashboard">
         <LoadingButton>
           <span className="text-sm">Dashboard</span>
         </LoadingButton>
@@ -72,7 +72,7 @@ export default function Navbar() {
               src={user?.avatarUrl}
               width={40}
               height={40}
-              alt="Profile"
+              alt={`Profile picture of ${user.name || 'User'}`}
               className="w-full h-full rounded-full object-cover"
               onError={(e) => {
                 e.target.style.display = 'none';
@@ -81,7 +81,7 @@ export default function Navbar() {
             />
           ) : (
             <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center">
-              <UserCircleSolidIcon size={24} color="gray" />
+              <UserCircleSolidIcon size={24} color="gray" aria-hidden="true" />
             </div>
           )}
         </div>
@@ -89,8 +89,8 @@ export default function Navbar() {
     </div>
   ) : (
     <Button variant="outline" className="cursor-pointer">
-      <Link href="/login" className="flex items-center gap-2">
-        <LoginIcon />
+      <Link href="/login" className="flex items-center gap-2" aria-label="Login to your account">
+        <LoginIcon aria-hidden="true" />
         Login
       </Link>
     </Button>
@@ -101,18 +101,25 @@ export default function Navbar() {
       <Link
         href="/"
         className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+        aria-label="The Wellness Spot - Home"
       >
-        <Image src={Wellnesslogo2} height={45} alt="Logo"></Image>
+        <Image 
+          src={Wellnesslogo2} 
+          height={45} 
+          alt="The Wellness Spot Logo"
+          priority
+        />
       </Link>
 
       <div className="flex items-center sm:w-full justify-end space-x-5">
-        <nav className="hidden lg:flex gap-6">
+        <nav className="hidden lg:flex gap-6" role="navigation" aria-label="Main navigation">
           {getVisibleNavItems().map((item) => (
             <Link
               key={item.label}
               href={item.href}
               className="text-black transition-all duration-300 hover:text-green-600
                    hover:-translate-y-0.5 hover:opacity-80 cursor-pointer"
+              aria-label={`Navigate to ${item.label}`}
             >
               {item.label}
             </Link>
@@ -125,24 +132,25 @@ export default function Navbar() {
       <div className="lg:hidden">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" aria-label="Open mobile navigation menu">
               <Menu className="w-5 h-5" />
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-[250px] p-6">
-            <div className="flex flex-col gap-4 mt-8">
+            <nav className="flex flex-col gap-4 mt-8" role="navigation" aria-label="Mobile navigation">
               {getVisibleNavItems().map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
                   className="text-base font-medium text-muted-foreground hover:text-primary"
                   onClick={() => setOpen(false)}
+                  aria-label={`Navigate to ${item.label}`}
                 >
                   {item.label}
                 </Link>
               ))}
               <div className="mt-4 sm:hidden">{AuthButton}</div>
-            </div>
+            </nav>
           </SheetContent>
         </Sheet>
       </div>
