@@ -47,15 +47,8 @@ const nextConfig = {
   swcMinify: true,
   
   // Enable PWA-like features
-  async rewrites() {
-    return [
-      {
-        source: '/sitemap.xml',
-        destination: '/api/sitemap'
-      }
-    ]
-  },
-
+  swcMinify: true,
+  
   // Performance optimizations
   poweredByHeader: false,
   generateEtags: false,
