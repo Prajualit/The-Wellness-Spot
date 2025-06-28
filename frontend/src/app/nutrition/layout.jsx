@@ -37,3 +37,7 @@ export const metadata = {
     canonical: "/nutrition",
   },
 };
+
+export default function NutritionLayout({ children }) {
+  return children;
+}

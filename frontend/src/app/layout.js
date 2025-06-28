@@ -3,7 +3,6 @@ import Script from "next/script";
 import "./globals.css";
 import ReduxProvider from "@/redux/reduxProvider.js";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
-import { GA_TRACKING_ID } from "@/lib/gtag";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -87,6 +86,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID || process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID;
+  
   return (
     <html lang="en">
       <head>
@@ -107,25 +108,29 @@ export default function RootLayout({ children }) {
         <meta name="msapplication-TileColor" content="#16a34a" />
         
         {/* Global Site Tag (gtag.js) - Google Analytics */}
-        <Script
-          strategy="afterInteractive"
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-        />
-        <Script
-          id="gtag-init"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${GA_TRACKING_ID}', {
-                page_location: window.location.href,
-                page_title: document.title,
-              });
-            `,
-          }}
-        />
+        {GA_TRACKING_ID && (
+          <>
+            <Script
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+            />
+            <Script
+              id="gtag-init"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_TRACKING_ID}', {
+                    page_location: window.location.href,
+                    page_title: document.title,
+                  });
+                `,
+              }}
+            />
+          </>
+        )}
         
         {/* JSON-LD structured data */}
         <Script

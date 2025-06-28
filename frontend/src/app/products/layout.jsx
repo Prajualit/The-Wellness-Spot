@@ -37,3 +37,7 @@ export const metadata = {
     canonical: "/products",
   },
 };
+
+export default function ProductsLayout({ children }) {
+  return children;
+}

@@ -37,3 +37,7 @@ export const metadata = {
     canonical: "/query",
   },
 };
+
+export default function QueryLayout({ children }) {
+  return children;
+}
