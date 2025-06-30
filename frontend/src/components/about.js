@@ -1,16 +1,16 @@
 import Image from "next/image";
-import owner1 from "../app/assets/owner1.png";
+import owner1 from "../app/assets/owner1.jpg";
 import owner2 from "../app/assets/owner2.png";
 import Link from "next/link";
 
 const aboutList = [
   {
     description:
-      "Hi, I’m Jyoti Prakash, a Senior Wellness Coach passionate about helping people achieve holistic health. With years of experience, I guide individuals toward balanced, mindful living.",
+      "Hi, I’m Jyoti Prakash, a Certified Wellness Coach specializing in Nutrigenomics. With 3 years of hands-on experience, I have helped over 300 clients achieve their health and wellness goals by personalizing nutrition and lifestyle strategies based on their unique genetic makeup. My passion is empowering individuals to unlock their best selves through science-backed, holistic coaching.",
     points: [
-      "Sr. Wellness Coach",
-      "Nutrition and Workout Expert",
-      "Strength & Conditioning Coach",
+      "Certified Wellness Coach in Nutrigenomics",
+      "3+ years of professional coaching experience",
+      "Transformed the lives of 300+ happy clients",
     ],
     socials: [
       { label: "Instagram", href: "" },
@@ -20,11 +20,11 @@ const aboutList = [
   },
   {
     description:
-      "Hi, I’m Poonam, a Senior Wellness Coach passionate about helping people achieve holistic health. With years of experience, I guide individuals toward balanced, mindful living.",
+      "Hi, I’m Poonam, a dedicated Wellness and Lifestyle Coach with 2 years of experience helping individuals achieve healthier, more balanced lives. I am passionate about guiding clients to make sustainable lifestyle changes, improve their well-being, and reach their personal health goals through practical, holistic strategies.",
     points: [
-      "Sr. Wellness Coach",
-      "Nutrition and Workout Expert",
-      "Strength & Conditioning Coach",
+      "2 years of experience as a Wellness and Lifestyle Coach",
+      "Expert in creating personalized wellness plans",
+      "Supportive guidance for nutrition, fitness, and mindset",
     ],
     socials: [
       { label: "Instagram", href: "" },
