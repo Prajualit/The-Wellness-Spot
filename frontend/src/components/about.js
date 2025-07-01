@@ -6,7 +6,7 @@ import Link from "next/link";
 const aboutList = [
   {
     description:
-      "Hi, I’m Jyoti Prakash, a Certified Wellness Coach specializing in Nutrigenomics. With 3 years of hands-on experience, I have helped over 300 clients achieve their health and wellness goals by personalizing nutrition and lifestyle strategies based on their unique genetic makeup. My passion is empowering individuals to unlock their best selves through science-backed, holistic coaching.",
+      "Hi, I’m Jyoti Parkash, a Certified Wellness Coach specializing in Nutrigenomics. With 3 years of hands-on experience, I have helped over 300 clients achieve their health and wellness goals by personalizing nutrition and lifestyle strategies based on their unique genetic makeup. My passion is empowering individuals to unlock their best selves through science-backed, holistic coaching.",
     points: [
       "Certified Wellness Coach in Nutrigenomics",
       "3+ years of professional coaching experience",
