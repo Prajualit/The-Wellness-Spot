@@ -36,9 +36,9 @@ export default function HealthPage() {
   // Sample image URLs for carousel and cards (replace with your own)
   const heroImages = [
     slider1, // Main hero image
-    yoga1, // Healthy foods, fitness, happy people
-    yoga2, // Group exercise
-    yoga3, // Family health
+    // yoga1, // Healthy foods, fitness, happy people
+    // yoga2, // Group exercise
+    // yoga3, // Family health
   ];
 
   // Example: Where to add images for each section (replace with your own paths)

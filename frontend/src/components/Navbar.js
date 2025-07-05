@@ -19,7 +19,7 @@ import UserCircleSolidIcon from "@/components/svg/UserCircleSolidIcon.jsx";
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Nutrition", href: "/nutrition" },
-  { label: "Query", href: "/query", showOnlyOnHome: true },
+  { label: "Query", href: "/query", showOnlyOnHome: false },
   { label: "Products", href: "/products" },
   { label: "Contact", href: "#footer" },
 ];

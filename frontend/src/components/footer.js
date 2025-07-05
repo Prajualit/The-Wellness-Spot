@@ -12,6 +12,7 @@ import {
   MapPin,
   Clock,
   Dumbbell,
+  Youtube,
 } from "lucide-react";
 
 export default function Footer() {
@@ -114,7 +115,7 @@ export default function Footer() {
                 <h4 className="text-lg font-semibold text-white">Follow Us</h4>
                 <div className="flex gap-4">
                   <a
-                    href="https://instagram.com/fitprotrainer"
+                    href="https://www.instagram.com/jp3793?igsh=MTdkcjlpemlvd25oaw=="
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group relative p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-gradient-to-r hover:from-pink-500 hover:to-orange-500 transition-all duration-300 hover:scale-110"
@@ -125,7 +126,7 @@ export default function Footer() {
                     </span>
                   </a>
                   <a
-                    href="https://facebook.com/fitprotrainer"
+                    href="https://www.facebook.com/share/1GZCZW8pCq/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group relative p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-blue-600 transition-all duration-300 hover:scale-110"
@@ -133,6 +134,17 @@ export default function Footer() {
                     <Facebook className="w-6 h-6 text-white" />
                     <span className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">
                       Facebook
+                    </span>
+                  </a>
+                  <a
+                    href="https://www.youtube.com/@radhekrishna51Fitness"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-red-600 transition-all duration-300 hover:scale-110"
+                  >
+                    <Youtube className="w-6 h-6 text-white" />
+                    <span className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                      Youtube
                     </span>
                   </a>
                 </div>

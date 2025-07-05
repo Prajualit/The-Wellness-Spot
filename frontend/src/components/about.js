@@ -13,8 +13,8 @@ const aboutList = [
       "Transformed the lives of 300+ happy clients",
     ],
     socials: [
-      { label: "Instagram", href: "" },
-      { label: "Facebook", href: "" },
+      { label: "Instagram", href: "https://www.instagram.com/jp3793?igsh=MTdkcjlpemlvd25oaw==" },
+      { label: "Facebook", href: "https://www.facebook.com/share/1GZCZW8pCq/" },
     ],
     image: owner1,
   },
