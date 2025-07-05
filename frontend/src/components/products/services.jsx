@@ -17,12 +17,13 @@ import { FaLeaf, FaRunning, FaUserAlt, FaMoneyBillWave, FaCalendarAlt, FaPrescri
 const products = [
   {
     id: 1,
-    title: "Shakes",
-    image: shakes,
-    icon: <GiPowderBag />,
-    description: "Delicious, nutritious shakes for meal replacement or snack, rich in protein and vitamins.",
-    highlight: "Convenient, balanced nutrition, tasty",
-    action: "Buy Now"
+    title: "Yoga",
+    image: yoga,
+    icon: <GrYoga />,
+    description: "Guided yoga sessions for flexibility, strength, and mental clarity.",
+    highlight: "Mind-body balance, relaxing, accessible",
+    action: "Book Now"
+
   },
   {
     id: 2,
@@ -53,15 +54,6 @@ const products = [
   },
   {
     id: 5,
-    title: "Tablet Box",
-    image: tabletbox,
-    icon: <FaPrescriptionBottle />,
-    description: "A convenient box containing a variety of essential supplements for daily health",
-    highlight: "All-in-one, easy to use, supports wellness",
-    action: "Buy Now"
-  },
-  {
-    id: 6,
     title: "Shakers for Weight Management",
     image: shakeweight,
     icon: <RiDrinksFill />,
@@ -70,13 +62,13 @@ const products = [
     action: "Learn More"
   },
   {
-    id: 7,
-    title: "Yoga",
-    image: yoga,
-    icon: <GrYoga />,
-    description: "Guided yoga sessions for flexibility, strength, and mental clarity.",
-    highlight: "Mind-body balance, relaxing, accessible",
-    action: "Book Now"
+    id: 6,
+    title: "Shakes",
+    image: shakes,
+    icon: <GiPowderBag />,
+    description: "Delicious, nutritious shakes for meal replacement or snack, rich in protein and vitamins.",
+    highlight: "Convenient, balanced nutrition, tasty",
+    action: "Buy Now"
   },
 
 ];
@@ -85,7 +77,7 @@ export default function ServicesPage() {
   return (
     <section id='services'>
 
-      <div className="max-w-6xl mx-auto py-12 px-4">
+      <div className="max-w-6xl mx-auto pb-12 px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (
             <motion.div

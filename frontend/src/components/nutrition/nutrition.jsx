@@ -10,6 +10,7 @@ import { AiFillSkin, AiOutlineSkin } from "react-icons/ai";
 import yoga1 from '../../app/assets/yoga1.jpg';
 import yoga2 from '../../app/assets/yoga2.jpg';
 import yoga3 from '../../app/assets/yoga3.jpg';
+import slider1 from '../../app/assets/slider/slider1.jpg';
 import weightloss from '../../app/assets/weightloss.jpg';
 import weightgain from '../../app/assets/weightgain.jpg';
 import weightmaintainence from '../../app/assets/weightmaintainence.jpg';
@@ -34,6 +35,7 @@ export default function HealthPage() {
 
   // Sample image URLs for carousel and cards (replace with your own)
   const heroImages = [
+    slider1, // Main hero image
     yoga1, // Healthy foods, fitness, happy people
     yoga2, // Group exercise
     yoga3, // Family health
@@ -99,73 +101,33 @@ export default function HealthPage() {
       </div>
 
       <div className="py-8 px-4">
-        <div className="max-w-4xl mx-auto">
-          <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
-            spaceBetween={30}
-            slidesPerView={1}
-            navigation={true}
-            pagination={{ clickable: true }}
-            autoplay={false}
-            className="swiper-green-theme"
-          >
-            {heroImages.map((img, i) => (
-              <SwiperSlide key={i}>
-                <Image
-                  src={img}
-                  alt="Health & Wellness"
-                  draggable={false}
-                  className="w-full h-64 md:h-96 object-cover rounded-lg"
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-
-          {/* Custom Swiper styling */}
-          <style jsx global>{`
-      .swiper-green-theme .swiper-button-next,
-      .swiper-green-theme .swiper-button-prev {
-        color: #166534;
-        background-color: rgba(255, 255, 255, 0.9);
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin-top: -25px;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      }
-      
-      .swiper-green-theme .swiper-button-next:hover,
-      .swiper-green-theme .swiper-button-prev:hover {
-        background-color: #166534;
-        color: white;
-        transform: scale(1.1);
-      }
-      
-      .swiper-green-theme .swiper-button-next:after,
-      .swiper-green-theme .swiper-button-prev:after {
-        font-size: 18px;
-        font-weight: bold;
-      }
-      
-      .swiper-green-theme .swiper-pagination-bullet {
-        background-color: #166534;
-        opacity: 0.4;
-        width: 12px;
-        height: 12px;
-        transition: all 0.3s ease;
-      }
-      
-      .swiper-green-theme .swiper-pagination-bullet-active {
-        opacity: 1;
-        transform: scale(1.2);
-        background-color: #166534;
-      }
-      
-      .swiper-green-theme .swiper-pagination {
-        bottom: -40px;
-      }
-    `}</style>
+        <div className="max-w-7xl mx-auto">
+          {/* Image Slider Section */}
+          <div>
+            <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Health & Wellness Gallery</h2>
+            <div className="max-w-4xl mx-auto">
+              <Swiper
+                modules={[Navigation, Pagination, Autoplay]}
+                spaceBetween={30}
+                slidesPerView={1}
+                navigation={true}
+                pagination={{ clickable: true }}
+                autoplay={{ delay: 4000, disableOnInteraction: false }}
+                className="swiper-green-theme"
+              >
+                {heroImages.map((img, i) => (
+                  <SwiperSlide key={i}>
+                    <Image
+                      src={img}
+                      alt="Health & Wellness"
+                      draggable={false}
+                      className="w-full h-64 md:h-96 object-cover rounded-lg"
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -207,6 +169,62 @@ export default function HealthPage() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Custom Swiper styling for both themes */}
+      <style jsx global>{`
+        /* Image Slider Theme */
+        .swiper-green-theme .swiper-button-next,
+        .swiper-green-theme .swiper-button-prev {
+          color: #166534;
+          background-color: rgba(255, 255, 255, 0.9);
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          margin-top: -25px;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .swiper-green-theme .swiper-button-next:hover,
+        .swiper-green-theme .swiper-button-prev:hover {
+          background-color: #166534;
+          color: white;
+          transform: scale(1.1);
+        }
+        
+        .swiper-green-theme .swiper-button-next:after,
+        .swiper-green-theme .swiper-button-prev:after {
+          font-size: 18px;
+          font-weight: bold;
+        }
+        
+        .swiper-green-theme .swiper-pagination-bullet {
+          background-color: #166534;
+          opacity: 0.4;
+          width: 12px;
+          height: 12px;
+          transition: all 0.3s ease;
+        }
+        
+        .swiper-green-theme .swiper-pagination-bullet-active {
+          opacity: 1;
+          transform: scale(1.2);
+          background-color: #166534;
+        }
+        
+        .swiper-green-theme .swiper-pagination {
+          bottom: -40px;
+        }
+
+        /* Video specific styling */
+        .swiper-green-theme video {
+          transition: transform 0.3s ease;
+        }
+        
+        .swiper-green-theme .swiper-slide:hover video {
+          transform: scale(1.02);
+        }
+      `}</style>
     </div>
   );
 }
