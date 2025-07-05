@@ -11,66 +11,62 @@ import Footer from "@/components/footer";
 import { useSelector } from "react-redux";
 
 export default function Home() {
-  // redirect to login page
-  // const { push } = useRouter();
-  // useEffect(() => {
-  //   push("/login");
-  // }, [push]);
-
-  const activeNav = useSelector((state) => state.navbar.activeNav);
-
   // Structured data for the homepage (moved inside component to access NEXT_PUBLIC vars)
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "The Wellness Spot",
-    "url": process.env.NEXT_PUBLIC_SITE_URL || 'https://thewellnessspot.vercel.app',
-    "logo": `${process.env.NEXT_PUBLIC_SITE_URL || 'https://thewellnessspot.vercel.app'}/logo.png`,
-    "description": "Transform your health journey with expert nutrition guidance, personalized workout plans, premium supplements, and professional health consultations.",
-    "address": {
+    name: "The Wellness Spot",
+    url:
+      process.env.NEXT_PUBLIC_SITE_URL || "https://thewellnessspot.vercel.app",
+    logo: `${
+      process.env.NEXT_PUBLIC_SITE_URL || "https://thewellnessspot.vercel.app"
+    }/logo.png`,
+    description:
+      "Transform your health journey with expert nutrition guidance, personalized workout plans, premium supplements, and professional health consultations.",
+    address: {
       "@type": "PostalAddress",
-      "addressCountry": "IN"
+      addressCountry: "IN",
     },
-    "contactPoint": {
+    contactPoint: {
       "@type": "ContactPoint",
-      "contactType": "customer service",
-      "availableLanguage": "English"
+      contactType: "customer service",
+      availableLanguage: "English",
     },
-    "sameAs": [
+    sameAs: [
       "https://facebook.com/thewellnessspot",
       "https://instagram.com/thewellnessspot",
-      "https://twitter.com/thewellnessspot"
+      "https://twitter.com/thewellnessspot",
     ],
-    "hasOfferCatalog": {
+    hasOfferCatalog: {
       "@type": "OfferCatalog",
-      "name": "Wellness Services",
-      "itemListElement": [
+      name: "Wellness Services",
+      itemListElement: [
         {
           "@type": "Offer",
-          "itemOffered": {
+          itemOffered: {
             "@type": "Service",
-            "name": "Nutrition Consultation",
-            "description": "Personalized nutrition planning and dietary guidance"
-          }
-        },
-        {
-          "@type": "Offer", 
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Fitness Training",
-            "description": "Customized workout plans and fitness coaching"
-          }
+            name: "Nutrition Consultation",
+            description: "Personalized nutrition planning and dietary guidance",
+          },
         },
         {
           "@type": "Offer",
-          "itemOffered": {
+          itemOffered: {
+            "@type": "Service",
+            name: "Fitness Training",
+            description: "Customized workout plans and fitness coaching",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
             "@type": "Product",
-            "name": "Health Supplements",
-            "description": "Premium quality health and fitness supplements"
-          }
-        }
-      ]
-    }
+            name: "Health Supplements",
+            description: "Premium quality health and fitness supplements",
+          },
+        },
+      ],
+    },
   };
 
   return (
@@ -80,8 +76,8 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      
-      <div className="w-screen h-screen bg-[#f7fafc]">
+
+      <div className="w-screen h-screen bg-[#f7fafc] overflow-x-hidden ">
         <Navbar />
         <main role="main">
           <Landing />
