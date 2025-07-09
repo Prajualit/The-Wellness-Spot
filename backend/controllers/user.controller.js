@@ -68,8 +68,9 @@ const loginUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? "None" : "Lax",
-    maxAge: 10 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     path: "/",
+    domain: isProduction ? undefined : undefined, // Let browser handle domain
   };
 
   return res
@@ -106,10 +107,12 @@ const logoutUser = asyncHandler(async (req, res) => {
       }
     }
 
+    const isProduction = process.env.NODE_ENV === "production";
     const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
+      path: "/",
     };
 
     return res
@@ -119,10 +122,12 @@ const logoutUser = asyncHandler(async (req, res) => {
       .json(new apiResponse(200, null, "User logged out successfully"));
   } catch (error) {
     // Even if there's an error, clear cookies and return success
+    const isProduction = process.env.NODE_ENV === "production";
     const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
+      path: "/",
     };
 
     return res
@@ -146,11 +151,13 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     user.refreshToken = newRefreshToken;
     await user.save({ validateBeforeSave: false });
 
+    const isProduction = process.env.NODE_ENV === "production";
     const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
       maxAge: 3 * 24 * 60 * 60 * 1000,
+      path: "/",
     };
 
     const refreshOptions = {
