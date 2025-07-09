@@ -5,10 +5,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import {
   Navigation,
   Pagination,
-  Autoplay,
-  EffectCoverflow,
 } from "swiper/modules";
-import clientImages from "@/components/ui/clientImages";
+import { clientImages } from "@/components/ui/clientImages";
 
 // Import Swiper styles
 import "swiper/css";
@@ -43,18 +41,11 @@ export default function Testimonials() {
 
           <div className="relative">
             <Swiper
-              modules={[Navigation, Pagination, Autoplay, EffectCoverflow]}
-              effect="coverflow"
+              modules={[Navigation, Pagination]}
               grabCursor={true}
               centeredSlides={true}
               slidesPerView="auto"
-              coverflowEffect={{
-                rotate: 15,
-                stretch: 0,
-                depth: 300,
-                modifier: 1,
-                slideShadows: false, // Disabled Swiper's built-in shadows
-              }}
+              spaceBetween={30}
               navigation={{
                 nextEl: ".swiper-button-next-custom",
                 prevEl: ".swiper-button-prev-custom",
@@ -62,11 +53,9 @@ export default function Testimonials() {
               pagination={{
                 clickable: true,
                 dynamicBullets: true,
-              }}
-              autoplay={{
-                delay: 4000,
-                disableOnInteraction: false,
-                pauseOnMouseEnter: true,
+                renderBullet: function (index, className) {
+                  return '<span class="' + className + '">' + (index + 1) + '</span>';
+                },
               }}
               breakpoints={{
                 320: {
@@ -75,43 +64,45 @@ export default function Testimonials() {
                 },
                 640: {
                   slidesPerView: 1.5,
-                  spaceBetween: 30,
+                  spaceBetween: 25,
                 },
                 768: {
-                  slidesPerView: 2,
-                  spaceBetween: 40,
+                  slidesPerView: 2.5,
+                  spaceBetween: 30,
                 },
                 1024: {
-                  slidesPerView: 3,
-                  spaceBetween: 50,
+                  slidesPerView: 3.5,
+                  spaceBetween: 35,
                 },
               }}
               className="testimonials-swiper pb-16"
             >
               {clientImages.map((image, index) => (
-                <SwiperSlide key={index} className="!w-auto">
-                  <div className="group relative p-2">
-                    <div className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-xl transform group-hover:scale-105 transition-all duration-500 ease-out">
-                      <div className="relative z-20 p-6">
+                <SwiperSlide key={index} className="!w-80 !h-auto">
+                  <div className="group relative p-3">
+                    <div className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transform group-hover:scale-105 transition-all duration-500 ease-out">
+                      <div className="relative z-20 p-4">
                         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100">
-                          <Image
-                            src={image}
-                            alt={`Client ${index + 1} transformation result`}
-                            width={400}
-                            height={400}
-                            className="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                          <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[11px] font-semibold text-emerald-600 shadow-sm">
+                          <div className="aspect-square relative">
+                            <Image
+                              src={image}
+                              alt={`Client ${index + 1} transformation result`}
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              className="object-cover transition-transform duration-700 group-hover:scale-110"
+                              priority={index < 3}
+                            />
+                          </div>
+                          <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-emerald-600 shadow-sm">
                             Result #{index + 1}
                           </div>
                         </div>
                         <div className="mt-4 text-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                          <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl p-4">
-                            <h3 className="font-bold text-gray-800 mb-2">
+                          <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl p-3">
+                            <h3 className="font-bold text-gray-800 mb-2 text-sm">
                               Amazing Transformation
                             </h3>
-                            <div className="flex justify-center space-x-4 text-sm">
+                            <div className="flex justify-center space-x-3 text-xs">
                               <span className="text-emerald-600 font-semibold">
                                 ✓ Achieved Goals
                               </span>
@@ -203,31 +194,49 @@ export default function Testimonials() {
         }
 
         .testimonials-swiper .swiper-pagination-bullet {
-          width: 12px;
-          height: 12px;
+          width: 14px;
+          height: 14px;
           background: linear-gradient(45deg, #10b981, #3b82f6);
-          opacity: 0.5;
+          opacity: 0.4;
           transition: all 0.3s ease;
+          border-radius: 50%;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          font-weight: bold;
+          color: white;
         }
 
         .testimonials-swiper .swiper-pagination-bullet-active {
           opacity: 1;
-          transform: scale(1.2);
-          box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+          transform: scale(1.3);
+          box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
         }
 
         .testimonials-swiper .swiper-slide {
-          transition: all 0.3s ease;
-        }
-
-        .testimonials-swiper .swiper-slide:not(.swiper-slide-active) {
-          opacity: 1;
-          transform: scale(0.9);
+          transition: all 0.4s ease;
+          height: auto;
         }
 
         .testimonials-swiper .swiper-slide-active {
           opacity: 1;
+          transform: scale(1.05);
+        }
+
+        .testimonials-swiper .swiper-slide:not(.swiper-slide-active) {
+          opacity: 0.8;
+          transform: scale(0.95);
+        }
+
+        .testimonials-swiper .swiper-slide-next,
+        .testimonials-swiper .swiper-slide-prev {
+          opacity: 0.9;
           transform: scale(1);
+        }
+
+        .testimonials-swiper {
+          overflow: visible;
         }
       `}</style>
     </div>
