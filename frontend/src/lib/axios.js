@@ -4,6 +4,11 @@ const instance = axios.create({
   baseURL:
     process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1",
   withCredentials: true,
+  timeout: 30000, // 30 seconds timeout
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  },
 });
 
 let isRefreshing = false;
@@ -62,13 +67,15 @@ function clearAuthCookies() {
 
 instance.interceptors.request.use(
   (config) => {
-    console.log(`🚀 REQUEST: ${config.method?.toUpperCase()} ${config.url}`);
+    console.log(`🚀 REQUEST: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
+    console.log(`🌐 BASE URL: ${config.baseURL}`);
 
     // Skip adding auth header for public endpoints
     const publicEndpoints = [
       "/users/login",
-      "/users/register",
+      "/users/register", 
       "/users/refresh-token",
+      "/users/validate", // Add validate to public endpoints
     ];
     const isPublicEndpoint = publicEndpoints.some((endpoint) =>
       config.url?.includes(endpoint)

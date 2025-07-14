@@ -18,6 +18,11 @@ import { Router } from "express";
 
 const router = Router();
 
+// Explicit OPTIONS handler for validate endpoint
+router.options("/validate", (req, res) => {
+  res.status(200).end();
+});
+
 router.route("/validate").post(validateUserDetails);
 router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);

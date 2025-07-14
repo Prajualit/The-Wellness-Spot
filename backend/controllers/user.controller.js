@@ -195,33 +195,51 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 });
 
 const validateUserDetails = asyncHandler(async (req, res) => {
+  console.log("📝 VALIDATE: Starting user validation", {
+    body: { name: req.body.name ? "***" : undefined, phone: req.body.phone ? "***" : undefined },
+    timestamp: new Date().toISOString()
+  });
+
   const { name, phone } = req.body;
 
   if (!name || !phone) {
+    console.log("❌ VALIDATE: Missing required fields");
     throw new apiError(400, "Name and phone number are required");
   }
 
-  // Format phone to match database format (assuming it's stored with +91)
-  const formattedPhone = phone.startsWith('+91') ? phone : `+91${phone}`;
+  try {
+    // Format phone to match database format (assuming it's stored with +91)
+    const formattedPhone = phone.startsWith('+91') ? phone : `+91${phone}`;
+    console.log("🔍 VALIDATE: Checking user existence in database");
 
-  const user = await User.findOne({ phone: formattedPhone });
+    const user = await User.findOne({ phone: formattedPhone });
 
-  if (user) {
-    // User exists, check if the provided name matches
-    if (user.name !== name.trim()) {
-      throw new apiError(
-        400, 
-        `Phone number is already registered with a different name.`
-      );
+    if (user) {
+      console.log("👤 VALIDATE: User found, checking name match");
+      // User exists, check if the provided name matches
+      if (user.name !== name.trim()) {
+        console.log("❌ VALIDATE: Name mismatch");
+        throw new apiError(
+          400, 
+          `Phone number is already registered with a different name.`
+        );
+      }
     }
-  }
 
-  // If user doesn't exist or name matches, validation passes
-  return res
-    .status(200)
-    .json(
-      new apiResponse(200, null, "Validation successful")
-    );
+    console.log("✅ VALIDATE: Validation successful");
+    // If user doesn't exist or name matches, validation passes
+    return res
+      .status(200)
+      .json(
+        new apiResponse(200, null, "Validation successful")
+      );
+  } catch (error) {
+    console.error("❌ VALIDATE: Database error", error);
+    if (error instanceof apiError) {
+      throw error;
+    }
+    throw new apiError(500, "Internal server error during validation");
+  }
 });
 
 export { loginUser, logoutUser, refreshAccessToken, getCurrentUser, validateUserDetails };

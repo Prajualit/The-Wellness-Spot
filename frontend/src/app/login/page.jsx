@@ -11,7 +11,7 @@ import { sendOTP, confirmOTP } from "@/firebase/otp.js";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/Slice/userSlice.js";
-
+import { testApiConnection, testValidateEndpoint } from "@/utils/apiTest";
 
 export default function LoginPage() {
     const [isOtpSent, setIsOtpSent] = useState(false);
@@ -34,6 +34,13 @@ export default function LoginPage() {
             // Clear any existing recaptcha
             recaptchaContainer.innerHTML = '';
         }
+        
+        // Test API connection in development/debugging
+        if (process.env.NODE_ENV === 'development') {
+            testApiConnection().then(result => {
+                console.log('🔬 API Connection Test:', result);
+            });
+        }
     }, []);
 
     // Phone number validation
@@ -50,6 +57,24 @@ export default function LoginPage() {
     // OTP validation
     const validateOTP = (otp) => {
         return otp && otp.trim().length === 6 && /^\d{6}$/.test(otp.trim());
+    };
+
+    // Retry function with exponential backoff
+    const retryRequest = async (requestFn, maxRetries = 3, baseDelay = 1000) => {
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                return await requestFn();
+            } catch (error) {
+                if (attempt === maxRetries) {
+                    throw error;
+                }
+                
+                // Wait with exponential backoff: 1s, 2s, 4s
+                const delay = baseDelay * Math.pow(2, attempt - 1);
+                console.log(`Attempt ${attempt} failed, retrying in ${delay}ms...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
     };
 
     const sendOtp = async (e) => {
@@ -75,15 +100,38 @@ export default function LoginPage() {
             
             // Validate user details with backend before sending OTP
             try {
-                await axios.post("/users/validate", {
-                    name: trimmedName,
-                    phone: trimmedPhone
+                console.log("Validating user details with backend...");
+                const response = await retryRequest(async () => {
+                    return await axios.post("/users/validate", {
+                        name: trimmedName,
+                        phone: trimmedPhone
+                    }, {
+                        timeout: 15000, // 15 seconds specific timeout for validation
+                    });
                 });
+                console.log("Validation successful:", response.data);
             } catch (validationError) {
+                console.error("❌ RESPONSE ERROR: POST /users/validate -", validationError);
                 console.error("Validation failed:", validationError);
                 
                 let errorMessage = "Validation failed. Please try again.";
-                if (validationError.response?.data?.message) {
+                
+                // Handle different types of errors
+                if (validationError.code === 'ECONNABORTED') {
+                    errorMessage = "Request timed out. Please check your internet connection and try again.";
+                } else if (validationError.code === 'ERR_NETWORK') {
+                    if (validationError.message.includes('CORS')) {
+                        errorMessage = "Connection blocked by security policy. Please try again or contact support.";
+                    } else {
+                        errorMessage = "Network error. Please check your internet connection.";
+                    }
+                } else if (validationError.code === 'ERR_CONNECTION_TIMED_OUT') {
+                    errorMessage = "Connection timed out. Please try again.";
+                } else if (validationError.response?.status === 0) {
+                    errorMessage = "Unable to connect to server. Please check your internet connection.";
+                } else if (validationError.response?.status === 500) {
+                    errorMessage = "Server error. Please try again in a moment.";
+                } else if (validationError.response?.data?.message) {
                     errorMessage = validationError.response.data.message;
                 } else if (validationError.message) {
                     errorMessage = validationError.message;
