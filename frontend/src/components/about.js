@@ -1,6 +1,9 @@
 import Image from "next/image";
 import owner1 from "../app/assets/owner1.jpg";
 import owner2 from "../app/assets/owner2.png";
+import owner3 from "../app/assets/owner3.jpg";
+import owner4 from "../app/assets/owner4.jpg";
+import owner5 from "../app/assets/owner5.jpg";
 import Link from "next/link";
 
 const aboutList = [
@@ -31,6 +34,48 @@ const aboutList = [
       { label: "Facebook", href: "" },
     ],
     image: owner2,
+  },
+  {
+    description:
+      "Hi, I’m Pamnesh Sharma, an experienced Wellness Coach with a strong background in Nutrigenomics. For over 2 years, I’ve been helping individuals achieve their health and lifestyle goals through personalized strategies based on their unique genetic profiles. My mission is to empower people to live healthier, more vibrant lives.",
+    points: [
+      "Certified in Nutrigenomics and advanced wellness practices",
+      "2+ years of experience delivering science-backed wellness coaching",
+      "Successfully guided 200+ clients toward better health and sustainable lifestyle changes",
+    ],
+    socials: [
+      { label: "Instagram", href: "" },
+      { label: "Facebook", href: "" },
+    ],
+    image: owner3,
+  },
+  {
+    description:
+      "Hi, I’m Puja, a passionate Wellness and Lifestyle Coach dedicated to helping individuals take control of their health. With a specialization in Nutrigenomics, I design personalized nutrition and lifestyle plans that align with each client’s genetic makeup. For the past 2+ years, I have supported hundreds of clients in achieving their wellness aspirations.",
+    points: [
+      "Certified Nutrigenomics Coach with expertise in holistic health",
+      "Over 2 years of professional experience in wellness coaching",
+      "Helped 200+ clients transform their health through tailored strategies",
+    ],
+    socials: [
+      { label: "Instagram", href: "" },
+      { label: "Facebook", href: "" },
+    ],
+    image: owner4,
+  },
+  {
+    description:
+      "Hi, I’m Karam Chand Verma, an accomplished Wellness Coach committed to improving lives through evidence-based nutrition and lifestyle guidance. Leveraging Nutrigenomics insights, I create effective, personalized plans that drive real, lasting results. With more than 2 years of coaching experience, I have successfully assisted over 200 clients in achieving their wellness goals.",
+    points: [
+      "Certification in Nutrigenomics and personalized wellness programs",
+      "2+ years of experience helping individuals achieve optimal health",
+      "Delivered transformative results for 200+ satisfied clients",
+    ],
+    socials: [
+      { label: "Instagram", href: "" },
+      { label: "Facebook", href: "" },
+    ],
+    image: owner5,
   },
   // Add more trainers here if needed
 ];
