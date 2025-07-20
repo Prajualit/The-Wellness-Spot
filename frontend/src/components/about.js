@@ -16,7 +16,10 @@ const aboutList = [
       "Transformed the lives of 300+ happy clients",
     ],
     socials: [
-      { label: "Instagram", href: "https://www.instagram.com/jp3793?igsh=MTdkcjlpemlvd25oaw==" },
+      {
+        label: "Instagram",
+        href: "https://www.instagram.com/jp3793?igsh=MTdkcjlpemlvd25oaw==",
+      },
       { label: "Facebook", href: "https://www.facebook.com/share/1GZCZW8pCq/" },
     ],
     image: owner1,
@@ -37,11 +40,11 @@ const aboutList = [
   },
   {
     description:
-      "Hi, I’m Pamnesh Sharma, an experienced Wellness Coach with a strong background in Nutrigenomics. For over 2 years, I’ve been helping individuals achieve their health and lifestyle goals through personalized strategies based on their unique genetic profiles. My mission is to empower people to live healthier, more vibrant lives.",
+      "Hi, I’m Pamnesh Sharma, an energetic Wellness and Lifestyle Coach with 2 years of experience, specializing in helping busy professionals enhance their performance and prevent burnout. I am passionate about integrating practical, high-impact wellness strategies into demanding schedules to boost both productivity and personal health.",
     points: [
-      "Certified in Nutrigenomics and advanced wellness practices",
-      "2+ years of experience delivering science-backed wellness coaching",
-      "Successfully guided 200+ clients toward better health and sustainable lifestyle changes",
+      "2 years of experience coaching professionals and executives",
+      "Expert in stress management and energy optimization techniques",
+      "Action-oriented guidance for nutrition and fitness in a corporate lifestyle",
     ],
     socials: [
       { label: "Instagram", href: "" },
@@ -51,11 +54,11 @@ const aboutList = [
   },
   {
     description:
-      "Hi, I’m Puja, a passionate Wellness and Lifestyle Coach dedicated to helping individuals take control of their health. With a specialization in Nutrigenomics, I design personalized nutrition and lifestyle plans that align with each client’s genetic makeup. For the past 2+ years, I have supported hundreds of clients in achieving their wellness aspirations.",
+      "Hi, I’m Puja, an empathetic and certified Wellness and Lifestyle Coach with 2 years of experience focused on guiding individuals towards inner peace and emotional balance. I am passionate about using mindfulness and holistic self-care practices to help clients reduce anxiety, build resilience, and foster a harmonious mind-body connection.",
     points: [
-      "Certified Nutrigenomics Coach with expertise in holistic health",
-      "Over 2 years of professional experience in wellness coaching",
-      "Helped 200+ clients transform their health through tailored strategies",
+      "2 years of experience in holistic and mindful coaching",
+      "Specialist in mindfulness practices and stress reduction",
+      "Supportive guidance for emotional well-being and building self-awareness",
     ],
     socials: [
       { label: "Instagram", href: "" },
@@ -65,11 +68,11 @@ const aboutList = [
   },
   {
     description:
-      "Hi, I’m Karam Chand Verma, an accomplished Wellness Coach committed to improving lives through evidence-based nutrition and lifestyle guidance. Leveraging Nutrigenomics insights, I create effective, personalized plans that drive real, lasting results. With more than 2 years of coaching experience, I have successfully assisted over 200 clients in achieving their wellness goals.",
+      "Hi, I’m Karam Chand Verma, a seasoned and certified Wellness and Lifestyle Coach with over 2 years of experience in facilitating profound, long-term health transformations. I am passionate about applying evidence-based nutritional science and behavioral psychology to help clients achieve sustainable vitality and overcome chronic lifestyle issues.",
     points: [
-      "Certification in Nutrigenomics and personalized wellness programs",
-      "2+ years of experience helping individuals achieve optimal health",
-      "Delivered transformative results for 200+ satisfied clients",
+      "2 years of experience in transformational health coaching",
+      "Expert in advanced nutrition and the science of habit formation",
+      "In-depth guidance for weight management and reversing negative health trends",
     ],
     socials: [
       { label: "Instagram", href: "" },
