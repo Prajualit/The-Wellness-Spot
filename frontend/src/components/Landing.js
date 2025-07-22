@@ -16,9 +16,7 @@ export default function Landing() {
           id="main-hero-block"
         >
           <h1 className="text-5xl font-extrabold text-gray-900 mb-2 leading-tight font-[Montserrat]">
-            Unlock Your
-            <span className="text-primary">Best Self</span> with <br></br>
-            <span className="text-primary">Personal Fitness Training</span>
+            Unlock Your Best Self with Personal Fitness Training
           </h1>
           <p className="text-lg text-gray-700 font-medium mb-4">
             Transform your body, boost your energy, and achieve your fitness
@@ -29,7 +27,7 @@ export default function Landing() {
             <Link href="/booking">
               <button
                 id="book-session-btn"
-                className="px-7 py-3 text-white rounded-lg cursor-pointer font-bold text-lg shadow-lg bg-green-600 hover:bg-green-700 duration-300 ease-in-out tracking-wide flex items-center gap-2"
+                className="px-7 py-3 text-white rounded-lg cursor-pointer font-bold text-lg shadow-lg bg-green-600 hover:bg-green-700 duration-300 ease-in-out tracking-wide flex items-center gap-2 "
               >
                 <svg
                   className="svg-inline--fa fa-calendar-check"
@@ -59,7 +57,7 @@ export default function Landing() {
         >
           <div className="relative">
             <Image
-              className="rounded-2xl  object-cover shadow-xl border-4 border-white"
+              className="rounded-2xl max-xl:mt-10 object-cover shadow-xl border-4 border-white"
               src={homeimage}
               height={350}
               alt="athletic fitness trainer male posing gym, motivational, high contrast, professional, editorial, dribbble style"

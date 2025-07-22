@@ -26,7 +26,7 @@ export default function Product() {
           </div>
 
           {/* Photo Frame Wall */}
-          <div className="relative min-h-[500px] flex items-center justify-center">
+          <div className="relative min-h-[500px] flex max-md:flex-col max-md:space-y-10 max-md:mt-10 items-center justify-center">
             {/* Decorative elements */}
             <div className="absolute top-10 left-10 text-yellow-400 text-2xl animate-pulse">
               ⭐
@@ -42,7 +42,7 @@ export default function Product() {
             </div>
 
             {/* Photo Frame 1 - Tilted left and positioned left */}
-            <div className="absolute transform -rotate-6 hover:rotate-0 transition-all duration-500 hover:scale-110 hover:z-10 -translate-x-40 -translate-y-8 hover:shadow-3xl">
+            <div className="md:absolute transform md:-rotate-6 hover:rotate-0 transition-all duration-500 hover:scale-110 hover:z-10 md:-translate-x-40 md:-translate-y-8 hover:shadow-3xl">
               <div className="bg-white p-5 shadow-2xl shadow-gray-400/50 rounded-sm hover:shadow-emerald-200/30 transition-shadow duration-300">
                 <div className="relative">
                   <Image
@@ -68,7 +68,7 @@ export default function Product() {
             </div>
 
             {/* Photo Frame 2 - Tilted right and positioned right */}
-            <div className="absolute transform rotate-4 hover:rotate-0 transition-all duration-500 hover:scale-110 hover:z-10 translate-x-40 translate-y-8 hover:shadow-3xl">
+            <div className="md:absolute transform md:rotate-4 hover:rotate-0 transition-all duration-500 hover:scale-110 hover:z-10 md:translate-x-40 md:translate-y-8 hover:shadow-3xl">
               <div className="bg-white p-5 shadow-2xl shadow-gray-400/50 rounded-sm hover:shadow-blue-200/30 transition-shadow duration-300">
                 <div className="relative">
                   <Image

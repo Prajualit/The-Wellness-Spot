@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import LoadingButton from "@/components/ui/LoadingButton.jsx";
@@ -72,11 +72,11 @@ export default function Navbar() {
               src={user?.avatarUrl}
               width={40}
               height={40}
-              alt={`Profile picture of ${user.name || 'User'}`}
+              alt={`Profile picture of ${user.name || "User"}`}
               className="w-full h-full rounded-full object-cover"
               onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'flex';
+                e.target.style.display = "none";
+                e.target.nextSibling.style.display = "flex";
               }}
             />
           ) : (
@@ -89,7 +89,11 @@ export default function Navbar() {
     </div>
   ) : (
     <Button variant="outline" className="cursor-pointer">
-      <Link href="/login" className="flex items-center gap-2" aria-label="Login to your account">
+      <Link
+        href="/login"
+        className="flex items-center gap-2"
+        aria-label="Login to your account"
+      >
         <LoginIcon aria-hidden="true" />
         Login
       </Link>
@@ -103,16 +107,20 @@ export default function Navbar() {
         className="flex items-center gap-3 hover:opacity-80 transition-opacity"
         aria-label="The Wellness Spot - Home"
       >
-        <Image 
-          src={Wellnesslogo2} 
-          height={45} 
+        <Image
+          src={Wellnesslogo2}
+          height={45}
           alt="The Wellness Spot Logo"
           priority
         />
       </Link>
 
       <div className="flex items-center sm:w-full justify-end space-x-5">
-        <nav className="hidden lg:flex gap-6" role="navigation" aria-label="Main navigation">
+        <nav
+          className="hidden lg:flex gap-6"
+          role="navigation"
+          aria-label="Main navigation"
+        >
           {getVisibleNavItems().map((item) => (
             <Link
               key={item.label}
@@ -132,12 +140,21 @@ export default function Navbar() {
       <div className="lg:hidden">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Open mobile navigation menu">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Open mobile navigation menu"
+            >
               <Menu className="w-5 h-5" />
             </Button>
           </SheetTrigger>
+          <SheetTitle></SheetTitle>
           <SheetContent side="right" className="w-[250px] p-6">
-            <nav className="flex flex-col gap-4 mt-8" role="navigation" aria-label="Mobile navigation">
+            <nav
+              className="flex flex-col gap-4 mt-8"
+              role="navigation"
+              aria-label="Mobile navigation"
+            >
               {getVisibleNavItems().map((item) => (
                 <Link
                   key={item.label}

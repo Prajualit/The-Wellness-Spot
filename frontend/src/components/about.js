@@ -9,11 +9,10 @@ import Link from "next/link";
 const aboutList = [
   {
     description:
-      "Hi, I’m Jyoti Parkash, a Certified Wellness Coach specializing in Nutrigenomics. With 3 years of hands-on experience, I have helped over 300 clients achieve their health and wellness goals by personalizing nutrition and lifestyle strategies based on their unique genetic makeup. My passion is empowering individuals to unlock their best selves through science-backed, holistic coaching.",
+      "Hi, I’m Jyoti Parkash, a Certified Wellness Coach specializing in Nutrigenomics. With 3 years of experience, I have helped over 300 clients achieve their health goals by personalizing nutrition based on their unique genetic makeup.",
     points: [
       "Certified Wellness Coach in Nutrigenomics",
       "3+ years of professional coaching experience",
-      "Transformed the lives of 300+ happy clients",
     ],
     socials: [
       {
@@ -26,10 +25,9 @@ const aboutList = [
   },
   {
     description:
-      "Hi, I’m Poonam, a dedicated Wellness and Lifestyle Coach with 2 years of experience helping individuals achieve healthier, more balanced lives. I am passionate about guiding clients to make sustainable lifestyle changes, improve their well-being, and reach their personal health goals through practical, holistic strategies.",
+      "Hi, I’m Poonam, a dedicated Wellness and Lifestyle Coach with 2 years of experience helping individuals achieve healthier, more balanced lives.",
     points: [
       "2 years of experience as a Wellness and Lifestyle Coach",
-      "Expert in creating personalized wellness plans",
       "Supportive guidance for nutrition, fitness, and mindset",
     ],
     socials: [
@@ -40,11 +38,10 @@ const aboutList = [
   },
   {
     description:
-      "Hi, I’m Pamnesh Sharma, an energetic Wellness and Lifestyle Coach with 2 years of experience, specializing in helping busy professionals enhance their performance and prevent burnout. I am passionate about integrating practical, high-impact wellness strategies into demanding schedules to boost both productivity and personal health.",
+      "Hi, I’m Pamnesh Sharma, an energetic Wellness and Lifestyle Coach with 2 years of experience, specializing in helping busy professionals enhance their performance and prevent burnout.",
     points: [
       "2 years of experience coaching professionals and executives",
       "Expert in stress management and energy optimization techniques",
-      "Action-oriented guidance for nutrition and fitness in a corporate lifestyle",
     ],
     socials: [
       { label: "Instagram", href: "" },
@@ -54,11 +51,10 @@ const aboutList = [
   },
   {
     description:
-      "Hi, I’m Puja, an empathetic and certified Wellness and Lifestyle Coach with 2 years of experience focused on guiding individuals towards inner peace and emotional balance. I am passionate about using mindfulness and holistic self-care practices to help clients reduce anxiety, build resilience, and foster a harmonious mind-body connection.",
+      "Hi, I’m Puja, an empathetic and certified Wellness and Lifestyle Coach with 2 years of experience focused on guiding individuals towards inner peace and emotional balance.",
     points: [
       "2 years of experience in holistic and mindful coaching",
       "Specialist in mindfulness practices and stress reduction",
-      "Supportive guidance for emotional well-being and building self-awareness",
     ],
     socials: [
       { label: "Instagram", href: "" },
@@ -68,11 +64,10 @@ const aboutList = [
   },
   {
     description:
-      "Hi, I’m Karam Chand Verma, a seasoned and certified Wellness and Lifestyle Coach with over 2 years of experience in facilitating profound, long-term health transformations. I am passionate about applying evidence-based nutritional science and behavioral psychology to help clients achieve sustainable vitality and overcome chronic lifestyle issues.",
+      "Hi, I’m Karam Chand Verma, a seasoned and certified Wellness and Lifestyle Coach with over 2 years of experience in facilitating profound, long-term health transformations.",
     points: [
       "2 years of experience in transformational health coaching",
       "Expert in advanced nutrition and the science of habit formation",
-      "In-depth guidance for weight management and reversing negative health trends",
     ],
     socials: [
       { label: "Instagram", href: "" },
@@ -111,42 +106,53 @@ export default function About() {
         <h2 className="text-4xl font-extrabold text-center text-black mb-12">
           Meet Your Trainers
         </h2>
-        {aboutList.map((about, idx) => (
-          <div
-            key={idx}
-            className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12"
-          >
+        <div className="grid  xl:grid-cols-2 space-y-16 ">
+          {aboutList.map((about, idx) => (
             <div
-              className="flex-1 flex items-center justify-center"
-              id="about-avatar-block"
+              key={idx} 
+              className="max-w-4xl mx-auto flex flex-col md:flex-row items-center md:space-x-5 space-y-5"
             >
-              <Image
-                src={about.image}
-                alt="Owner"
-                className="rounded-2xl shadow-lg w-56 h-64 object-cover border-4 border-black"
-              />
-            </div>
-            <div className="flex-1" id="about-owner-content-block">
-              <p className="text-lg text-gray-700 mb-4">{about.description}</p>
-              <ul className="space-y-2 mb-6">
-                {about.points.map((point, i) => (
-                  <li key={i} className="flex items-center gap-2 text-gray-800">
-                    <CheckIcon /> {point}
-                  </li>
-                ))}
-              </ul>
-              <div className="flex gap-4 text-black mt-2">
-                {about.socials.map((social, i) => (
-                  <Link key={i} href={social.href}>
-                    <span className="text-black hover:underline font-semibold flex items-center gap-1 cursor-pointer">
-                      {social.label}
-                    </span>
-                  </Link>
-                ))}
+              <div
+                className="flex items-center justify-center"
+                id="about-avatar-block"
+              >
+                <div className="w-40 h-52 rounded-2xl shadow-lg border-4 border-black overflow-hidden flex items-center justify-center">
+                  <Image
+                    src={about.image}
+                    alt="Owner"
+                    width={160}
+                    height={208}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              </div>
+              <div className="" id="about-owner-content-block">
+                <p className="text-md text-gray-700 mb-4">
+                  {about.description}
+                </p>
+                <ul className="space-y-2 mb-6 text-sm">
+                  {about.points.map((point, i) => (
+                    <li
+                      key={i}
+                      className="flex items-center gap-2 text-gray-800"
+                    >
+                      <CheckIcon /> {point}
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex gap-4 text-black mt-2">
+                  {about.socials.map((social, i) => (
+                    <Link key={i} href={social.href}>
+                      <span className="text-black hover:underline font-semibold flex items-center gap-1 cursor-pointer">
+                        {social.label}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </section>
     </div>
   );
