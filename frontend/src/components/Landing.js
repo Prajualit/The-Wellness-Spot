@@ -9,21 +9,20 @@ export default function Landing() {
     <div>
       <main
         id="home"
-        className="relative bg-gradient-to-br from-[#e3fcec] via-white to-[#e8f0fe] flex flex-col lg:flex-row items-center justify-between px-12 py-20 lg:py-32 w-full space-x-20"
+        className="relative bg-gradient-to-br from-[#e3fcec] via-white to-[#e8f0fe] flex flex-col lg:flex-row items-center justify-between px-12 py-20 lg:py-32 w-full xl:space-x-20 "
       >
         <div
-          className="flex-1 flex flex-col gap-7 "
-          id="main-hero-block"
+          className="flex flex-col gap-7 max-sm:gap-0 max-xl:space-y-20 max-xl:items-center max-xl:justify-center max-sm:text-center xl:w-[50%]"
         >
-          <h1 className="text-5xl font-extrabold text-gray-900 mb-2 leading-tight font-[Montserrat]">
+          <h1 className="text-5xl text-start font-extrabold text-gray-900 mb-2 leading-tight font-[Montserrat]">
             Unlock Your Best Self with Personal Fitness Training
           </h1>
-          <p className="text-lg text-gray-700 font-medium mb-4">
+          <p className="text-lg text-start text-gray-700 font-medium mb-4">
             Transform your body, boost your energy, and achieve your fitness
             goals with personalized coaching, smart nutrition, and a motivating
             community.
           </p>
-          <div className="flex gap-5 mt-2">
+          <div className="flex gap-5 mt-2 ">
             <Link href="/booking">
               <button
                 id="book-session-btn"
