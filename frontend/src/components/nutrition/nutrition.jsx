@@ -7,10 +7,10 @@ import { FaWeightScale } from "react-icons/fa6";
 import { GiWeightLiftingUp, GiWeightScale, } from "react-icons/gi";
 import { IoIosBody } from "react-icons/io";
 import { AiFillSkin, AiOutlineSkin } from "react-icons/ai";
-import yoga1 from '../../app/assets/yoga1.jpg';
-import yoga2 from '../../app/assets/yoga2.jpg';
-import yoga3 from '../../app/assets/yoga3.jpg';
 import slider1 from '../../app/assets/slider/slider1.jpg';
+import slider2 from '../../app/assets/slider/slider2.jpg';
+import slider3 from '../../app/assets/slider/slider3.jpg';
+import slider4 from '../../app/assets/slider/slider4.jpg';
 import weightloss from '../../app/assets/weightloss.jpg';
 import weightgain from '../../app/assets/weightgain.jpg';
 import weightmaintainence from '../../app/assets/weightmaintainence.jpg';
@@ -36,9 +36,9 @@ export default function HealthPage() {
   // Sample image URLs for carousel and cards (replace with your own)
   const heroImages = [
     slider1, // Main hero image
-    // yoga1, // Healthy foods, fitness, happy people
-    // yoga2, // Group exercise
-    // yoga3, // Family health
+    slider2,
+    slider3,
+    slider4,
   ];
 
   // Example: Where to add images for each section (replace with your own paths)
@@ -121,7 +121,7 @@ export default function HealthPage() {
                       src={img}
                       alt="Health & Wellness"
                       draggable={false}
-                      className="w-full h-64 md:h-96 object-cover rounded-lg"
+                      className="w-full h-64 md:h-96 object-contain rounded-lg"
                     />
                   </SwiperSlide>
                 ))}
