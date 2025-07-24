@@ -59,17 +59,12 @@ const UpdateAvatar = () => {
 
     const handleSubmitFile = async () => {
         if (!file) {
-            console.error("Please select a file first");
             return;
         }
 
-        console.log("File to upload:", file);
         const formData = new FormData();
         formData.append("file", file);
 
-        for (let pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
-        }
         try {
             const response = await axios.post(
                 "/users/update-avatar",
@@ -83,18 +78,12 @@ const UpdateAvatar = () => {
             );
 
             if (response.status === 200) {
-                console.log("File uploaded successfully");
                 setFile(null);
                 setPreviewUrl(null);
                 dispatch(updateUser({ avatarUrl: response.data.data.avatarUrl }));
-            } else {
-                console.error("Failed to upload file");
             }
         } catch (error) {
-            if (error.response) {
-                console.error("Backend error response:", error.response.data);
-            }
-            console.error("Error uploading file:", error);
+            // Optionally handle error silently or show a user-friendly message
         }
     };
 
