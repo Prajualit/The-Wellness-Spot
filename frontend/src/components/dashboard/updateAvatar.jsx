@@ -63,6 +63,7 @@ const UpdateAvatar = () => {
             return;
         }
 
+        console.log("File to upload:", file);
         const formData = new FormData();
         formData.append("file", file);
 
@@ -73,9 +74,13 @@ const UpdateAvatar = () => {
             const response = await axios.post(
                 "/users/update-avatar",
                 formData,
-                { withCredentials: true }
+                {
+                    withCredentials: true,
+                    headers: {
+                        // Let axios set Content-Type automatically for FormData
+                    },
+                }
             );
-
 
             if (response.status === 200) {
                 console.log("File uploaded successfully");
@@ -86,6 +91,9 @@ const UpdateAvatar = () => {
                 console.error("Failed to upload file");
             }
         } catch (error) {
+            if (error.response) {
+                console.error("Backend error response:", error.response.data);
+            }
             console.error("Error uploading file:", error);
         }
     };
