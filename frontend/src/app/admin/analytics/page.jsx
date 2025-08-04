@@ -48,7 +48,6 @@ export default function StatsPage() {
         if (!mountedRef.current) return
 
         try {
-            console.log('Fetching analytics data...', { isRealTime })
             setError(null)
 
             const response = await fetchWithTimeout('/api/analytics', {
@@ -77,7 +76,6 @@ export default function StatsPage() {
             }
 
             const data = await response.json()
-            console.log('Analytics data received:', data)
 
             // Only update state if component is still mounted
             if (mountedRef.current) {
@@ -94,10 +92,8 @@ export default function StatsPage() {
                 }))
                 setLastUpdated(new Date())
                 setIsLoading(false)
-                console.log('Analytics data loaded successfully')
             }
         } catch (error) {
-            console.error('Failed to fetch analytics:', error)
             if (mountedRef.current) {
                 setError(error.message)
                 setIsLoading(false)

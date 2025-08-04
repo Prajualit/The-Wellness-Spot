@@ -13,15 +13,11 @@ const Table = () => {
         try {
             const response = await axios.delete(`/users/remove-record/${recordId}`);
             if (response.status === 200) {
-                console.log(response.data);
                 const { updatedUser } = response.data;
                 dispatch(updateUser(updatedUser));
-                console.log('Record deleted successfully');
-            } else {
-                console.log('Failed to delete record: ' + response.data.message);
             }
         } catch (error) {
-            console.error('Error deleting record:', error);
+            // Handle delete error
         }
     };
 

@@ -37,11 +37,10 @@ export default function Navbar() {
       const response = await axios.post("/users/logout");
       if (response.status === 200) {
         dispatch(clearUser());
-        console.log("Logout successful");
         router.push("/login");
       }
     } catch (error) {
-      console.error("Logout failed:", error);
+      // Handle logout error
     }
   };
 

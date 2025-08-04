@@ -10,7 +10,6 @@ import AddRecord from "./AddRecord";
 
 export default function Dashboard() {
   const user = useSelector((state) => state.user.user);
-  console.log("User in Dashboard:", user);
 
   const firstRecord = user?.records?.[0];
 

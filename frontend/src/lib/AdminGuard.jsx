@@ -30,8 +30,7 @@ export default function AdminGuard({ children }) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Loading admin...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-green-800 mx-auto"></div>
                 </div>
             </div>
         );
@@ -42,8 +41,7 @@ export default function AdminGuard({ children }) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Redirecting...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-green-800 mx-auto"></div>
                 </div>
             </div>
         );

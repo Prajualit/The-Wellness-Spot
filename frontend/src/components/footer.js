@@ -55,7 +55,6 @@ export default function Footer() {
       setSubmitStatus("Message sent successfully!");
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      console.error("EmailJS error:", error);
       setSubmitStatus("Failed to send message. Please try again.");
     } finally {
       setIsSubmitting(false);

@@ -49,7 +49,6 @@ export async function GET() {
       recentActivity,
     });
   } catch (error) {
-    console.error("Real-time analytics API error:", error);
     return NextResponse.json(
       { error: "Failed to fetch real-time data", details: error.message },
       { status: 500 }
