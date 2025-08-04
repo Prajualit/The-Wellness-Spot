@@ -12,23 +12,29 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action) {
-      state.user = action.payload;
-      state.isAdmin = action.payload?.isAdmin || false; // 🟩 Automatically sync isAdmin
+      // Ensure we only store serializable data
+      const userData = JSON.parse(JSON.stringify(action.payload));
+      state.user = userData;
+      state.isAdmin = userData?.isAdmin || false;
     },
     updateUser(state, action) {
       if (state.user) {
-        state.user = { ...state.user, ...action.payload };
-        if (typeof action.payload.isAdmin !== "undefined") {
-          state.isAdmin = action.payload.isAdmin;
+        // Ensure we only store serializable data
+        const updateData = JSON.parse(JSON.stringify(action.payload));
+        state.user = { ...state.user, ...updateData };
+        if (typeof updateData.isAdmin !== "undefined") {
+          state.isAdmin = updateData.isAdmin;
         }
       }
     },
     addUserRecord(state, action) {
-      state.records.push(action.payload);
+      // Ensure we only store serializable data
+      const recordData = JSON.parse(JSON.stringify(action.payload));
+      state.records.push(recordData);
     },
     clearUser(state) {
       state.user = null;
-      state.isAdmin = false; // 🟩 Clear isAdmin
+      state.isAdmin = false;
     },
   },
 });
