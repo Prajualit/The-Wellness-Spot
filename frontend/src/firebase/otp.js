@@ -11,10 +11,10 @@ export const setupRecaptcha = () => {
       {
         size: "invisible",
         callback: (response) => {
-          console.log("reCAPTCHA solved:", response);
+          // reCAPTCHA solved
         },
         "expired-callback": () => {
-          console.log("reCAPTCHA expired");
+          // reCAPTCHA expired
         },
       }
     );

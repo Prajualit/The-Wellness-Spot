@@ -1,38 +1,26 @@
 "use client";
-import React, { useEffect } from 'react';
+import React from 'react';
 import Dashboard from '../../components/dashboard/dashboard.jsx';
 import Footer from '@/components/footer.js';
-import { useSelector } from 'react-redux';
-import { useRouter } from 'next/navigation';
+import { useTokenAuth } from '@/hooks/useTokenAuth.js';
 
 const Page = () => {
-    const user = useSelector((state) => state.user.user);
-    const router = useRouter();
+    const { isAuthenticated, isLoading } = useTokenAuth();
 
-    useEffect(() => {
-        // Simple check: if no user in Redux, redirect to login
-        if (!user) {
-            // Add a small delay to prevent immediate redirect after login
-            const timer = setTimeout(() => {
-                if (!user) {
-                    router.push('/login');
-                }
-            }, 1000); // 1 second delay
-
-            return () => clearTimeout(timer);
-        }
-    }, [user, router]);
-
-    // Show loading while user data is being loaded
-    if (!user) {
+    // Show loading while checking authentication
+    if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Loading...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-green-800 mx-auto"></div>
                 </div>
             </div>
         );
+    }
+
+    // Only render dashboard if authenticated
+    if (!isAuthenticated) {
+        return null; // This shouldn't happen due to redirects in hook, but safety check
     }
 
     return (

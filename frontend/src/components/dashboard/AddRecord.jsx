@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { updateUser } from "@/redux/Slice/userSlice.js";
 import axios from "@/lib/axios.js";
 import LoadingButton from "@/components/ui/LoadingButton.jsx";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 
 const AddRecord = () => {
@@ -36,17 +37,16 @@ const AddRecord = () => {
             });
 
             if (response.status === 200) {
-                console.log("Record added successfully:", response.data);
                 const { newRecord, allRecords } = response.data.data;
                 dispatch(updateUser({ records: allRecords }));
                 setWeight('');
                 setHeight('');
                 setAge('');
             } else {
-                console.log("Failed to add record: " + response.data.message);
+                // Failed to add record
             }
         } catch (error) {
-            console.error("Error adding record:", error);
+            // Error adding record
         } finally {
             setPending(false);
         }
@@ -65,7 +65,12 @@ const AddRecord = () => {
             </DialogTrigger>
 
             <DialogContent className="bg-white h-fit w-[40%]">
-                <DialogHeader><DialogTitle></DialogTitle></DialogHeader>
+                <VisuallyHidden asChild>
+                    <DialogHeader>
+                        <DialogTitle>Add a New Record</DialogTitle>
+                        <DialogDescription>Add your health measurements to track your progress over time.</DialogDescription>
+                    </DialogHeader>
+                </VisuallyHidden>
                 <div className="text-sm text-neutral-500">
                     <Card className="w-full border-none shadow-none ">
                         <CardHeader>

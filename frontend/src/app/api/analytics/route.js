@@ -62,13 +62,10 @@ async function fetchRealtimeUsers() {
 
 export async function POST(request) {
   try {
-    console.log("Analytics API called at:", new Date().toISOString());
-
     let requestData = {};
     try {
       requestData = await request.json();
     } catch {
-      console.log("No JSON body or invalid JSON, using defaults");
       requestData = {
         startDate: null,
         endDate: null,
@@ -78,7 +75,6 @@ export async function POST(request) {
     }
 
     const { startDate, endDate, metrics, realTime } = requestData;
-    console.log("Request params:", { startDate, endDate, metrics, realTime });
 
     // Fetch historical analytics data
     const analyticsData = await fetchAnalyticsData({
@@ -108,8 +104,6 @@ export async function POST(request) {
       lastUpdated: new Date().toISOString(),
     };
 
-    console.log("Returning real analytics data");
-
     const response = NextResponse.json(responseData);
     response.headers.set(
       "Cache-Control",
@@ -120,8 +114,6 @@ export async function POST(request) {
 
     return response;
   } catch (error) {
-    console.error("Analytics API error:", error);
-
     const fallbackData = {
       error: true,
       message: "Failed to fetch analytics data",
@@ -139,8 +131,6 @@ export async function POST(request) {
 }
 
 export async function GET(request) {
-  console.log("GET request to analytics API");
-
   // Provide default data if GET is called without body
   const mockRequest = {
     json: () =>

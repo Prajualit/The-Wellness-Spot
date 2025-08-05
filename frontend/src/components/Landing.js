@@ -60,6 +60,7 @@ export default function Landing() {
               src={homeimage}
               height={350}
               alt="athletic fitness trainer male posing gym, motivational, high contrast, professional, editorial, dribbble style"
+              priority
             ></Image>
             
           </div>

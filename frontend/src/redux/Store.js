@@ -10,6 +10,21 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage for
 const userPersistConfig = {
   key: "user",
   storage,
+  // Add serialize/deserialize to ensure clean data
+  serialize: (state) => {
+    try {
+      return JSON.stringify(state);
+    } catch (error) {
+      return JSON.stringify({});
+    }
+  },
+  deserialize: (serializedState) => {
+    try {
+      return JSON.parse(serializedState);
+    } catch (error) {
+      return {};
+    }
+  },
 };
 
 const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
@@ -21,7 +36,14 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, // to avoid redux-persist warnings
+      serializableCheck: {
+        // Ignore these action types for redux-persist
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+        // Ignore these field paths in all actions
+        ignoredActionsPaths: ['meta.arg', 'payload.timestamp'],
+        // Ignore these paths in the state
+        ignoredPaths: ['user.register'],
+      },
     }),
 });
 

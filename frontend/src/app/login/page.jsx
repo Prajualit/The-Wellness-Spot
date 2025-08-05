@@ -11,7 +11,6 @@ import { sendOTP, confirmOTP } from "@/firebase/otp.js";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/Slice/userSlice.js";
-import { testApiConnection, testValidateEndpoint } from "@/utils/apiTest";
 
 export default function LoginPage() {
     const [isOtpSent, setIsOtpSent] = useState(false);
@@ -33,13 +32,6 @@ export default function LoginPage() {
         if (recaptchaContainer) {
             // Clear any existing recaptcha
             recaptchaContainer.innerHTML = '';
-        }
-        
-        // Test API connection in development/debugging
-        if (process.env.NODE_ENV === 'development') {
-            testApiConnection().then(result => {
-                console.log('🔬 API Connection Test:', result);
-            });
         }
     }, []);
 
@@ -71,7 +63,6 @@ export default function LoginPage() {
                 
                 // Wait with exponential backoff: 1s, 2s, 4s
                 const delay = baseDelay * Math.pow(2, attempt - 1);
-                console.log(`Attempt ${attempt} failed, retrying in ${delay}ms...`);
                 await new Promise(resolve => setTimeout(resolve, delay));
             }
         }
@@ -100,7 +91,6 @@ export default function LoginPage() {
             
             // Validate user details with backend before sending OTP
             try {
-                console.log("Validating user details with backend...");
                 const response = await retryRequest(async () => {
                     return await axios.post("/users/validate", {
                         name: trimmedName,
@@ -109,10 +99,7 @@ export default function LoginPage() {
                         timeout: 15000, // 15 seconds specific timeout for validation
                     });
                 });
-                console.log("Validation successful:", response.data);
             } catch (validationError) {
-                console.error("❌ RESPONSE ERROR: POST /users/validate -", validationError);
-                console.error("Validation failed:", validationError);
                 
                 let errorMessage = "Validation failed. Please try again.";
                 
@@ -144,7 +131,6 @@ export default function LoginPage() {
             
             const fullPhone = "+91" + trimmedPhone;
 
-            console.log("Sending OTP to:", fullPhone);
             const result = await sendOTP(fullPhone);
 
             if (!result) {
@@ -156,7 +142,6 @@ export default function LoginPage() {
             setError("");
 
         } catch (err) {
-            console.error("Failed to send OTP:", err);
             setError(err.message || "Failed to send OTP. Please try again.");
         } finally {
             setLoading(false);
@@ -183,37 +168,35 @@ export default function LoginPage() {
 
             setVerifyLoading(true);
 
-            console.log("Verifying OTP:", trimmedOTP);
             const result = await confirmOTP(confirmationResult, trimmedOTP);
 
             if (!result || !result.user) {
                 throw new Error("OTP verification failed");
             }
 
-            console.log("OTP verified, getting ID token...");
             const idToken = await result.user.getIdToken(true);
 
             if (!idToken) {
                 throw new Error("Failed to get authentication token");
             }
 
-            console.log("Logging in user...");
             const response = await axios.post("/users/login", {
                 idToken: idToken,
                 name: name.trim()
             });
 
-            console.log("Login response:", response);
-
             if (response.status === 200 && response.data?.data?.user) {
                 dispatch(setUser(response.data.data.user));
+                
+                // Small delay to allow state to update
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
                 router.push("/dashboard");
             } else {
                 throw new Error(response.data?.message || "Login failed");
             }
 
         } catch (error) {
-            console.error("OTP verification failed:", error);
             let errorMessage = "OTP verification failed. Please try again.";
 
             if (error.response?.data?.message) {

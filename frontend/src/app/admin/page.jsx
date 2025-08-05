@@ -8,9 +8,11 @@ import Image from "next/image";
 import ViewRecord from "@/components/admin/ViewRecord.jsx";
 import UserCircleSolidIcon from '@/components/svg/UserCircleSolidIcon';
 import Header from "@/components/dashboard/header";
+import { useTokenAuth } from '@/hooks/useTokenAuth.js';
 
 export default function AdminDashboard() {
     const [users, setUsers] = useState(null);
+    const { isAuthenticated, isLoading } = useTokenAuth();
 
     const Thead = ["Photo", "Name", "Phone", "Joined At", "Last Active", "Records", "Actions"];
 
@@ -19,16 +21,14 @@ export default function AdminDashboard() {
             try {
                 const res = await axios.post("/admin/get-all-users");
                 if (res.status !== 200) {
-                    console.error("Failed to fetch stats:", res.data.message);
                     return;
                 } else {
                     const data = res.data.data;
                     const users = data.users;
-                    console.log("Users:", users);
                     setUsers(users);
                 }
             } catch (error) {
-                console.error("Error fetching stats:", error);
+                // Error fetching stats
             }
         }
         fetchStats();
@@ -42,13 +42,28 @@ export default function AdminDashboard() {
             const response = await axios.delete(`/admin/delete-user/${userId}`);
             if (response.status === 200) {
                 setUsers(users.filter(user => user._id !== userId));
-                console.log('User deleted successfully');
             }
         } catch (error) {
-            console.error('Error deleting user:', error);
             alert('Failed to delete user. Please try again.');
         }
     };
+
+    // Show loading while checking authentication
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Checking authentication...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Only render admin dashboard if authenticated
+    if (!isAuthenticated) {
+        return null; // This shouldn't happen due to redirects in hook, but safety check
+    }
 
     return (
         <AdminGuard>

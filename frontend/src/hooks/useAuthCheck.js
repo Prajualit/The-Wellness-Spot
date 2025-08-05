@@ -84,12 +84,10 @@ export const useAuthCheck = (skipApiValidation = false, skipAllValidation = fals
                     ]);
                 } catch (logoutErr) {
                     // Ignore logout errors - we're logging out anyway
-                    console.log("Logout API failed or timed out, continuing with client-side logout");
                 }
             }
         } catch (error) {
             // Ignore any errors during logout API call
-            console.log("Logout process error, continuing with client-side cleanup");
         }
 
         // Always perform client-side cleanup regardless of API success/failure
@@ -110,7 +108,6 @@ export const useAuthCheck = (skipApiValidation = false, skipAllValidation = fals
             isValidating.current = false;
             return true;
         } catch (err) {
-            console.error("API validation failed:", err);
             await handleUnauthenticated();
             return false;
         }
