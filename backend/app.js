@@ -11,6 +11,9 @@ import timeout from "connect-timeout";
 
 const app = express();
 
+// Trust proxy for services like Render, Vercel, etc.
+app.set('trust proxy', 1);
+
 // Add request timeout middleware (30 seconds)
 app.use(timeout('30s'));
 
@@ -29,6 +32,8 @@ app.use(
         "http://localhost:3000",
         "https://thewellnessspot.vercel.app",
         "https://www.thewellnessspot.vercel.app",
+        "https://thewellnessspot.co.in",
+        "https://www.thewellnessspot.co.in",
         process.env.CORS_ORIGIN,
         // Add Vercel preview URLs for thewellnessspot
         "https://thewellnessspot-git-main-prajualit.vercel.app",
@@ -75,6 +80,8 @@ app.use((req, res, next) => {
     "http://localhost:3000",
     "https://thewellnessspot.vercel.app",
     "https://www.thewellnessspot.vercel.app",
+    "https://thewellnessspot.co.in",
+    "https://www.thewellnessspot.co.in",
     process.env.CORS_ORIGIN,
     // Add Vercel preview URLs for thewellnessspot
     "https://thewellnessspot-git-main-prajualit.vercel.app",

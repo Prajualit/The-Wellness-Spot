@@ -53,11 +53,28 @@ instance.interceptors.response.use(
       console.log('🔐 LOGIN RESPONSE Debug:');
       console.log('- Response headers:', response.headers);
       console.log('- Set-Cookie headers:', response.headers['set-cookie']);
+      console.log('- Access-Control-Allow-Credentials:', response.headers['access-control-allow-credentials']);
+      console.log('- Access-Control-Allow-Origin:', response.headers['access-control-allow-origin']);
       console.log('- Document cookies after response:', document.cookie);
     }
     return response;
   },
   (error) => {
+    // Add debugging for CORS errors
+    if (error.response?.status === 0 || error.code === 'ERR_NETWORK') {
+      console.error('❌ NETWORK/CORS Error:', {
+        status: error.response?.status,
+        code: error.code,
+        message: error.message,
+        config: {
+          url: error.config?.url,
+          method: error.config?.method,
+          baseURL: error.config?.baseURL,
+          withCredentials: error.config?.withCredentials
+        }
+      });
+    }
+    
     // If 401 and not a public endpoint and not on login page, redirect to login
     if (error.response?.status === 401) {
       const publicEndpoints = ["/users/login", "/users/register", "/health"];

@@ -66,9 +66,12 @@ const loginUser = asyncHandler(async (req, res) => {
   const isProduction = process.env.NODE_ENV === "production";
   
   // For production, we need proper cross-origin cookie settings
+  // Detect if we're behind a proxy (like Render, Vercel, etc.)
+  const isSecureConnection = req.secure || req.headers['x-forwarded-proto'] === 'https';
+  
   const options = {
     httpOnly: true,
-    secure: isProduction, // Always secure in production
+    secure: isProduction && isSecureConnection, // Secure only if production AND https
     sameSite: isProduction ? "None" : "Lax", // None for cross-origin in production
     maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     path: "/",
@@ -77,13 +80,15 @@ const loginUser = asyncHandler(async (req, res) => {
 
   console.log('🍪 BACKEND: Setting cookies with options:', {
     isProduction,
+    isSecureConnection,
     options,
     accessTokenLength: accessToken?.length,
     refreshTokenLength: refreshToken?.length,
     requestOrigin: req.headers.origin,
     requestHost: req.headers.host,
     userAgent: req.headers['user-agent'],
-    secureConnection: req.secure || req.headers['x-forwarded-proto'] === 'https'
+    forwardedProto: req.headers['x-forwarded-proto'],
+    secure: req.secure
   });
 
   const response = res
