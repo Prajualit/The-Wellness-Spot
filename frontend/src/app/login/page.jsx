@@ -185,12 +185,49 @@ export default function LoginPage() {
                 name: name.trim()
             });
 
+            console.log('🔐 Login Response Debug:');
+            console.log('- Response status:', response.status);
+            console.log('- Response headers:', response.headers);
+            console.log('- Response data:', response.data);
+            console.log('- Document cookies after login:', document.cookie);
+            console.log('- Window location:', window.location.href);
+            console.log('- Is secure context:', window.isSecureContext);
+
             if (response.status === 200 && response.data?.data?.user) {
+                // Store tokens temporarily in localStorage for debugging
+                if (response.data?.data?.accessToken) {
+                    localStorage.setItem('debug_accessToken', response.data.data.accessToken);
+                    console.log('💾 Stored debug access token in localStorage');
+                }
+                if (response.data?.data?.refreshToken) {
+                    localStorage.setItem('debug_refreshToken', response.data.data.refreshToken);
+                    console.log('💾 Stored debug refresh token in localStorage');
+                }
+                
                 dispatch(setUser(response.data.data.user));
                 
-                // Small delay to allow state to update
-                await new Promise(resolve => setTimeout(resolve, 100));
+                // Extended delay to check state persistence
+                await new Promise(resolve => setTimeout(resolve, 1000));
                 
+                // Double-check state after setting user
+                console.log('🔍 Post-login state check:');
+                console.log('- Document cookies after wait:', document.cookie);
+                console.log('- Redux user data just set:', response.data.data.user);
+                console.log('- LocalStorage debug tokens:', {
+                    accessToken: localStorage.getItem('debug_accessToken') ? 'exists' : 'missing',
+                    refreshToken: localStorage.getItem('debug_refreshToken') ? 'exists' : 'missing'
+                });
+                
+                // Try to make an authenticated request to verify everything is working
+                try {
+                    const testResponse = await axios.get('/users/me');
+                    console.log('✅ Auth test successful:', testResponse.data);
+                } catch (testError) {
+                    console.error('❌ Auth test failed:', testError.response?.status, testError.response?.data);
+                    throw new Error('Authentication verification failed');
+                }
+                
+                console.log('🔄 Redirecting to dashboard...');
                 router.push("/dashboard");
             } else {
                 throw new Error(response.data?.message || "Login failed");

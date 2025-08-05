@@ -64,26 +64,43 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // Use consistent cookie options for both development and production
   const isProduction = process.env.NODE_ENV === "production";
+  
+  // For production, we need proper cross-origin cookie settings
   const options = {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "None" : "Lax",
+    secure: isProduction, // Always secure in production
+    sameSite: isProduction ? "None" : "Lax", // None for cross-origin in production
     maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     path: "/",
-    domain: isProduction ? undefined : undefined, // Let browser handle domain
+    // Don't set domain to let browser handle it automatically
   };
 
-  return res
+  console.log('🍪 BACKEND: Setting cookies with options:', {
+    isProduction,
+    options,
+    accessTokenLength: accessToken?.length,
+    refreshTokenLength: refreshToken?.length,
+    requestOrigin: req.headers.origin,
+    requestHost: req.headers.host,
+    userAgent: req.headers['user-agent'],
+    secureConnection: req.secure || req.headers['x-forwarded-proto'] === 'https'
+  });
+
+  const response = res
     .status(200)
     .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json(
-      new apiResponse(
-        200,
-        { user: loggedInUser, accessToken, refreshToken },
-        "User logged in successfully"
-      )
-    );
+    .cookie("refreshToken", refreshToken, options);
+
+  // Log response headers to see if cookies are being set
+  console.log('🍪 BACKEND: Response headers with cookies:', response.getHeaders());
+
+  return response.json(
+    new apiResponse(
+      200,
+      { user: loggedInUser, accessToken, refreshToken },
+      "User logged in successfully"
+    )
+  );
 });
 
 const logoutUser = asyncHandler(async (req, res) => {

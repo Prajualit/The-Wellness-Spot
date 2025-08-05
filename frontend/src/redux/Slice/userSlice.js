@@ -14,6 +14,7 @@ const userSlice = createSlice({
     setUser(state, action) {
       // Ensure we only store serializable data
       const userData = JSON.parse(JSON.stringify(action.payload));
+      console.log('🔄 Redux setUser:', userData);
       state.user = userData;
       state.isAdmin = userData?.isAdmin || false;
     },
@@ -33,6 +34,7 @@ const userSlice = createSlice({
       state.records.push(recordData);
     },
     clearUser(state) {
+      console.log('🗑️ Redux clearUser called');
       state.user = null;
       state.isAdmin = false;
     },

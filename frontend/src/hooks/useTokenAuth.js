@@ -16,8 +16,13 @@ export const useTokenAuth = () => {
 
     useEffect(() => {
         const checkAuth = async () => {
+            console.log('🔐 useTokenAuth: Starting auth check');
+            console.log('- User from Redux:', user ? 'exists' : 'null');
+            console.log('- Document cookies:', document.cookie);
+            
             // If no user in Redux, redirect to login
             if (!user) {
+                console.log('❌ useTokenAuth: No user in Redux, redirecting to login');
                 router.push('/login');
                 setIsChecking(false);
                 return;
@@ -25,9 +30,13 @@ export const useTokenAuth = () => {
 
             // User exists in Redux, now test if backend auth is working
             try {
+                console.log('🔍 useTokenAuth: Testing backend auth with /users/me');
                 await axios.get('/users/me'); // Simple authenticated endpoint
+                console.log('✅ useTokenAuth: Backend auth successful');
                 setIsAuthenticated(true);
             } catch (error) {
+                console.error('❌ useTokenAuth: Backend auth failed:', error.response?.status, error.response?.data);
+                console.log('- Redirecting to login due to backend auth failure');
                 router.push('/login');
             }
             
