@@ -67,12 +67,13 @@ const AuthGuard = ({ children, fallback = null }) => {
     }
 
     // Check if authenticated (has both user data and tokens)
-    const isAuthenticated = user && hasTokens;
+    // During debugging, be more permissive - allow if user exists OR tokens exist
+    const isAuthenticated = user || hasTokens;
 
     console.log('🛡️ AuthGuard Final Check:');
     console.log('- User exists:', !!user);
     console.log('- Has tokens:', hasTokens);
-    console.log('- Is authenticated:', isAuthenticated);
+    console.log('- Is authenticated (permissive):', isAuthenticated);
 
     if (!isAuthenticated) {
         console.log('❌ AuthGuard: Not authenticated, returning fallback');

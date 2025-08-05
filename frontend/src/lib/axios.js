@@ -40,9 +40,21 @@ instance.interceptors.request.use(
     // DEBUG FALLBACK: If no cookies are available, try to use localStorage token
     if (typeof window !== "undefined") {
       const debugToken = localStorage.getItem('debug_accessToken');
+      console.log('🔧 Request interceptor debug:', {
+        url: config.url,
+        method: config.method,
+        hasExistingAuth: !!config.headers.Authorization,
+        debugTokenExists: !!debugToken,
+        debugTokenLength: debugToken?.length
+      });
+      
       if (debugToken && !config.headers.Authorization) {
-        console.log('🔧 Using debug token from localStorage');
+        console.log('🔧 Adding Authorization header with debug token');
         config.headers.Authorization = `Bearer ${debugToken}`;
+      } else if (debugToken && config.headers.Authorization) {
+        console.log('🔧 Authorization header already exists, not overriding');
+      } else if (!debugToken) {
+        console.log('❌ No debug token found in localStorage');
       }
     }
 

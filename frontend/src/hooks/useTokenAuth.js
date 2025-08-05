@@ -30,13 +30,34 @@ export const useTokenAuth = () => {
 
             // User exists in Redux, now test if backend auth is working
             try {
-                console.log('🔍 useTokenAuth: Testing backend auth with /users/me');
-                await axios.get('/users/me'); // Simple authenticated endpoint
-                console.log('✅ useTokenAuth: Backend auth successful');
+                console.log('🔍 useTokenAuth: Testing backend auth with direct request');
+                
+                // Use direct axios call with explicit Authorization header
+                const debugToken = localStorage.getItem('debug_accessToken');
+                if (!debugToken) {
+                    throw new Error('No auth token available');
+                }
+                
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1"}/users/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${debugToken}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ useTokenAuth: Direct auth successful:', data);
                 setIsAuthenticated(true);
             } catch (error) {
-                console.error('❌ useTokenAuth: Backend auth failed:', error.response?.status, error.response?.data);
-                console.log('- Redirecting to login due to backend auth failure');
+                console.error('❌ useTokenAuth: Direct auth failed:', error);
+                console.log('- Redirecting to login due to auth failure');
                 router.push('/login');
             }
             

@@ -220,11 +220,18 @@ export default function LoginPage() {
                 
                 // Try to make an authenticated request to verify everything is working
                 try {
-                    const testResponse = await axios.get('/users/me');
-                    console.log('✅ Auth test successful:', testResponse.data);
+                    // Import the direct auth test
+                    const { testAuth } = await import('@/utils/authTest.js');
+                    const authSuccess = await testAuth();
+                    
+                    if (!authSuccess) {
+                        throw new Error('Direct authentication test failed');
+                    }
+                    
+                    console.log('✅ Authentication verified successfully');
                 } catch (testError) {
-                    console.error('❌ Auth test failed:', testError.response?.status, testError.response?.data);
-                    throw new Error('Authentication verification failed');
+                    console.error('❌ Auth verification failed:', testError);
+                    throw new Error('Authentication verification failed: ' + testError.message);
                 }
                 
                 console.log('🔄 Redirecting to dashboard...');
