@@ -16,8 +16,37 @@ const AuthGuard = ({ children, fallback = null }) => {
             }
 
             const cookies = document.cookie;
-            const hasAccess = cookies.includes('accessToken=');
-            const hasRefresh = cookies.includes('refreshToken=');
+            
+            // More robust cookie checking
+            const getCookieValue = (name) => {
+                const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                return match ? match[2] : null;
+            };
+            
+            const accessToken = getCookieValue('accessToken');
+            const refreshToken = getCookieValue('refreshToken');
+            
+            // Fallback: check localStorage for debug tokens
+            const debugAccessToken = localStorage.getItem('debug_accessToken');
+            const debugRefreshToken = localStorage.getItem('debug_refreshToken');
+            
+            const hasAccess = !!accessToken || !!debugAccessToken;
+            const hasRefresh = !!refreshToken || !!debugRefreshToken;
+            
+            // Add debugging logs for production
+            console.log('🍪 AuthGuard Cookie Debug:');
+            console.log('- All cookies:', cookies);
+            console.log('- Access token value:', accessToken ? 'exists' : 'missing');
+            console.log('- Refresh token value:', refreshToken ? 'exists' : 'missing');
+            console.log('- Debug access token (localStorage):', debugAccessToken ? 'exists' : 'missing');
+            console.log('- Debug refresh token (localStorage):', debugRefreshToken ? 'exists' : 'missing');
+            console.log('- Has accessToken:', hasAccess);
+            console.log('- Has refreshToken:', hasRefresh);
+            console.log('- Window location:', window.location.href);
+            console.log('- User agent:', navigator.userAgent);
+            console.log('- Is secure context:', window.isSecureContext);
+            console.log('- Document domain:', document.domain);
+            console.log('- Window location protocol:', window.location.protocol);
             
             setHasTokens(hasAccess && hasRefresh);
             setIsLoading(false);
@@ -40,10 +69,17 @@ const AuthGuard = ({ children, fallback = null }) => {
     // Check if authenticated (has both user data and tokens)
     const isAuthenticated = user && hasTokens;
 
+    console.log('🛡️ AuthGuard Final Check:');
+    console.log('- User exists:', !!user);
+    console.log('- Has tokens:', hasTokens);
+    console.log('- Is authenticated:', isAuthenticated);
+
     if (!isAuthenticated) {
+        console.log('❌ AuthGuard: Not authenticated, returning fallback');
         return fallback;
     }
 
+    console.log('✅ AuthGuard: Authenticated, rendering children');
     return children;
 };
 

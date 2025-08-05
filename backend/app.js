@@ -37,11 +37,19 @@ app.use(
       
       console.log("🌐 CORS: Request from origin:", origin);
       console.log("🌐 CORS: Allowed origins:", allowedOrigins);
+      console.log("🌐 CORS: Node env:", process.env.NODE_ENV);
       
-      // In development/testing, be more permissive
-      if (process.env.NODE_ENV !== 'production' || allowedOrigins.some(allowed => origin.includes(allowed.replace('https://', '')))) {
-        callback(null, true);
-      } else if (allowedOrigins.indexOf(origin) !== -1) {
+      // Check if the origin is allowed
+      const isAllowed = allowedOrigins.some(allowed => {
+        // Exact match
+        if (origin === allowed) return true;
+        // Check if it contains the domain (for preview URLs)
+        if (process.env.NODE_ENV !== 'production' && origin.includes(allowed.replace('https://', ''))) return true;
+        return false;
+      });
+      
+      if (isAllowed) {
+        console.log("✅ CORS: Origin allowed");
         callback(null, true);
       } else {
         console.warn("🚫 CORS: Origin not allowed:", origin);

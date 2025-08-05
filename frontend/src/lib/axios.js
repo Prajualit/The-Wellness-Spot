@@ -10,6 +10,13 @@ const instance = axios.create({
   },
 });
 
+console.log('🌐 Axios Configuration:', {
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1",
+  withCredentials: true,
+  nodeEnv: process.env.NODE_ENV,
+  windowLocation: typeof window !== 'undefined' ? window.location.href : 'server-side'
+});
+
 // Simple function to redirect to login (only if not already there)
 function redirectToLogin() {
   if (typeof window !== "undefined" && window.location.pathname !== "/login") {
@@ -41,6 +48,13 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (response) => {
+    // Add debugging for login responses to check cookies
+    if (response.config?.url?.includes('/login')) {
+      console.log('🔐 LOGIN RESPONSE Debug:');
+      console.log('- Response headers:', response.headers);
+      console.log('- Set-Cookie headers:', response.headers['set-cookie']);
+      console.log('- Document cookies after response:', document.cookie);
+    }
     return response;
   },
   (error) => {
