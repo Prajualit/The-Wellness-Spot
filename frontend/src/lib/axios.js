@@ -37,6 +37,15 @@ instance.interceptors.request.use(
       return config;
     }
 
+    // DEBUG FALLBACK: If no cookies are available, try to use localStorage token
+    if (typeof window !== "undefined") {
+      const debugToken = localStorage.getItem('debug_accessToken');
+      if (debugToken && !config.headers.Authorization) {
+        console.log('🔧 Using debug token from localStorage');
+        config.headers.Authorization = `Bearer ${debugToken}`;
+      }
+    }
+
     // For httpOnly cookies, we can't check them in JS, so let the request proceed
     // The backend will handle auth validation
     return config;

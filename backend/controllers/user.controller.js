@@ -99,10 +99,17 @@ const loginUser = asyncHandler(async (req, res) => {
   // Log response headers to see if cookies are being set
   console.log('🍪 BACKEND: Response headers with cookies:', response.getHeaders());
 
+  // For cross-origin scenarios, also return tokens in response body
+  // The frontend can store them as backup if cookies don't work
   return response.json(
     new apiResponse(
       200,
-      { user: loggedInUser, accessToken, refreshToken },
+      { 
+        user: loggedInUser, 
+        accessToken: accessToken, // Include for fallback auth
+        refreshToken: refreshToken, // Include for fallback auth
+        authMethod: 'cookies_with_fallback'
+      },
       "User logged in successfully"
     )
   );

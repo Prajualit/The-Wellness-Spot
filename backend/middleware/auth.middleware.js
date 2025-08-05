@@ -6,11 +6,15 @@ import { User } from "../models/user.model.js";
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   try {
     const authHeader = req.header("Authorization") || "";
-    const token =
-      req.cookies?.accessToken ||
-      (authHeader.startsWith("Bearer ")
-        ? authHeader.replace("Bearer ", "")
-        : null);
+    
+    // Try cookies first, then Authorization header
+    let token = req.cookies?.accessToken;
+    let authMethod = "cookies";
+    
+    if (!token && authHeader.startsWith("Bearer ")) {
+      token = authHeader.replace("Bearer ", "");
+      authMethod = "header";
+    }
 
     console.log('🔐 AUTH MIDDLEWARE Debug:');
     console.log('- Request URL:', req.originalUrl);
@@ -21,6 +25,7 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     console.log('- Token from cookies:', req.cookies?.accessToken ? 'exists' : 'missing');
     console.log('- Token from header:', authHeader.startsWith("Bearer ") ? 'exists' : 'missing');
     console.log('- Final token:', token ? 'exists' : 'missing');
+    console.log('- Auth method used:', authMethod);
 
     if (!token) {
       console.log('❌ AUTH MIDDLEWARE: No token found');
@@ -37,7 +42,7 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
         return next(new apiError(401, "Invalid Access token"));
       }
 
-      console.log('✅ AUTH MIDDLEWARE: Authentication successful for user:', user._id);
+      console.log(`✅ AUTH MIDDLEWARE: Authentication successful via ${authMethod} for user:`, user._id);
       req.user = user;
       next();
     } catch (err) {
