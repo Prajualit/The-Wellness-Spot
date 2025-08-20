@@ -4,25 +4,10 @@ import owner2 from "../app/assets/owner2.png";
 import owner3 from "../app/assets/owner3.jpg";
 import owner4 from "../app/assets/owner4.jpg";
 import owner5 from "../app/assets/owner5.jpg";
+import certificate from "@/app/assets/certification.jpg";
 import Link from "next/link";
 
 const aboutList = [
-  {
-    description:
-      "Hi, I’m Jyoti Parkash, a Certified Wellness Coach specializing in Nutrigenomics. With 3 years of experience, I have helped over 300 clients achieve their health goals by personalizing nutrition based on their unique genetic makeup.",
-    points: [
-      "Certified Wellness Coach in Nutrigenomics",
-      "3+ years of professional coaching experience",
-    ],
-    socials: [
-      {
-        label: "Instagram",
-        href: "https://www.instagram.com/jp3793?igsh=MTdkcjlpemlvd25oaw==",
-      },
-      { label: "Facebook", href: "https://www.facebook.com/share/1GZCZW8pCq/" },
-    ],
-    image: owner1,
-  },
   {
     description:
       "Hi, I’m Poonam, a dedicated Wellness and Lifestyle Coach with 2 years of experience helping individuals achieve healthier, more balanced lives.",
@@ -106,10 +91,73 @@ export default function About() {
         <h2 className="text-4xl font-extrabold text-center text-black mb-12">
           Meet Your Trainers
         </h2>
+        <div className="flex flex-col items-center justify-center space-y-10 xl:space-y-20">
+          <div className="border-4 border-double border-amber-600 p-4 bg-gradient-to-br from-amber-50 to-amber-100">
+            <Image
+              src={certificate}
+              alt="Owner"
+              width={200}
+              height={300}
+              className="object-cover w-full h-full"
+            />
+          </div>
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center md:space-x-5 space-y-5">
+            <div
+              className="flex items-center justify-center"
+              id="about-avatar-block"
+            >
+              <div className="w-40 h-52 rounded-2xl shadow-lg border-4 border-black overflow-hidden flex items-center justify-center">
+                <Image
+                  src={owner1}
+                  alt="Owner"
+                  width={160}
+                  height={208}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            </div>
+            <div className="" id="about-owner-content-block">
+              <p className="text-md text-gray-700 mb-4">
+                Hi, I’m Jyoti Parkash, a Certified Wellness Coach specializing
+                in Nutrigenomics. With 3 years of experience, I have helped over
+                300 clients achieve their health goals by personalizing
+                nutrition based on their unique genetic makeup.
+              </p>
+              <ul className="space-y-2 mb-6 text-sm">
+                {[
+                  "Certified Wellness Coach in Nutrigenomics",
+                  "3+ years of professional coaching experience",
+                ].map((point, i) => (
+                  <li key={i} className="flex items-center gap-2 text-gray-800">
+                    <CheckIcon /> {point}
+                  </li>
+                ))}
+              </ul>
+              <div className="flex gap-4 text-black mt-2">
+                {[
+                  {
+                    label: "Instagram",
+                    href: "https://www.instagram.com/jp3793?igsh=MTdkcjlpemlvd25oaw==",
+                  },
+                  {
+                    label: "Facebook",
+                    href: "https://www.facebook.com/share/1GZCZW8pCq/",
+                  },
+                ].map((social, i) => (
+                  <Link key={i} href={social.href}>
+                    <span className="text-black hover:underline font-semibold flex items-center gap-1 cursor-pointer">
+                      {social.label}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="grid  xl:grid-cols-2 space-y-16 ">
           {aboutList.map((about, idx) => (
             <div
-              key={idx} 
+              key={idx}
               className="max-w-4xl mx-auto flex flex-col md:flex-row items-center md:space-x-5 space-y-5"
             >
               <div

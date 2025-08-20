@@ -11,6 +11,7 @@ import slider1 from '../../app/assets/slider/slider1.jpg';
 import slider2 from '../../app/assets/slider/slider2.jpg';
 import slider3 from '../../app/assets/slider/slider3.jpg';
 import slider4 from '../../app/assets/slider/slider4.jpg';
+import slider5 from '../../app/assets/slider/slider5.jpg';
 import weightloss from '../../app/assets/weightloss.jpg';
 import weightgain from '../../app/assets/weightgain.jpg';
 import weightmaintainence from '../../app/assets/weightmaintainence.jpg';
@@ -39,6 +40,7 @@ export default function HealthPage() {
     slider2,
     slider3,
     slider4,
+    slider5,
   ];
 
   // Example: Where to add images for each section (replace with your own paths)
