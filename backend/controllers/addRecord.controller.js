@@ -70,4 +70,58 @@ const removeRecord = asyncHandler(async (req, res) => {
   }
 });
 
-export { addRecord, removeRecord };
+const updateRecord = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { recordId } = req.params;
+    const { weight, height, age } = req.body;
+
+    if (!weight || !height || !age) {
+      throw new apiError(400, "Weight, height, and age are required.");
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new apiError(404, "User not found.");
+    }
+
+    // Find the record to update
+    const recordIndex = user.records.findIndex(
+      (record) => record._id.toString() === recordId
+    );
+
+    if (recordIndex === -1) {
+      throw new apiError(404, "Record not found.");
+    }
+
+    // Calculate new BMI
+    const bmi = calculateBMI(weight, height);
+
+    // Update the record
+    user.records[recordIndex].weight = weight;
+    user.records[recordIndex].height = height;
+    user.records[recordIndex].age = age;
+    user.records[recordIndex].bmi = bmi;
+
+    await user.save();
+
+    return res.status(200).json(
+      new apiResponse(
+        200,
+        {
+          updatedRecord: user.records[recordIndex],
+          updatedUser: user,
+        },
+        "Record updated successfully."
+      )
+    );
+  } catch (error) {
+    console.error(error);
+    if (error instanceof apiError) {
+      throw error;
+    }
+    res.status(500).json({ message: "Error updating record", error });
+  }
+});
+
+export { addRecord, removeRecord, updateRecord };

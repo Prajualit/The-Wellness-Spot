@@ -9,6 +9,7 @@ import { updateAvatar } from "../controllers/updateAvatar.controller.js";
 import {
   addRecord,
   removeRecord,
+  updateRecord,
 } from "../controllers/addRecord.controller.js";
 
 import { verifyJWT } from "../middleware/auth.middleware.js";
@@ -32,6 +33,7 @@ router
 router.route("/add-record").post(verifyJWT, addRecord);
 router.get("/me", verifyJWT, getCurrentUser);
 router.route("/remove-record/:recordId").delete(verifyJWT, removeRecord);
+router.route("/update-record/:recordId").put(verifyJWT, updateRecord);
 router.route("/refresh-token").post(verifyRefreshToken, refreshAccessToken);
 
 export default router;
