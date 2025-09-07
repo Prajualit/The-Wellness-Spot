@@ -11,10 +11,27 @@ const calculateBMI = (weight, height) => {
 };
 
 const addRecord = asyncHandler(async (req, res) => {
-  const { weight, height, age } = req.body;
+  const { 
+    age,
+    height,
+    startingWeight,
+    lastWeight,
+    energy,
+    digestion,
+    sleepQuality,
+    snackingHabit,
+    sugarSaltCravings,
+    medicineHistory,
+    waterIntake,
+    exercise,
+    stressLevel
+  } = req.body;
 
-  if (!weight || !height || !age) {
-    throw new apiError(400, "userId, weight, height, and age are required.");
+  // Validate required fields
+  if (!age || !height || !startingWeight || !lastWeight || 
+      !energy || !digestion || !sleepQuality || !snackingHabit || 
+      !sugarSaltCravings || !waterIntake || !exercise || !stressLevel) {
+    throw new apiError(400, "All required fields must be provided.");
   }
 
   const user = await User.findById(req.user?._id);
@@ -22,12 +39,23 @@ const addRecord = asyncHandler(async (req, res) => {
     throw new apiError(404, "User not found.");
   }
 
-  const bmi = calculateBMI(weight, height);
+  const bmi = calculateBMI(lastWeight, height);
   const newRecord = {
-    weight,
-    height,
     age,
+    height,
+    startingWeight,
+    lastWeight,
+    weight: lastWeight, // keeping for backward compatibility
     bmi,
+    energy,
+    digestion,
+    sleepQuality,
+    snackingHabit,
+    sugarSaltCravings,
+    medicineHistory: medicineHistory || "",
+    waterIntake,
+    exercise,
+    stressLevel,
   };
 
   user.records.push(newRecord);
@@ -74,10 +102,27 @@ const updateRecord = asyncHandler(async (req, res) => {
   try {
     const userId = req.user.id;
     const { recordId } = req.params;
-    const { weight, height, age } = req.body;
+    const { 
+      age,
+      height,
+      startingWeight,
+      lastWeight,
+      energy,
+      digestion,
+      sleepQuality,
+      snackingHabit,
+      sugarSaltCravings,
+      medicineHistory,
+      waterIntake,
+      exercise,
+      stressLevel
+    } = req.body;
 
-    if (!weight || !height || !age) {
-      throw new apiError(400, "Weight, height, and age are required.");
+    // Validate required fields
+    if (!age || !height || !startingWeight || !lastWeight || 
+        !energy || !digestion || !sleepQuality || !snackingHabit || 
+        !sugarSaltCravings || !waterIntake || !exercise || !stressLevel) {
+      throw new apiError(400, "All required fields must be provided.");
     }
 
     const user = await User.findById(userId);
@@ -95,13 +140,24 @@ const updateRecord = asyncHandler(async (req, res) => {
     }
 
     // Calculate new BMI
-    const bmi = calculateBMI(weight, height);
+    const bmi = calculateBMI(lastWeight, height);
 
-    // Update the record
-    user.records[recordIndex].weight = weight;
-    user.records[recordIndex].height = height;
+    // Update the record with all fields
     user.records[recordIndex].age = age;
+    user.records[recordIndex].height = height;
+    user.records[recordIndex].startingWeight = startingWeight;
+    user.records[recordIndex].lastWeight = lastWeight;
+    user.records[recordIndex].weight = lastWeight; // keeping for backward compatibility
     user.records[recordIndex].bmi = bmi;
+    user.records[recordIndex].energy = energy;
+    user.records[recordIndex].digestion = digestion;
+    user.records[recordIndex].sleepQuality = sleepQuality;
+    user.records[recordIndex].snackingHabit = snackingHabit;
+    user.records[recordIndex].sugarSaltCravings = sugarSaltCravings;
+    user.records[recordIndex].medicineHistory = medicineHistory || "";
+    user.records[recordIndex].waterIntake = waterIntake;
+    user.records[recordIndex].exercise = exercise;
+    user.records[recordIndex].stressLevel = stressLevel;
 
     await user.save();
 
