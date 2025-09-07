@@ -335,7 +335,7 @@ const EditRecordModal = ({ isOpen, onClose, record }) => {
                                     <LoadingButton
                                         type="button"
                                         onClick={handleClose}
-                                        className="flex-1 bg-gray-500 hover:bg-gray-600 hover:text-white"
+                                        className="flex-1 bg-neutral-50 hover:bg-neutral-200 text-black"
                                     >
                                         Cancel
                                     </LoadingButton>

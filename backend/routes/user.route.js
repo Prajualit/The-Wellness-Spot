@@ -34,6 +34,7 @@ router.route("/add-record").post(verifyJWT, addRecord);
 router.get("/me", verifyJWT, getCurrentUser);
 router.route("/remove-record/:recordId").delete(verifyJWT, removeRecord);
 router.route("/update-record/:recordId").put(verifyJWT, updateRecord);
+router.route("/update-record/:recordId").patch(verifyJWT, updateRecord);
 router.route("/refresh-token").post(verifyRefreshToken, refreshAccessToken);
 
 export default router;
