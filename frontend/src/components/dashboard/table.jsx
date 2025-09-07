@@ -3,17 +3,18 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '../ui/button';
 import axios from '@/lib/axios.js';
 import { updateUser } from '@/redux/Slice/userSlice.js';
+import LoadingButton from '../ui/LoadingButton';
+import RecordDetailModal from './RecordDetailModal';
+import EditRecordModal from './EditRecordModal';
 
 const Table = () => {
-    const Thead = ['Date', 'BMI', 'Weight', 'Height', 'Age', 'Actions'];
+    const Thead = ['Date', 'BMI', 'Weight', 'Height', 'Age', 'Actions', 'More'];
     const user = useSelector((state) => state.user.user);
     const dispatch = useDispatch();
-    const [editingRecord, setEditingRecord] = useState(null);
-    const [editFormData, setEditFormData] = useState({
-        weight: '',
-        height: '',
-        age: ''
-    });
+    const [selectedRecord, setSelectedRecord] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [recordToEdit, setRecordToEdit] = useState(null);
 
     const handleDelete = async (recordId) => {
         try {
@@ -28,47 +29,16 @@ const Table = () => {
     };
 
     const handleEdit = (record) => {
-        setEditingRecord(record._id);
-        setEditFormData({
-            weight: record.weight,
-            height: record.height,
-            age: record.age
-        });
+        setRecordToEdit(record);
+        setIsEditModalOpen(true);
     };
 
-    const handleCancelEdit = () => {
-        setEditingRecord(null);
-        setEditFormData({
-            weight: '',
-            height: '',
-            age: ''
-        });
-    };
-
-    const handleSaveEdit = async (recordId) => {
-        try {
-            const response = await axios.put(`/users/update-record/${recordId}`, editFormData);
-            if (response.status === 200) {
-                const { updatedUser } = response.data.data;
-                dispatch(updateUser(updatedUser));
-                setEditingRecord(null);
-                setEditFormData({
-                    weight: '',
-                    height: '',
-                    age: ''
-                });
-            }
-        } catch (error) {
-            // Handle update error
-            console.error('Error updating record:', error);
+    const handleMoreActions = (recordId) => {
+        const record = user?.records.find(r => r._id === recordId);
+        if (record) {
+            setSelectedRecord(record);
+            setIsDetailModalOpen(true);
         }
-    };
-
-    const handleInputChange = (field, value) => {
-        setEditFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
     };
 
     const DeleteIcon = ({ size = 24, color = "#000000" }) => {
@@ -141,204 +111,105 @@ const Table = () => {
         );
     };
 
-    const SaveIcon = ({ size = 24, color = "#000000" }) => {
-        return (
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={size}
-                height={size}
-                viewBox="0 0 24 24"
-                fill="none"
-                role="img"
-            >
-                <path
-                    d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
-                    stroke={color}
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-                <polyline
-                    points="17,21 17,13 7,13 7,21"
-                    stroke={color}
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-                <polyline
-                    points="7,3 7,8 15,8"
-                    stroke={color}
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-            </svg>
-        );
-    };
-
-    const CancelIcon = ({ size = 24, color = "#000000" }) => {
-        return (
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={size}
-                height={size}
-                viewBox="0 0 24 24"
-                fill="none"
-                role="img"
-            >
-                <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke={color}
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-                <line
-                    x1="15"
-                    y1="9"
-                    x2="9"
-                    y2="15"
-                    stroke={color}
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-                <line
-                    x1="9"
-                    y1="9"
-                    x2="15"
-                    y2="15"
-                    stroke={color}
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-            </svg>
-        );
-    };
-
     return (
-        <table className="flex-1 ">
-            <thead>
-                <tr className="bg-gray-50 ">
-                    {Thead.map((item, index) => (
-                        <th
-                            key={index}
-                            className="table-952c22f1-0138-435f-b64e-7ec1d8771011-column-120 px-4 py-3 text-left text-[#101518] w-[400px] text-sm font-medium leading-normal"
-                        >
-                            {item}
-                        </th>
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
-                {user?.records.length === 0 ? (
-                    <tr className="border-t border-t-[#d4dde2]">
-                        <td
-                            colSpan={6}
-                            className="text-center w-full border text-[#5c778a] text-sm font-normal leading-normal py-4"
-                        >
-                            No records found. Please add a new record.
-                        </td>
-                    </tr>
-                ) : (
-                    user?.records.map((item) => {
-                        const isEditing = editingRecord === item._id;
-                        
-                        // Calculate BMI for editing mode
-                        let displayBMI = item.bmi;
-                        if (isEditing && editFormData.weight && editFormData.height) {
-                            const heightInMeters = editFormData.height / 100;
-                            displayBMI = (editFormData.weight / (heightInMeters * heightInMeters)).toFixed(2);
-                        }
-                        
-                        const itemList = [item?.createdAt
-                            ? new Date(item.createdAt).toLocaleDateString('en-GB', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric',
-                            })
-                            : 'N/A', 
-                            displayBMI, 
-                            isEditing ? editFormData.weight : item.weight, 
-                            isEditing ? editFormData.height : item.height, 
-                            isEditing ? editFormData.age : item.age
-                        ];
-
-                        return (
-                            <tr
-                                key={item._id}
-                                className="border-t border-t-[#d4dde2]"
+        <div>
+            <table className="flex-1 ">
+                <thead>
+                    <tr className="bg-gray-50 ">
+                        {Thead.map((item, index) => (
+                            <th
+                                key={index}
+                                className="table-952c22f1-0138-435f-b64e-7ec1d8771011-column-120 px-4 py-3 text-left text-[#101518] w-[400px] text-sm font-medium leading-normal"
                             >
-                                {itemList.map((value, index) => (
-                                    <td
-                                        key={`${item._id}-${index}`}
-                                        className="h-[72px] px-4 py-2 w-[400px] text-[#5c778a] text-sm font-normal leading-normal"
-                                    >
-                                        {isEditing && index >= 2 && index <= 4 ? (
-                                            <input
-                                                type="number"
-                                                value={index === 2 ? editFormData.weight : index === 3 ? editFormData.height : editFormData.age}
-                                                onChange={(e) => {
-                                                    const field = index === 2 ? 'weight' : index === 3 ? 'height' : 'age';
-                                                    handleInputChange(field, e.target.value);
-                                                }}
-                                                className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-700"
-                                                min="1"
-                                                step={index === 2 || index === 3 ? "0.1" : "1"}
-                                            />
-                                        ) : (
-                                            value
-                                        )}
+                                {item}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {user?.records.length === 0 ? (
+                        <tr className="border-t border-t-[#d4dde2]">
+                            <td
+                                colSpan={7}
+                                className="text-center w-full border text-[#5c778a] text-sm font-normal leading-normal py-4"
+                            >
+                                No records found. Please add a new record.
+                            </td>
+                        </tr>
+                    ) : (
+                        user?.records.map((item) => {
+                            const itemList = [item?.createdAt
+                                ? new Date(item.createdAt).toLocaleDateString('en-GB', {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric',
+                                })
+                                : 'N/A', 
+                                item.bmi, 
+                                (item.lastWeight || item.weight), 
+                                item.height, 
+                                item.age
+                            ];
+
+                            return (
+                                <tr
+                                    key={item._id}
+                                    className="border-t border-t-[#d4dde2]"
+                                >
+                                    {itemList.map((value, index) => (
+                                        <td
+                                            key={`${item._id}-${index}`}
+                                            className="h-[72px] px-4 py-2 w-[400px] text-[#5c778a] text-sm font-normal leading-normal"
+                                        >
+                                            {value}
+                                        </td>
+                                    ))}
+                                    <td className="h-[72px] px-4 py-2 w-60 text-[#5c778a] text-sm font-bold leading-normal tracking-[0.015em]">
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => handleEdit(item)}
+                                                className="cursor-pointer hover:bg-green-50 hover:scale-110 rounded-full p-2 transition-all duration-300 flex items-center justify-center"
+                                                title="Edit record"
+                                            >
+                                                <EditIcon size={18} color="green" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(item._id)}
+                                                className="cursor-pointer hover:bg-gray-100 hover:scale-110 rounded-full p-2 transition-all duration-300 flex items-center justify-center"
+                                                title="Delete record"
+                                            >
+                                                <DeleteIcon size={18} color="#be1515" />
+                                            </button>
+                                        </div>
                                     </td>
-                                ))}
-                                <td className="h-[72px] px-4 py-2 w-60 text-[#5c778a] text-sm font-bold leading-normal tracking-[0.015em]">
-                                    <div className="flex items-center gap-2">
-                                        {isEditing ? (
-                                            <>
-                                                <button
-                                                    onClick={() => handleSaveEdit(item._id)}
-                                                    className="cursor-pointer hover:bg-green-50 hover:scale-110 rounded-full p-2 transition-all duration-300 flex items-center justify-center"
-                                                    title="Save changes"
-                                                >
-                                                    <SaveIcon size={18} color="green" />
-                                                </button>
-                                                <button
-                                                    onClick={handleCancelEdit}
-                                                    className="cursor-pointer hover:bg-gray-100 hover:scale-110 rounded-full p-2 transition-all duration-300 flex items-center justify-center"
-                                                    title="Cancel editing"
-                                                >
-                                                    <CancelIcon size={18} color="#6b7280" />
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <button
-                                                    onClick={() => handleEdit(item)}
-                                                    className="cursor-pointer hover:bg-green-50 hover:scale-110 rounded-full p-2 transition-all duration-300 flex items-center justify-center"
-                                                    title="Edit record"
-                                                >
-                                                    <EditIcon size={18} color="green" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(item._id)}
-                                                    className="cursor-pointer hover:bg-gray-100 hover:scale-110 rounded-full p-2 transition-all duration-300 flex items-center justify-center"
-                                                    title="Delete record"
-                                                >
-                                                    <DeleteIcon size={18} color="#be1515" />
-                                                </button>
-                                            </>
-                                        )}
-                                    </div>
-                                </td>
-                            </tr>
-                        );
-                    })
-                )}
-            </tbody>
-        </table>
+                                    <td>
+                                        <LoadingButton
+                                            onClick={() => handleMoreActions(item._id)}
+                                            className="!bg-white !text-black hover:!bg-gray-100"
+                                            title="More actions"
+                                        >
+                                            View More
+                                        </LoadingButton>
+                                    </td>
+                                </tr>
+                            );
+                        })
+                    )}
+                </tbody>
+            </table>
+            
+            <RecordDetailModal
+                isOpen={isDetailModalOpen}
+                onClose={() => setIsDetailModalOpen(false)}
+                record={selectedRecord}
+            />
+            
+            <EditRecordModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                record={recordToEdit}
+            />
+        </div>
     );
 };
 
