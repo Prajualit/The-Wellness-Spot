@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useDispatch } from "react-redux";
 import { updateUser } from "@/redux/Slice/userSlice.js";
 import axios from "@/lib/axios.js";
@@ -20,28 +22,56 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 
 const AddRecord = () => {
-    const [weight, setWeight] = useState('');
-    const [height, setHeight] = useState('');
-    const [age, setAge] = useState('');
+    const [formData, setFormData] = useState({
+        age: '',
+        height: '',
+        startingWeight: '',
+        lastWeight: '',
+        energy: '',
+        digestion: '',
+        sleepQuality: '',
+        snackingHabit: '',
+        sugarSaltCravings: '',
+        medicineHistory: '',
+        waterIntake: '',
+        exercise: '',
+        stressLevel: ''
+    });
     const [pending, setPending] = useState(false);
 
     const dispatch = useDispatch();
 
-    const handleSubmitBMIdata = async (e) => {
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    const handleSubmitRecord = async (e) => {
         try {
             setPending(true);
-            const response = await axios.post('/users/add-record', {
-                weight,
-                height,
-                age,
-            });
+            const response = await axios.post('/users/add-record', formData);
 
             if (response.status === 200) {
                 const { newRecord, allRecords } = response.data.data;
                 dispatch(updateUser({ records: allRecords }));
-                setWeight('');
-                setHeight('');
-                setAge('');
+                // Reset form
+                setFormData({
+                    age: '',
+                    height: '',
+                    startingWeight: '',
+                    lastWeight: '',
+                    energy: '',
+                    digestion: '',
+                    sleepQuality: '',
+                    snackingHabit: '',
+                    sugarSaltCravings: '',
+                    medicineHistory: '',
+                    waterIntake: '',
+                    exercise: '',
+                    stressLevel: ''
+                });
             } else {
                 // Failed to add record
             }
@@ -51,8 +81,6 @@ const AddRecord = () => {
             setPending(false);
         }
     };
-
-
 
     return (
         <Dialog>
@@ -64,69 +92,235 @@ const AddRecord = () => {
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="bg-white h-fit w-[40%]">
+            <DialogContent className="bg-white h-fit w-[90%] max-w-4xl max-h-[90vh] overflow-y-auto">
                 <VisuallyHidden asChild>
                     <DialogHeader>
-                        <DialogTitle>Add a New Record</DialogTitle>
-                        <DialogDescription>Add your health measurements to track your progress over time.</DialogDescription>
+                        <DialogTitle>Add a New Health Record</DialogTitle>
+                        <DialogDescription>Add your comprehensive health measurements to track your progress over time.</DialogDescription>
                     </DialogHeader>
                 </VisuallyHidden>
                 <div className="text-sm text-neutral-500">
                     <Card className="w-full border-none shadow-none ">
                         <CardHeader>
                             <CardTitle className="text-center text-2xl">
-                                Add a New Record
+                                Add a New Health Record
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <Tabs defaultValue="phone" className="w-full">
-                                <TabsContent value="phone">
-                                    <form className="space-y-4" onSubmit={(e) => {
-                                        e.preventDefault();
-                                        handleSubmitBMIdata();
-                                    }}>
-                                        <div className="flex flex-col space-y-2">
-                                            <Label htmlFor="Weight">Weight</Label>
-                                            <Input
-                                                id="weight"
-                                                type="number"
-                                                placeholder="Enter your weight (K/G)"
-                                                value={weight}
-                                                onChange={(e) => setWeight(e.target.value)}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="flex flex-col space-y-2">
-                                            <Label htmlFor="height">Height</Label>
-                                            <Input
-                                                id="height"
-                                                type="number"
-                                                placeholder="Enter your height (cm)"
-                                                value={height}
-                                                onChange={(e) => setHeight(e.target.value)}
-                                                required
-                                            />
-                                        </div>
+                            <form className="space-y-6" onSubmit={(e) => {
+                                e.preventDefault();
+                                handleSubmitRecord();
+                            }}>
+                                {/* Basic Information */}
+                                <div className="bg-neutral-50 p-4 rounded-lg">
+                                    <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
+                                    <div className="grid grid-cols-1 gap-4">
                                         <div className="flex flex-col space-y-2">
                                             <Label htmlFor="age">Age</Label>
                                             <Input
                                                 id="age"
                                                 type="number"
                                                 placeholder="Enter your age"
-                                                value={age}
-                                                onChange={(e) => setAge(e.target.value)}
+                                                value={formData.age}
+                                                onChange={(e) => handleInputChange('age', e.target.value)}
                                                 required
                                             />
                                         </div>
-                                        <LoadingButton
-                                            type="submit"
-                                            pending={pending}
-                                            className="w-full">
-                                            Add Record
-                                        </LoadingButton>
-                                    </form>
-                                </TabsContent>
-                            </Tabs>
+                                    </div>
+                                </div>
+
+                                {/* Physical Measurements */}
+                                <div className="bg-neutral-50 p-4 rounded-lg">
+                                    <h3 className="text-lg font-semibold mb-4">Physical Measurements</h3>
+                                    <div className="grid grid-cols-3 gap-4">
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="height">Height (cm)</Label>
+                                            <Input
+                                                id="height"
+                                                type="number"
+                                                placeholder="Enter height in cm"
+                                                value={formData.height}
+                                                onChange={(e) => handleInputChange('height', e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="startingWeight">Starting Weight (kg)</Label>
+                                            <Input
+                                                id="startingWeight"
+                                                type="number"
+                                                step="0.1"
+                                                placeholder="Enter starting weight"
+                                                value={formData.startingWeight}
+                                                onChange={(e) => handleInputChange('startingWeight', e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="lastWeight">Current Weight (kg)</Label>
+                                            <Input
+                                                id="lastWeight"
+                                                type="number"
+                                                step="0.1"
+                                                placeholder="Enter current weight"
+                                                value={formData.lastWeight}
+                                                onChange={(e) => handleInputChange('lastWeight', e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Health Metrics */}
+                                <div className="bg-neutral-50 p-4 rounded-lg">
+                                    <h3 className="text-lg font-semibold mb-4">Health Metrics</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="energy">Energy Level</Label>
+                                            <Select value={formData.energy} onValueChange={(value) => handleInputChange('energy', value)}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select energy level" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Low">Low</SelectItem>
+                                                    <SelectItem value="Moderate">Moderate</SelectItem>
+                                                    <SelectItem value="High">High</SelectItem>
+                                                    <SelectItem value="Very High">Very High</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="digestion">Digestion</Label>
+                                            <Select value={formData.digestion} onValueChange={(value) => handleInputChange('digestion', value)}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select digestion quality" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Poor">Poor</SelectItem>
+                                                    <SelectItem value="Fair">Fair</SelectItem>
+                                                    <SelectItem value="Good">Good</SelectItem>
+                                                    <SelectItem value="Excellent">Excellent</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="sleepQuality">Sleep Quality</Label>
+                                            <Select value={formData.sleepQuality} onValueChange={(value) => handleInputChange('sleepQuality', value)}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select sleep quality" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Poor">Poor</SelectItem>
+                                                    <SelectItem value="Fair">Fair</SelectItem>
+                                                    <SelectItem value="Good">Good</SelectItem>
+                                                    <SelectItem value="Excellent">Excellent</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="stressLevel">Stress Level</Label>
+                                            <Select value={formData.stressLevel} onValueChange={(value) => handleInputChange('stressLevel', value)}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select stress level" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Very Low">Very Low</SelectItem>
+                                                    <SelectItem value="Low">Low</SelectItem>
+                                                    <SelectItem value="Moderate">Moderate</SelectItem>
+                                                    <SelectItem value="High">High</SelectItem>
+                                                    <SelectItem value="Very High">Very High</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Lifestyle Habits */}
+                                <div className="bg-neutral-50 p-4 rounded-lg">
+                                    <h3 className="text-lg font-semibold mb-4">Lifestyle Habits</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="snackingHabit">Snacking Habit</Label>
+                                            <Select value={formData.snackingHabit} onValueChange={(value) => handleInputChange('snackingHabit', value)}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select snacking frequency" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Never">Never</SelectItem>
+                                                    <SelectItem value="Rarely">Rarely</SelectItem>
+                                                    <SelectItem value="Sometimes">Sometimes</SelectItem>
+                                                    <SelectItem value="Often">Often</SelectItem>
+                                                    <SelectItem value="Very Often">Very Often</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="sugarSaltCravings">Sugar/Salt Cravings</Label>
+                                            <Select value={formData.sugarSaltCravings} onValueChange={(value) => handleInputChange('sugarSaltCravings', value)}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select craving intensity" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="None">None</SelectItem>
+                                                    <SelectItem value="Mild">Mild</SelectItem>
+                                                    <SelectItem value="Moderate">Moderate</SelectItem>
+                                                    <SelectItem value="Strong">Strong</SelectItem>
+                                                    <SelectItem value="Very Strong">Very Strong</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="exercise">Exercise</Label>
+                                            <Select value={formData.exercise} onValueChange={(value) => handleInputChange('exercise', value)}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select exercise intensity" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="None">None</SelectItem>
+                                                    <SelectItem value="Light">Light</SelectItem>
+                                                    <SelectItem value="Moderate">Moderate</SelectItem>
+                                                    <SelectItem value="Intense">Intense</SelectItem>
+                                                    <SelectItem value="Very Intense">Very Intense</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="waterIntake">Water Intake (Liters)</Label>
+                                            <Input
+                                                id="waterIntake"
+                                                type="number"
+                                                step="0.1"
+                                                placeholder="Enter daily water intake"
+                                                value={formData.waterIntake}
+                                                onChange={(e) => handleInputChange('waterIntake', e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Medicine History */}
+                                <div className="bg-neutral-50 p-4 rounded-lg">
+                                    <h3 className="text-lg font-semibold mb-4">Medicine History</h3>
+                                    <div className="flex flex-col space-y-2">
+                                        <Label htmlFor="medicineHistory">Current Medications & History</Label>
+                                        <Textarea
+                                            id="medicineHistory"
+                                            placeholder="Enter current medications, supplements, or relevant medical history..."
+                                            value={formData.medicineHistory}
+                                            onChange={(e) => handleInputChange('medicineHistory', e.target.value)}
+                                            rows={3}
+                                        />
+                                    </div>
+                                </div>
+
+                                <LoadingButton
+                                    type="submit"
+                                    pending={pending}
+                                    className="w-full">
+                                    Add Health Record
+                                </LoadingButton>
+                            </form>
                         </CardContent>
                     </Card>
                 </div>
