@@ -130,7 +130,27 @@ export default function AdminDashboard() {
                                                                 index === 5 ? (
                                                                     <div className="flex items-center gap-2">
                                                                         {records.length > 0 ? (
-                                                                            <ViewRecord records={records} userName={user.name} />
+                                                                            <ViewRecord 
+                                                                                records={records} 
+                                                                                userName={user.name} 
+                                                                                userId={user._id}
+                                                                                onUpdateRecord={() => {
+                                                                                    // Refresh the users data
+                                                                                    const fetchStats = async () => {
+                                                                                        try {
+                                                                                            const res = await axios.post("/admin/get-all-users");
+                                                                                            if (res.status === 200) {
+                                                                                                const data = res.data.data;
+                                                                                                const users = data.users;
+                                                                                                setUsers(users);
+                                                                                            }
+                                                                                        } catch (error) {
+                                                                                            console.error('Error refreshing users:', error);
+                                                                                        }
+                                                                                    };
+                                                                                    fetchStats();
+                                                                                }}
+                                                                            />
                                                                         ) : (
                                                                             records.length === 0 && (
                                                                                 <span className="text-gray-500">No Records</span>

@@ -13,7 +13,7 @@ import { Button } from "../ui/button";
 import { useDispatch } from 'react-redux';
 import axios from "../../lib/axios";
 
-const AdminEditRecordModal = ({ isOpen, onClose, record, userName, onUpdate }) => {
+const AdminEditRecordModal = ({ isOpen, onClose, record, userName, userId, onUpdate }) => {
     const dispatch = useDispatch();
 
     const [formData, setFormData] = useState({
@@ -113,7 +113,7 @@ const AdminEditRecordModal = ({ isOpen, onClose, record, userName, onUpdate }) =
                 startingWeight: record.startingWeight || record.weight // Use existing starting weight
             };
 
-            const response = await axios.patch(`/users/update-record/${record._id}`, updateData);
+            const response = await axios.patch(`/admin/update-user-record/${userId}/${record._id}`, updateData);
 
             if (response.data.success) {
                 onUpdate && onUpdate(); // Refresh the data

@@ -13,7 +13,7 @@ import AdminRecordDetailModal from "./AdminRecordDetailModal";
 import AdminEditRecordModal from "./AdminEditRecordModal";
 import axios from "../../lib/axios";
 
-const ViewRecord = ({ records, userName, onUpdateRecord }) => {
+const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -39,11 +39,11 @@ const ViewRecord = ({ records, userName, onUpdateRecord }) => {
     };
 
     const confirmDelete = async () => {
-        if (!recordToDelete) return;
+        if (!recordToDelete || !userId) return;
         
         setIsDeleting(true);
         try {
-            const response = await axios.delete(`/users/remove-record/${recordToDelete._id}`);
+            const response = await axios.delete(`/admin/delete-user-record/${userId}/${recordToDelete._id}`);
             
             if (response.data.message || response.status === 200) {
                 // Call parent callback to refresh data
@@ -202,6 +202,7 @@ const ViewRecord = ({ records, userName, onUpdateRecord }) => {
                 onClose={() => setShowEditModal(false)}
                 record={selectedRecord}
                 userName={userName}
+                userId={userId}
                 onUpdate={handleUpdateRecord}
             />
 
