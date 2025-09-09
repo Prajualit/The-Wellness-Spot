@@ -8,15 +8,17 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, Edit3, Trash2 } from "lucide-react";
+import { Eye, Edit3, Trash2, Plus } from "lucide-react";
 import AdminRecordDetailModal from "./AdminRecordDetailModal";
 import AdminEditRecordModal from "./AdminEditRecordModal";
+import AdminAddRecordModal from "./AdminAddRecordModal";
 import axios from "../../lib/axios";
 
 const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [recordToDelete, setRecordToDelete] = useState(null);
@@ -31,6 +33,10 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
     const handleEdit = (record) => {
         setSelectedRecord(record);
         setShowEditModal(true);
+    };
+
+    const handleAddRecord = () => {
+        setShowAddModal(true);
     };
 
     const handleDelete = (record) => {
@@ -82,15 +88,25 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
                     </Button>
                 </DialogTrigger>
 
-                <DialogContent className="bg-white w-[85%] min-h-[60%] max-h-[90vh] overflow-auto flex flex-col">
+                <DialogContent className="bg-white w-[95%] sm:w-[85%] min-h-[60%] max-h-[90vh] overflow-auto flex flex-col">
                     <DialogHeader>
                         <DialogTitle className="text-center text-2xl">
                             {userName ? `${userName}'s Records` : 'User Records'}
                         </DialogTitle>
+                        <div className="flex justify-center mt-4">
+                            <Button
+                                onClick={handleAddRecord}
+                                className="bg-green-700 cursor-pointer hover:bg-green-800 text-white"
+                                size="sm"
+                            >
+                                <Plus className="h-4 w-4" />
+                                Add New Record
+                            </Button>
+                        </div>
                     </DialogHeader>
-                    <div className="text-sm text-neutral-500">
+                    <div className="text-sm w-full text-neutral-500">
                         <Card className="w-full border-none shadow-none">
-                            <CardContent>
+                            <CardContent className={"px-0"}>
                                 <div className="overflow-x-auto">
                                     <table className="w-full border-collapse">
                                         <thead>
@@ -201,6 +217,15 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
                 isOpen={showEditModal}
                 onClose={() => setShowEditModal(false)}
                 record={selectedRecord}
+                userName={userName}
+                userId={userId}
+                onUpdate={handleUpdateRecord}
+            />
+
+            {/* Admin Add Record Modal */}
+            <AdminAddRecordModal
+                isOpen={showAddModal}
+                onClose={() => setShowAddModal(false)}
                 userName={userName}
                 userId={userId}
                 onUpdate={handleUpdateRecord}

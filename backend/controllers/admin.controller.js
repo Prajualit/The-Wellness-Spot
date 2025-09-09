@@ -141,4 +141,77 @@ const deleteUserRecord = asyncHandler(async (req, res) => {
   }
 });
 
-export { getAllUsers, deleteUser, updateUserRecord, deleteUserRecord };
+const addUserRecord = asyncHandler(async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { 
+      age,
+      height,
+      startingWeight,
+      lastWeight,
+      energy,
+      digestion,
+      sleepQuality,
+      snackingHabit,
+      sugarSaltCravings,
+      medicineHistory,
+      waterIntake,
+      exercise,
+      stressLevel
+    } = req.body;
+
+    // Validate required fields
+    if (!age || !height || !startingWeight || !lastWeight || 
+        !energy || !digestion || !sleepQuality || !snackingHabit || 
+        !sugarSaltCravings || !waterIntake || !exercise || !stressLevel) {
+      throw new apiError(400, "All required fields must be provided.");
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new apiError(404, "User not found.");
+    }
+
+    const bmi = calculateBMI(lastWeight, height);
+    const newRecord = {
+      age,
+      height,
+      startingWeight,
+      lastWeight,
+      weight: lastWeight, // keeping for backward compatibility
+      bmi,
+      energy,
+      digestion,
+      sleepQuality,
+      snackingHabit,
+      sugarSaltCravings,
+      medicineHistory: medicineHistory || "",
+      waterIntake,
+      exercise,
+      stressLevel,
+    };
+
+    user.records.push(newRecord);
+    await user.save();
+
+    return res.status(200).json(
+      new apiResponse(
+        200,
+        {
+          newRecord,
+          allRecords: user.records,
+          updatedUser: user,
+        },
+        "Record added successfully."
+      )
+    );
+  } catch (error) {
+    console.error(error);
+    if (error instanceof apiError) {
+      throw error;
+    }
+    res.status(500).json({ message: "Error adding record", error });
+  }
+});
+
+export { getAllUsers, deleteUser, updateUserRecord, deleteUserRecord, addUserRecord };

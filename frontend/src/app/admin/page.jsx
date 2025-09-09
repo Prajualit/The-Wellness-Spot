@@ -129,33 +129,27 @@ export default function AdminDashboard() {
                                                             ) :
                                                                 index === 5 ? (
                                                                     <div className="flex items-center gap-2">
-                                                                        {records.length > 0 ? (
-                                                                            <ViewRecord 
-                                                                                records={records} 
-                                                                                userName={user.name} 
-                                                                                userId={user._id}
-                                                                                onUpdateRecord={() => {
-                                                                                    // Refresh the users data
-                                                                                    const fetchStats = async () => {
-                                                                                        try {
-                                                                                            const res = await axios.post("/admin/get-all-users");
-                                                                                            if (res.status === 200) {
-                                                                                                const data = res.data.data;
-                                                                                                const users = data.users;
-                                                                                                setUsers(users);
-                                                                                            }
-                                                                                        } catch (error) {
-                                                                                            console.error('Error refreshing users:', error);
+                                                                        <ViewRecord 
+                                                                            records={records} 
+                                                                            userName={user.name} 
+                                                                            userId={user._id}
+                                                                            onUpdateRecord={() => {
+                                                                                // Refresh the users data
+                                                                                const fetchStats = async () => {
+                                                                                    try {
+                                                                                        const res = await axios.post("/admin/get-all-users");
+                                                                                        if (res.status === 200) {
+                                                                                            const data = res.data.data;
+                                                                                            const users = data.users;
+                                                                                            setUsers(users);
                                                                                         }
-                                                                                    };
-                                                                                    fetchStats();
-                                                                                }}
-                                                                            />
-                                                                        ) : (
-                                                                            records.length === 0 && (
-                                                                                <span className="text-gray-500">No Records</span>
-                                                                            )
-                                                                        )}
+                                                                                    } catch (error) {
+                                                                                        console.error('Error refreshing users:', error);
+                                                                                    }
+                                                                                };
+                                                                                fetchStats();
+                                                                            }}
+                                                                        />
                                                                     </div>
                                                                 ) : (
                                                                     <span>{item || 'N/A'}</span>
