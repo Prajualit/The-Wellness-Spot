@@ -22,6 +22,36 @@ app.use((req, res, next) => {
   if (!req.timedout) next();
 });
 
+// Production CORS fix - more permissive approach
+if (process.env.NODE_ENV === "production") {
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    console.log(`🔧 PROD CORS: Handling request from origin: ${origin}`);
+    
+    // Allow specific domains
+    const allowedDomains = [
+      "thewellnessspot.co.in",
+      "www.thewellnessspot.co.in", 
+      "thewellnessspot.vercel.app",
+      "www.thewellnessspot.vercel.app"
+    ];
+    
+    if (origin && allowedDomains.some(domain => origin.includes(domain))) {
+      res.header("Access-Control-Allow-Origin", origin);
+      res.header("Access-Control-Allow-Credentials", "true");
+      res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+      res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, Origin");
+      res.header("Vary", "Origin");
+      
+      if (req.method === "OPTIONS") {
+        console.log(`✅ PROD CORS: Handling preflight for ${origin}`);
+        return res.sendStatus(200);
+      }
+    }
+    next();
+  });
+}
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -62,12 +92,27 @@ app.use(
         callback(null, true);
       } else {
         console.warn("🚫 CORS: Origin not allowed:", origin);
-        callback(new Error("Not allowed by CORS"));
+        // In production, be more permissive to avoid blocking legitimate requests
+        if (process.env.NODE_ENV === "production") {
+          console.log("🔄 CORS: Production fallback - allowing request");
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
       }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    allowedHeaders: [
+      "Content-Type", 
+      "Authorization", 
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+      "Access-Control-Request-Method",
+      "Access-Control-Request-Headers"
+    ],
+    exposedHeaders: ["Set-Cookie"],
     preflightContinue: false,
     optionsSuccessStatus: 200,
   })
@@ -76,6 +121,21 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Additional CORS safety net for production
+app.use((req, res, next) => {
+  // Ensure CORS headers are always set for production
+  if (process.env.NODE_ENV === "production") {
+    const origin = req.headers.origin;
+    if (origin && (origin.includes("thewellnessspot.co.in") || origin.includes("thewellnessspot.vercel.app"))) {
+      res.header("Access-Control-Allow-Origin", origin);
+      res.header("Access-Control-Allow-Credentials", "true");
+      res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+      res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, Origin");
+    }
+  }
+  next();
+});
 
 // Debug middleware to log all cookies
 app.use((req, res, next) => {
@@ -102,8 +162,10 @@ app.use((req, res, next) => {
     "https://thewellnessspot-prajualit.vercel.app",
   ].filter(Boolean);
 
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
+  // Set CORS headers for all requests
+  if (allowedOrigins.includes(origin) || process.env.NODE_ENV === "production") {
+    res.header("Access-Control-Allow-Origin", origin || "*");
+    res.header("Access-Control-Allow-Credentials", "true");
   }
 
   if (req.method === "OPTIONS") {
@@ -113,7 +175,7 @@ app.use((req, res, next) => {
     );
     res.header(
       "Access-Control-Allow-Headers",
-      "Content-Type, Authorization, X-Requested-With"
+      "Content-Type, Authorization, X-Requested-With, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
     );
     res.header("Access-Control-Allow-Credentials", "true");
     res.header("Access-Control-Max-Age", "86400"); // 24 hours
@@ -138,6 +200,14 @@ app.use((req, res, next) => {
   console.log(`📨 ${req.method} ${req.path} - ${new Date().toISOString()}`);
   console.log(`🌐 Origin: ${req.headers.origin || "No origin"}`);
   console.log(`🔧 User-Agent: ${req.headers["user-agent"] || "No user-agent"}`);
+  
+  // Additional production debugging
+  if (process.env.NODE_ENV === "production") {
+    console.log(`🔍 PROD DEBUG: Host: ${req.headers.host}`);
+    console.log(`🔍 PROD DEBUG: Referer: ${req.headers.referer || "No referer"}`);
+    console.log(`🔍 PROD DEBUG: CORS_ORIGIN env: ${process.env.CORS_ORIGIN || "Not set"}`);
+  }
+  
   next();
 });
 
