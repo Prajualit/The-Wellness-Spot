@@ -20,8 +20,14 @@ import client18 from '@/app/assets/clients/client18.jpg';
 import client19 from '@/app/assets/clients/client19.jpg';
 import client20 from '@/app/assets/clients/client20.jpg';
 import client21 from '@/app/assets/clients/client21.jpg';
+import client22 from '@/app/assets/clients/client22.jpg';
+import client23 from '@/app/assets/clients/client23.jpg';
+import client24 from '@/app/assets/clients/client24.jpg';
 
 export const clientImages = [
+    client22,
+    client23,
+    client24,
     client1,
     client2,
     client3,
