@@ -86,6 +86,13 @@ const Header = () => {
                             <span className="text-sm">Dashboard</span>
                         </LoadingButton>
                     </Link>
+                    {pathname === '/admin/media' && (
+                        <Link href="/admin">
+                            <LoadingButton>
+                                <span className="text-sm">Admin Panel</span>
+                            </LoadingButton>
+                        </Link>
+                    )}
                     <Link href="/admin/media">
                         <LoadingButton>
                             <span className="text-sm">Media</span>
