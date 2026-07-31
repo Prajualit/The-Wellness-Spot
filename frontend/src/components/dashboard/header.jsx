@@ -78,12 +78,17 @@ const Header = () => {
             );
         }
 
-        if (pathname === '/admin') {
+        if (pathname === '/admin' || pathname === '/admin/media' || pathname === '/admin/analytics') {
             return (
                 <div className='flex space-x-4 max-md:flex-col max-md:space-y-4 '>
                     <Link href="/dashboard">
                         <LoadingButton>
                             <span className="text-sm">Dashboard</span>
+                        </LoadingButton>
+                    </Link>
+                    <Link href="/admin/media">
+                        <LoadingButton>
+                            <span className="text-sm">Media</span>
                         </LoadingButton>
                     </Link>
                     <Link href="/admin/analytics">

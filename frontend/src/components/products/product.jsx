@@ -1,4 +1,6 @@
+"use client";
 
+import { useEffect, useState } from 'react';
 import { FaLeaf, FaRunning, FaUserAlt, FaMoneyBillWave, FaCalendarAlt, FaPrescriptionBottle, FaTablets, FaCalculator } from 'react-icons/fa';
 
 import Navbar from '../Navbar';
@@ -7,6 +9,7 @@ import Image from 'next/image';
 import ServicesPage from './services';
 import Link from 'next/link';
 import banner from '../../app/assets/banner.jpg';
+import { getMedia } from '@/lib/media';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -15,6 +18,19 @@ import 'swiper/css/pagination';
 
 
 export default function ProductsPage() {
+  const [uploadedVideos, setUploadedVideos] = useState([]);
+
+  useEffect(() => {
+    getMedia("videos").then((media) => {
+      setUploadedVideos(
+        media.map((item) => ({
+          src: item.url,
+          orientation: 'landscape',
+        }))
+      );
+    });
+  }, []);
+
   // Video URLs for video carousel with orientation info
   const heroVideos = [
     { src: '/videos/slider2.mp4', orientation: 'landscape' },
@@ -23,6 +39,8 @@ export default function ProductsPage() {
     { src: '/videos/slider6.mp4', orientation: 'portrait' },
     { src: '/videos/slider4.mp4', orientation: 'portrait' },
   ];
+
+  const allVideos = [...uploadedVideos, ...heroVideos];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -67,7 +85,7 @@ export default function ProductsPage() {
                 autoplay={false}
                 className="swiper-video-theme"
               >
-                {heroVideos.map((videoObj, i) => {
+                {allVideos.map((videoObj, i) => {
                   const isPortrait = videoObj.orientation === 'portrait';
 
                   return (

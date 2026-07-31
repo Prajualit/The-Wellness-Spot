@@ -5,6 +5,7 @@ import queryRoutes from "./routes/query.js";
 import userRouter from "./routes/user.route.js";
 import adminRouter from "./routes/admin.route.js";
 import sendSheetRouter from "./routes/sendsheet.js";
+import mediaRouter from "./routes/media.route.js";
 import cron from "node-cron";
 import axios from "axios";
 import timeout from "connect-timeout";
@@ -215,6 +216,7 @@ app.use("/api/v1", queryRoutes);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1", sendSheetRouter);
+app.use("/api/v1/media", mediaRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

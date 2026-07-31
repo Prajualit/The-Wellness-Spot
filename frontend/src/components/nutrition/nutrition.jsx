@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Carousel from 'framer-motion-carousel';
 import Image from 'next/image';
+import { getMedia } from '@/lib/media';
 import { FaHeart, FaAppleAlt, FaChild, FaRunning, FaWeight, FaBalanceScale, FaMale, FaFemale, FaLeaf, FaChevronRight } from 'react-icons/fa';
 import { FaWeightScale } from "react-icons/fa6";
 import { GiWeightLiftingUp, GiWeightScale, } from "react-icons/gi";
@@ -33,6 +34,13 @@ import 'swiper/css/pagination';
 
 export default function HealthPage() {
   const [activeTab, setActiveTab] = useState('weight-loss');
+  const [uploadedImages, setUploadedImages] = useState([]);
+
+  useEffect(() => {
+    getMedia("gallery").then((media) => {
+      setUploadedImages(media.map((item) => item.url));
+    });
+  }, []);
 
   // Sample image URLs for carousel and cards (replace with your own)
   const heroImages = [
@@ -42,6 +50,8 @@ export default function HealthPage() {
     slider4,
     slider5,
   ];
+
+  const galleryImages = [...uploadedImages, ...heroImages];
 
   // Example: Where to add images for each section (replace with your own paths)
   const sectionImages = {
@@ -117,14 +127,18 @@ export default function HealthPage() {
                 autoplay={{ delay: 4000, disableOnInteraction: false }}
                 className="swiper-green-theme"
               >
-                {heroImages.map((img, i) => (
+                {galleryImages.map((img, i) => (
                   <SwiperSlide key={i}>
-                    <Image
-                      src={img}
-                      alt="Health & Wellness"
-                      draggable={false}
-                      className="w-full h-64 md:h-96 object-contain rounded-lg"
-                    />
+                    <div className="relative w-full h-64 md:h-96">
+                      <Image
+                        src={img}
+                        alt="Health & Wellness"
+                        draggable={false}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 896px"
+                        className="object-contain rounded-lg"
+                      />
+                    </div>
                   </SwiperSlide>
                 ))}
               </Swiper>

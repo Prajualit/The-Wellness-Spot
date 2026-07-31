@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { clientImages } from "@/components/ui/clientImages";
+import { getMedia } from "@/lib/media";
 
 // Import Swiper styles
 import "swiper/css";
@@ -12,6 +14,16 @@ import "swiper/css/pagination";
 import "swiper/css/effect-coverflow";
 
 export default function Testimonials() {
+  const [uploadedImages, setUploadedImages] = useState([]);
+
+  useEffect(() => {
+    getMedia("transformations").then((media) => {
+      setUploadedImages(media.map((item) => item.url));
+    });
+  }, []);
+
+  const allImages = [...uploadedImages, ...clientImages];
+
   return (
     <div id="testimonials">
       <section className="w-full pb-32 px-8 bg-gradient-to-br from-[#e3fcec] via-white to-[#e8f0fe] relative overflow-hidden">
@@ -76,7 +88,7 @@ export default function Testimonials() {
               }}
               className="testimonials-swiper pb-16"
             >
-              {clientImages.map((image, index) => (
+              {allImages.map((image, index) => (
                 <SwiperSlide key={index} className="!w-80 !h-auto">
                   <div className="group relative p-3">
                     <div className="relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transform group-hover:scale-105 transition-all duration-500 ease-out">
