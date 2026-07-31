@@ -6,32 +6,33 @@ import axios from "@/lib/axios.js";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import ViewRecord from "@/components/admin/ViewRecord.jsx";
+import AdminAddUserModal from "@/components/admin/AdminAddUserModal.jsx";
 import UserCircleSolidIcon from '@/components/svg/UserCircleSolidIcon';
 import Header from "@/components/dashboard/header";
 import { useTokenAuth } from '@/hooks/useTokenAuth.js';
+import { Plus } from "lucide-react";
 
 export default function AdminDashboard() {
     const [users, setUsers] = useState(null);
+    const [showAddUserModal, setShowAddUserModal] = useState(false);
     const { isAuthenticated, isLoading } = useTokenAuth();
 
     const Thead = ["Photo", "Name", "Phone", "Joined At", "Last Active", "Records", "Actions"];
 
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const res = await axios.post("/admin/get-all-users");
-                if (res.status !== 200) {
-                    return;
-                } else {
-                    const data = res.data.data;
-                    const users = data.users;
-                    setUsers(users);
-                }
-            } catch (error) {
-                // Error fetching stats
+    const fetchUsers = async () => {
+        try {
+            const res = await axios.post("/admin/get-all-users");
+            if (res.status === 200) {
+                const users = res.data.data.users;
+                setUsers(users);
             }
+        } catch (error) {
+            // Error fetching users
         }
-        fetchStats();
+    };
+
+    useEffect(() => {
+        fetchUsers();
     }, []);
 
     const handleDeleteUser = async (userId) => {
@@ -68,7 +69,16 @@ export default function AdminDashboard() {
         <AdminGuard>
             <Header />
             <div className="lg:px-14 px-5 py-14 flex flex-col space-y-6">
-                <h1 className="text-[36px] font-bold">Users</h1>
+                <div className="flex items-center justify-between">
+                    <h1 className="text-[36px] font-bold">Users</h1>
+                    <Button
+                        onClick={() => setShowAddUserModal(true)}
+                        className="bg-green-700 hover:bg-green-800 cursor-pointer text-white"
+                    >
+                        <Plus className="h-4 w-4" />
+                        Add User
+                    </Button>
+                </div>
                     <div className="flex flex-col space-y-4 items-center justify-center">
                         <div className="w-full overflow-x-auto">
                             <table className="w-full border-collapse">
@@ -133,22 +143,7 @@ export default function AdminDashboard() {
                                                                             records={records} 
                                                                             userName={user.name} 
                                                                             userId={user._id}
-                                                                            onUpdateRecord={() => {
-                                                                                // Refresh the users data
-                                                                                const fetchStats = async () => {
-                                                                                    try {
-                                                                                        const res = await axios.post("/admin/get-all-users");
-                                                                                        if (res.status === 200) {
-                                                                                            const data = res.data.data;
-                                                                                            const users = data.users;
-                                                                                            setUsers(users);
-                                                                                        }
-                                                                                    } catch (error) {
-                                                                                        console.error('Error refreshing users:', error);
-                                                                                    }
-                                                                                };
-                                                                                fetchStats();
-                                                                            }}
+                                                                            onUpdateRecord={fetchUsers}
                                                                         />
                                                                     </div>
                                                                 ) : (
@@ -184,6 +179,12 @@ export default function AdminDashboard() {
                         </div>
                     </div>
                 </div>
+                <AdminAddUserModal
+                    isOpen={showAddUserModal}
+                    onClose={() => setShowAddUserModal(false)}
+                    onAdd={fetchUsers}
+                    existingPhones={users ? users.map(user => user.phone) : []}
+                />
             </AdminGuard>
     );
 }

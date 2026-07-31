@@ -23,6 +23,39 @@ const getAllUsers = asyncHandler(async (req, res) => {
   }
 });
 
+const addUser = asyncHandler(async (req, res) => {
+  try {
+    const { name, phone } = req.body;
+
+    if (!name || !phone) {
+      throw new apiError(400, "Name and phone number are required");
+    }
+
+    // Format phone to match database format (assuming it's stored with +91)
+    const formattedPhone = phone.startsWith('+91') ? phone : `+91${phone}`;
+
+    const existingUser = await User.findOne({ phone: formattedPhone });
+    if (existingUser) {
+      throw new apiError(409, "User with this phone number already exists");
+    }
+
+    const user = await User.create({ name: name.trim(), phone: formattedPhone });
+
+    return res.status(201).json(
+      new apiResponse(201, { user }, "User added successfully")
+    );
+  } catch (error) {
+    console.error("Error in addUser:", error);
+    if (error.code === 11000) {
+      throw new apiError(409, "User with this phone number already exists");
+    }
+    if (error instanceof apiError) {
+      throw error;
+    }
+    throw new apiError(500, "Failed to add user");
+  }
+});
+
 const deleteUser = asyncHandler(async (req, res) => {
     const { userId } = req.params;
     
@@ -214,4 +247,4 @@ const addUserRecord = asyncHandler(async (req, res) => {
   }
 });
 
-export { getAllUsers, deleteUser, updateUserRecord, deleteUserRecord, addUserRecord };
+export { getAllUsers, addUser, deleteUser, updateUserRecord, deleteUserRecord, addUserRecord };
