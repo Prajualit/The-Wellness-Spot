@@ -15,8 +15,8 @@ const app = express();
 // Trust proxy for services like Render, Vercel, etc.
 app.set("trust proxy", 1);
 
-// Add request timeout middleware (30 seconds)
-app.use(timeout("30s"));
+// Add request timeout middleware (120 seconds) to allow larger uploads
+app.use(timeout("120s"));
 
 // Timeout handler
 app.use((req, res, next) => {

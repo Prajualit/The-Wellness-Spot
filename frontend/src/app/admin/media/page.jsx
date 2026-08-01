@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import AdminGuard from "@/lib/AdminGuard";
-import axios from "@/lib/axios.js";
+import api from "@/lib/axios.js";
 import Header from "@/components/dashboard/header";
 import { useTokenAuth } from "@/hooks/useTokenAuth.js";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { ImageIcon, Clapperboard, Upload, Loader2, CheckCircle2, XCircle, Images } from "lucide-react";
 
 const SECTIONS = [
@@ -31,7 +33,7 @@ const SECTIONS = [
     },
 ];
 
-const MAX_FILE_SIZE = 100 * 1024 * 1024;
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 const SectionIcon = ({ type }) => {
     if (type === "video") return <Clapperboard className="h-5 w-5" />;
@@ -45,15 +47,21 @@ export default function AdminMediaPage() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
     const [feedback, setFeedback] = useState(null);
     const [uploadedItems, setUploadedItems] = useState(null);
     const fileInputRef = useRef(null);
 
     const activeSectionConfig = SECTIONS.find((s) => s.id === activeSection);
 
+    const uploadedBytes = selectedFile ? (selectedFile.size * uploadProgress) / 100 : 0;
+    const remainingBytes = selectedFile ? Math.max(selectedFile.size - uploadedBytes, 0) : 0;
+    const uploadedMb = (uploadedBytes / (1024 * 1024)).toFixed(1);
+    const remainingMb = (remainingBytes / (1024 * 1024)).toFixed(1);
+
     const fetchUploaded = async (section) => {
         try {
-            const res = await axios.get(`/media?section=${section}`);
+            const res = await api.get(`/media?section=${section}`);
             setUploadedItems(res.data.data.media);
         } catch (error) {
             setUploadedItems([]);
@@ -64,6 +72,7 @@ export default function AdminMediaPage() {
         setFeedback(null);
         setSelectedFile(null);
         setPreviewUrl(null);
+        setUploadProgress(0);
         fetchUploaded(activeSection);
     }, [activeSection]);
 
@@ -89,7 +98,7 @@ export default function AdminMediaPage() {
         if (file.size > MAX_FILE_SIZE) {
             setFeedback({
                 type: "error",
-                text: "File is too large. Maximum size is 100 MB.",
+                text: "File is too large. Maximum size is 50 MB.",
             });
             e.target.value = "";
             return;
@@ -98,6 +107,7 @@ export default function AdminMediaPage() {
         setSelectedFile(file);
         setPreviewUrl(URL.createObjectURL(file));
         setFeedback(null);
+        setUploadProgress(0);
     };
 
     const handleUpload = async () => {
@@ -105,33 +115,63 @@ export default function AdminMediaPage() {
 
         setUploading(true);
         setFeedback(null);
+        setUploadProgress(0);
 
         try {
-            const formData = new FormData();
-            formData.append("media", selectedFile);
-            formData.append("section", activeSection);
+            const signatureResponse = await api.get(`/media/signature?section=${activeSection}`);
+            const { apiKey, cloudName, folder, resourceType, signature, timestamp } = signatureResponse.data.data;
 
-            const res = await axios.post("/media/upload", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
+            const cloudinaryFormData = new FormData();
+            cloudinaryFormData.append("file", selectedFile);
+            cloudinaryFormData.append("api_key", apiKey);
+            cloudinaryFormData.append("timestamp", timestamp);
+            cloudinaryFormData.append("signature", signature);
+            cloudinaryFormData.append("folder", folder);
+
+            const cloudinaryResponse = await axios.post(
+                `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
+                cloudinaryFormData,
+                {
+                    onUploadProgress: (progressEvent) => {
+                        const total = progressEvent.total || selectedFile.size;
+                        if (!total) return;
+
+                        const progress = Math.min((progressEvent.loaded / total) * 100, 100);
+                        setUploadProgress(progress);
+                    },
+                }
+            );
+
+            const uploadedFile = cloudinaryResponse.data;
+
+            const registerResponse = await api.post("/media/register", {
+                section: activeSection,
+                url: uploadedFile.secure_url || uploadedFile.url,
+                cloudinaryPublicId: uploadedFile.public_id,
             });
 
-            if (res.status === 201) {
+            if (registerResponse.status === 201) {
                 setFeedback({
                     type: "success",
-                    text: "Media uploaded successfully.",
+                    text: "Media uploaded to Cloudinary successfully.",
                 });
                 setSelectedFile(null);
                 setPreviewUrl(null);
+                setUploadProgress(0);
                 if (fileInputRef.current) fileInputRef.current.value = "";
                 fetchUploaded(activeSection);
             }
         } catch (error) {
             setFeedback({
                 type: "error",
-                text: error.response?.data?.message || "Upload failed. Please try again.",
+                text:
+                    error.response?.data?.message ||
+                    error.message ||
+                    "Upload failed. Please try again.",
             });
         } finally {
             setUploading(false);
+            setUploadProgress(0);
         }
     };
 
@@ -211,8 +251,8 @@ export default function AdminMediaPage() {
                                 </span>
                                 <span className="text-xs text-[#5c778a]">
                                     {activeSectionConfig.type === "video"
-                                        ? "MP4 / WebM / MOV, up to 100 MB"
-                                        : "JPG / PNG / WEBP, up to 100 MB"}
+                                        ? "MP4 / WebM / MOV, up to 50 MB"
+                                        : "JPG / PNG / WEBP, up to 50 MB"}
                                 </span>
                             </>
                         )}
@@ -227,9 +267,23 @@ export default function AdminMediaPage() {
 
                     {selectedFile && (
                         <div className="mt-4 flex items-center justify-between bg-green-50 border border-green-200 rounded-md px-4 py-3">
-                            <span className="text-sm text-[#101518] truncate pr-4">
-                                {selectedFile.name} ({(selectedFile.size / (1024 * 1024)).toFixed(1)} MB)
-                            </span>
+                            <div className="flex-1 pr-4">
+                                <span className="block text-sm text-[#101518] truncate">
+                                    {selectedFile.name} ({(selectedFile.size / (1024 * 1024)).toFixed(1)} MB)
+                                </span>
+                                {uploading && (
+                                    <div className="mt-3 space-y-1">
+                                        <div className="flex items-center justify-between text-[11px] text-[#5c778a]">
+                                            <span>{uploadedMb} MB uploaded</span>
+                                            <span>{remainingMb} MB left</span>
+                                        </div>
+                                        <Progress
+                                            value={uploadProgress}
+                                            className={`h-2 ${activeSectionConfig.type === "video" ? "bg-purple-100" : "bg-green-100"}`}
+                                        />
+                                    </div>
+                                )}
+                            </div>
                             <Button
                                 onClick={handleUpload}
                                 disabled={uploading}
@@ -238,7 +292,7 @@ export default function AdminMediaPage() {
                                 {uploading ? (
                                     <>
                                         <Loader2 className="h-4 w-4 animate-spin" />
-                                        Uploading...
+                                        Uploading to Cloudinary...
                                     </>
                                 ) : (
                                     "Upload"

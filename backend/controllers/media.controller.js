@@ -12,6 +12,78 @@ const SECTION_TYPES = {
   videos: "video",
 };
 
+const MAX_MEDIA_SIZE_BYTES = 50 * 1024 * 1024;
+
+const buildSectionFolder = (section) => `wellness-spot/${section}`;
+
+const getCloudinaryUploadSignature = asyncHandler(async (req, res) => {
+  const section = req.query.section;
+
+  if (!section || !SECTION_TYPES[section]) {
+    throw new apiError(400, "Please select a valid section.");
+  }
+
+  const timestamp = Math.round(Date.now() / 1000);
+  const folder = buildSectionFolder(section);
+  const signature = cloudinary.utils.api_sign_request(
+    {
+      folder,
+      timestamp,
+    },
+    process.env.CLOUDINARY_API_SECRET
+  );
+
+  res.status(200).json(
+    new apiResponse(200, {
+      apiKey: process.env.CLOUDINARY_API_KEY,
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+      folder,
+      resourceType: SECTION_TYPES[section],
+      signature,
+      timestamp,
+    })
+  );
+});
+
+const registerUploadedMedia = asyncHandler(async (req, res) => {
+  const { section, url, cloudinaryPublicId } = req.body;
+
+  if (!section || !SECTION_TYPES[section]) {
+    throw new apiError(400, "Please select a valid section.");
+  }
+
+  if (!url || !cloudinaryPublicId) {
+    throw new apiError(400, "Cloudinary upload details are required.");
+  }
+
+  const resourceType = SECTION_TYPES[section];
+  const cloudinaryResource = await cloudinary.api.resource(cloudinaryPublicId, {
+    resource_type: resourceType,
+  });
+
+  if (!cloudinaryResource?.bytes) {
+    throw new apiError(400, "Unable to verify uploaded media size.");
+  }
+
+  if (cloudinaryResource.bytes > MAX_MEDIA_SIZE_BYTES) {
+    await cloudinary.uploader.destroy(cloudinaryPublicId, {
+      resource_type: resourceType,
+    });
+    throw new apiError(400, "File is too large. Maximum size is 50 MB.");
+  }
+
+  const media = await Media.create({
+    type: resourceType,
+    url,
+    cloudinaryPublicId,
+    section,
+  });
+
+  res.status(201).json(
+    new apiResponse(201, { media }, "Media uploaded successfully.")
+  );
+});
+
 const uploadMedia = asyncHandler(async (req, res) => {
   const section = req.body.section;
 
@@ -103,4 +175,4 @@ const getAllMedia = asyncHandler(async (req, res) => {
   res.status(200).json(new apiResponse(200, { media: validMedia }));
 });
 
-export { uploadMedia, getAllMedia };
+export { getCloudinaryUploadSignature, registerUploadedMedia, uploadMedia, getAllMedia };

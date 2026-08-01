@@ -17,7 +17,8 @@ const storage = multer.diskStorage({
   },
 });
 
+// Default upload (used for avatar updates) - increase to 50MB
 export const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 50 * 1024 * 1024 },
 });
