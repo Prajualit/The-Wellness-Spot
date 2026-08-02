@@ -3,6 +3,8 @@ import { apiError } from "../utils/apiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 import { User } from "../models/user.model.js";
+import { Document } from "../models/document.model.js";
+import { v2 as cloudinary } from "cloudinary";
 
 const calculateBMI = (weight, height) => {
   const heightInMeters = height / 100;
@@ -63,6 +65,19 @@ const deleteUser = asyncHandler(async (req, res) => {
     if (!deletedUser) {
         throw new apiError(404, "User not found");
     }
+
+    // Clean up uploaded documents (Cloudinary + database)
+    const userDocuments = await Document.find({ userId });
+    for (const document of userDocuments) {
+        try {
+            await cloudinary.uploader.destroy(document.cloudinaryPublicId, {
+                resource_type: document.resourceType,
+            });
+        } catch (error) {
+            console.error("Failed to delete Cloudinary document:", document.cloudinaryPublicId, error);
+        }
+    }
+    await Document.deleteMany({ userId });
 
     return res.status(200).json(
         new apiResponse(200, null, "User deleted successfully")
@@ -247,4 +262,80 @@ const addUserRecord = asyncHandler(async (req, res) => {
   }
 });
 
-export { getAllUsers, addUser, deleteUser, updateUserRecord, deleteUserRecord, addUserRecord };
+const DIET_CHART_FIELDS = [
+  "clientName",
+  "bmi",
+  "bmiRange",
+  "weightChange",
+  "hydrationTarget",
+  "goal",
+  "breakfast",
+  "midMorning",
+  "lunch",
+  "eveningSnack",
+  "dinner",
+  "bedtime",
+  "quickSummary",
+  "focusAreas",
+  "recommendedFoods",
+  "foodsToLimit",
+  "notes",
+];
+
+const updateUserDietChart = asyncHandler(async (req, res) => {
+  try {
+    const { userId, recordId } = req.params;
+    const { dietChart } = req.body;
+
+    if (!dietChart || typeof dietChart !== "object") {
+      throw new apiError(400, "Diet chart data is required.");
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new apiError(404, "User not found.");
+    }
+
+    const recordIndex = user.records.findIndex(
+      (record) => record._id.toString() === recordId
+    );
+    if (recordIndex === -1) {
+      throw new apiError(404, "Record not found.");
+    }
+
+    const cleanDraft = {};
+    DIET_CHART_FIELDS.forEach((field) => {
+      if (dietChart[field] !== undefined && dietChart[field] !== null) {
+        cleanDraft[field] = String(dietChart[field]);
+      }
+    });
+
+    cleanDraft.updatedAt = new Date();
+    user.records[recordIndex].dietChart = cleanDraft;
+    await user.save();
+
+    return res.status(200).json(
+      new apiResponse(
+        200,
+        { updatedRecord: user.records[recordIndex] },
+        "Diet chart draft saved successfully."
+      )
+    );
+  } catch (error) {
+    console.error(error);
+    if (error instanceof apiError) {
+      throw error;
+    }
+    res.status(500).json({ message: "Error saving diet chart draft", error });
+  }
+});
+
+export {
+  getAllUsers,
+  addUser,
+  deleteUser,
+  updateUserRecord,
+  deleteUserRecord,
+  addUserRecord,
+  updateUserDietChart,
+};

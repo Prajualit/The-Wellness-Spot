@@ -8,7 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, Edit3, Trash2, Plus, Sparkles } from "lucide-react";
+import { Eye, Edit3, Trash2, Plus, Sparkles, FolderOpen } from "lucide-react";
+import Link from "next/link";
 import AdminRecordDetailModal from "./AdminRecordDetailModal";
 import AdminEditRecordModal from "./AdminEditRecordModal";
 import AdminAddRecordModal from "./AdminAddRecordModal";
@@ -94,7 +95,6 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
                         View Records
                     </Button>
                 </DialogTrigger>
-
                 <DialogContent className="bg-white w-[95%] sm:w-[85%] min-h-[60%] max-h-[90vh] overflow-auto flex flex-col">
                     <DialogHeader>
                         <DialogTitle className="text-center text-2xl">
@@ -220,6 +220,18 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
                 </DialogContent>
             </Dialog>
 
+            <Button
+                variant="outline"
+                size="sm"
+                asChild
+                className="h-8 px-3 text-xs hover:bg-green-50 hover:text-green-700 cursor-pointer"
+            >
+                <Link href={`/admin/documents/${userId}`}>
+                    <FolderOpen className="h-3 w-3 mr-1" />
+                    Documents
+                </Link>
+            </Button>
+
             {/* Admin Record Detail Modal */}
             <AdminRecordDetailModal
                 isOpen={showDetailModal}
@@ -256,6 +268,7 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
                 onClose={() => setShowDietChartModal(false)}
                 record={selectedRecord}
                 userName={userName}
+                userId={userId}
             />
 
             {/* Delete Confirmation Dialog */}

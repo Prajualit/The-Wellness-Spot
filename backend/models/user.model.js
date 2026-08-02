@@ -2,6 +2,30 @@ import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 
+const dietChartSchema = new mongoose.Schema(
+  {
+    clientName: { type: String, default: "" },
+    bmi: { type: String, default: "" },
+    bmiRange: { type: String, default: "" },
+    weightChange: { type: String, default: "" },
+    hydrationTarget: { type: String, default: "" },
+    goal: { type: String, default: "" },
+    breakfast: { type: String, default: "" },
+    midMorning: { type: String, default: "" },
+    lunch: { type: String, default: "" },
+    eveningSnack: { type: String, default: "" },
+    dinner: { type: String, default: "" },
+    bedtime: { type: String, default: "" },
+    quickSummary: { type: String, default: "" },
+    focusAreas: { type: String, default: "" },
+    recommendedFoods: { type: String, default: "" },
+    foodsToLimit: { type: String, default: "" },
+    notes: { type: String, default: "" },
+    updatedAt: { type: Date, default: Date.now },
+  },
+  { _id: false }
+);
+
 const bmiRecordSchema = new mongoose.Schema({
   age: { type: Number, required: true },
   height: { type: Number, required: true }, // in cm
@@ -47,6 +71,7 @@ const bmiRecordSchema = new mongoose.Schema({
     required: true 
   },
   createdAt: { type: Date, default: Date.now },
+  dietChart: { type: dietChartSchema, default: null },
 });
 
 const userSchema = new Schema(

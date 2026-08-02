@@ -17,11 +17,13 @@ import {
     MoonStar,
     RotateCcw,
     Salad,
+    Save,
     Sparkles,
     SunMedium,
     Utensils,
 } from "lucide-react";
 import { downloadDietChartPdf } from "../../lib/dietChartPdfClient";
+import axios from "../../lib/axios";
 
 const mealSections = [
     { key: "breakfast", label: "Breakfast", icon: SunMedium, hint: "Main morning meal." },
@@ -153,20 +155,55 @@ const DietChartRow = ({ label, value }) => (
     </div>
 );
 
-const DietChartModal = ({ isOpen, onClose, record, userName }) => {
+const DietChartModal = ({ isOpen, onClose, record, userName, userId }) => {
     const [chart, setChart] = useState(null);
     const [statusMessage, setStatusMessage] = useState("");
     const [downloading, setDownloading] = useState(false);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         if (!isOpen || !record) return;
-        setChart(createDraftChart(record, userName));
-        setStatusMessage("");
+        const savedDraft = record.dietChart;
+        setChart(
+            savedDraft && typeof savedDraft === "object"
+                ? { ...createDraftChart(record, userName), ...savedDraft }
+                : createDraftChart(record, userName)
+        );
+        setStatusMessage(savedDraft ? "Loaded the previously saved draft." : "");
     }, [isOpen, record, userName]);
 
     if (!record) return null;
 
     const activeChart = chart || createDraftChart(record, userName);
+
+    const saveDraft = async ({ silent = false } = {}) => {
+        if (!userId || !record?._id) return null;
+        if (!silent) {
+            setSaving(true);
+            setStatusMessage("Saving draft...");
+        }
+        try {
+            await axios.patch(`/admin/update-diet-chart/${userId}/${record._id}`, {
+                dietChart: activeChart,
+            });
+            record.dietChart = { ...activeChart };
+            if (!silent) setStatusMessage("Draft saved.");
+            return true;
+        } catch (error) {
+            console.error("Failed to save diet chart draft:", error);
+            if (!silent) setStatusMessage("Could not save the draft. Please try again.");
+            return false;
+        } finally {
+            if (!silent) setSaving(false);
+        }
+    };
+
+    const handleOpenChange = (open) => {
+        if (!open) {
+            saveDraft({ silent: true });
+        }
+        onClose();
+    };
 
     const handleFieldChange = (field, value) => {
         setChart((prev) => ({
@@ -215,7 +252,7 @@ const DietChartModal = ({ isOpen, onClose, record, userName }) => {
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogContent className="max-w-[92vw] w-full max-h-[92vh] overflow-y-auto bg-[#f7f5ef] border-[#d4dde2] p-0">
                 <DialogHeader className="border-b border-[#d4dde2] bg-[#f3efe4] px-6 py-5">
                     <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
@@ -226,6 +263,10 @@ const DietChartModal = ({ isOpen, onClose, record, userName }) => {
                             </DialogDescription>
                         </div>
                         <div className="flex flex-wrap gap-2">
+                            <Button variant="outline" onClick={() => saveDraft({})} disabled={saving} className="cursor-pointer gap-2">
+                                <Save className="h-4 w-4" />
+                                {saving ? "Saving..." : "Save Draft"}
+                            </Button>
                             <Button variant="outline" onClick={handleReset} className="cursor-pointer gap-2">
                                 <RotateCcw className="h-4 w-4" />
                                 Reset Draft
