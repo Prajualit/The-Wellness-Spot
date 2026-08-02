@@ -13,6 +13,21 @@ const nextConfig = {
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
+  webpack(config) {
+    config.module.rules.push(
+      {
+        test: /\.(pdf)$/i,
+        type: "asset/resource",
+        generator: { filename: "static/media/[name][ext]" },
+      },
+      {
+        test: /\.(ttf)$/i,
+        type: "asset/resource",
+        generator: { filename: "static/media/[name][ext]" },
+      }
+    );
+    return config;
+  },
   // Enable compression
   compress: true,
   

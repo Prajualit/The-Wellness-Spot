@@ -8,10 +8,11 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, Edit3, Trash2, Plus } from "lucide-react";
+import { Eye, Edit3, Trash2, Plus, Sparkles } from "lucide-react";
 import AdminRecordDetailModal from "./AdminRecordDetailModal";
 import AdminEditRecordModal from "./AdminEditRecordModal";
 import AdminAddRecordModal from "./AdminAddRecordModal";
+import DietChartModal from "./DietChartModal";
 import axios from "../../lib/axios";
 
 const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
@@ -19,6 +20,7 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showDietChartModal, setShowDietChartModal] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [recordToDelete, setRecordToDelete] = useState(null);
@@ -37,6 +39,11 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
 
     const handleAddRecord = () => {
         setShowAddModal(true);
+    };
+
+    const handleBuildDietChart = (record) => {
+        setSelectedRecord(record);
+        setShowDietChartModal(true);
     };
 
     const handleDelete = (record) => {
@@ -174,6 +181,15 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
                                                                     <Button
                                                                         variant="outline"
                                                                         size="sm"
+                                                                        onClick={() => handleBuildDietChart(item)}
+                                                                        className="h-8 px-3 text-xs hover:bg-green-50 hover:text-green-700"
+                                                                    >
+                                                                        <Sparkles className="h-3 w-3 mr-1" />
+                                                                        Diet Chart
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
                                                                         onClick={() => handleEdit(item)}
                                                                         className="h-8 px-3 text-xs hover:bg-green-50 hover:text-green-700"
                                                                     >
@@ -210,6 +226,10 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
                 onClose={() => setShowDetailModal(false)}
                 record={selectedRecord}
                 userName={userName}
+                onCreateDietChart={() => {
+                    setShowDetailModal(false);
+                    setShowDietChartModal(true);
+                }}
             />
 
             {/* Admin Edit Record Modal */}
@@ -229,6 +249,13 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
                 userName={userName}
                 userId={userId}
                 onUpdate={handleUpdateRecord}
+            />
+
+            <DietChartModal
+                isOpen={showDietChartModal}
+                onClose={() => setShowDietChartModal(false)}
+                record={selectedRecord}
+                userName={userName}
             />
 
             {/* Delete Confirmation Dialog */}

@@ -6,8 +6,10 @@ import {
     DialogHeader,
     DialogTitle,
 } from "../ui/dialog";
+import { Button } from "../ui/button";
+import { Sparkles } from "lucide-react";
 
-const AdminRecordDetailModal = ({ isOpen, onClose, record, userName }) => {
+const AdminRecordDetailModal = ({ isOpen, onClose, record, userName, onCreateDietChart }) => {
     if (!record) return null;
 
     const formatDate = (dateString) => {
@@ -83,6 +85,17 @@ const AdminRecordDetailModal = ({ isOpen, onClose, record, userName }) => {
                     <DialogDescription className="text-center text-gray-600">
                         Complete health assessment record for {userName || 'User'}
                     </DialogDescription>
+                    {onCreateDietChart && (
+                        <div className="flex justify-center mt-4">
+                            <Button
+                                onClick={onCreateDietChart}
+                                className="bg-green-700 hover:bg-green-800 cursor-pointer text-white gap-2"
+                            >
+                                <Sparkles className="h-4 w-4" />
+                                Create Diet Chart
+                            </Button>
+                        </div>
+                    )}
                 </DialogHeader>
 
                 <div className="space-y-6 mt-4">
