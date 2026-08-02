@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+	deleteMedia,
 	getAllMedia,
 	getCloudinaryUploadSignature,
 	registerUploadedMedia,
@@ -14,5 +15,6 @@ router.route("/").get(getAllMedia);
 router.route("/signature").get(verifyJWT, getCloudinaryUploadSignature);
 router.route("/register").post(verifyJWT, registerUploadedMedia);
 router.route("/upload").post(verifyJWT, mediaUpload.single("media"), uploadMedia);
+router.route("/:mediaId").delete(verifyJWT, deleteMedia);
 
 export default router;

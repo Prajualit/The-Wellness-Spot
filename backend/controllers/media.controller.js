@@ -175,4 +175,27 @@ const getAllMedia = asyncHandler(async (req, res) => {
   res.status(200).json(new apiResponse(200, { media: validMedia }));
 });
 
-export { getCloudinaryUploadSignature, registerUploadedMedia, uploadMedia, getAllMedia };
+const deleteMedia = asyncHandler(async (req, res) => {
+  const { mediaId } = req.params;
+
+  const media = await Media.findById(mediaId);
+  if (!media) {
+    throw new apiError(404, "Media not found.");
+  }
+
+  await cloudinary.uploader.destroy(media.cloudinaryPublicId, {
+    resource_type: media.type === "video" ? "video" : "image",
+  });
+
+  await Media.findByIdAndDelete(mediaId);
+
+  res.status(200).json(new apiResponse(200, null, "Media deleted successfully."));
+});
+
+export {
+  getCloudinaryUploadSignature,
+  registerUploadedMedia,
+  uploadMedia,
+  getAllMedia,
+  deleteMedia,
+};

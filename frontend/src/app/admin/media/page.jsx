@@ -7,7 +7,7 @@ import Header from "@/components/dashboard/header";
 import { useTokenAuth } from "@/hooks/useTokenAuth.js";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { ImageIcon, Clapperboard, Upload, Loader2, CheckCircle2, XCircle, Images } from "lucide-react";
+import { ImageIcon, Clapperboard, Upload, Loader2, CheckCircle2, XCircle, Images, Trash2 } from "lucide-react";
 
 const SECTIONS = [
     {
@@ -50,6 +50,7 @@ export default function AdminMediaPage() {
     const [uploadProgress, setUploadProgress] = useState(0);
     const [feedback, setFeedback] = useState(null);
     const [uploadedItems, setUploadedItems] = useState(null);
+    const [deletingId, setDeletingId] = useState(null);
     const fileInputRef = useRef(null);
 
     const activeSectionConfig = SECTIONS.find((s) => s.id === activeSection);
@@ -172,6 +173,28 @@ export default function AdminMediaPage() {
         } finally {
             setUploading(false);
             setUploadProgress(0);
+        }
+    };
+
+    const handleDelete = async (item) => {
+        if (!window.confirm(`Delete this ${item.type === "video" ? "video" : "photo"}? This cannot be undone.`)) return;
+
+        setDeletingId(item._id);
+        setFeedback(null);
+        try {
+            await api.delete(`/media/${item._id}`);
+            setFeedback({
+                type: "success",
+                text: "Media deleted successfully.",
+            });
+            fetchUploaded(activeSection);
+        } catch (error) {
+            setFeedback({
+                type: "error",
+                text: "Could not delete the media. Please try again.",
+            });
+        } finally {
+            setDeletingId(null);
         }
     };
 
@@ -335,8 +358,22 @@ export default function AdminMediaPage() {
                             {uploadedItems.map((item) => (
                                 <div
                                     key={item._id}
-                                    className="border border-[#d4dde2] rounded-md overflow-hidden"
+                                    className="relative border border-[#d4dde2] rounded-md overflow-hidden"
                                 >
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => handleDelete(item)}
+                                        disabled={deletingId === item._id}
+                                        title="Delete"
+                                        className="absolute top-2 right-2 h-8 w-8 p-0 bg-white/90 shadow-sm rounded-md hover:bg-red-50 hover:text-red-600 cursor-pointer"
+                                    >
+                                        {deletingId === item._id ? (
+                                            <Loader2 className="h-3 w-3 animate-spin" />
+                                        ) : (
+                                            <Trash2 className="h-3 w-3" />
+                                        )}
+                                    </Button>
                                     {item.type === "video" ? (
                                         <video
                                             src={item.url}
