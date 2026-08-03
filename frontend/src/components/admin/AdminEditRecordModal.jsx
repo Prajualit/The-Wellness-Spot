@@ -20,6 +20,12 @@ const AdminEditRecordModal = ({ isOpen, onClose, record, userName, userId, onUpd
         age: '',
         height: '',
         weight: '',
+        visceralFat: '',
+        bmr: '',
+        bodyFat: '',
+        muscle: '',
+        subFat: '',
+        metabolicAge: '',
         energy: '',
         digestion: '',
         sleepQuality: '',
@@ -41,6 +47,12 @@ const AdminEditRecordModal = ({ isOpen, onClose, record, userName, userId, onUpd
                 age: record.age || '',
                 height: record.height || '',
                 weight: record.lastWeight || record.weight || '',
+                visceralFat: record.visceralFat ?? '',
+                bmr: record.bmr ?? '',
+                bodyFat: record.bodyFat ?? '',
+                muscle: record.muscle ?? '',
+                subFat: record.subFat ?? '',
+                metabolicAge: record.metabolicAge ?? '',
                 energy: record.energy || '',
                 digestion: record.digestion || '',
                 sleepQuality: record.sleepQuality || '',
@@ -75,6 +87,12 @@ const AdminEditRecordModal = ({ isOpen, onClose, record, userName, userId, onUpd
             age: 'Age',
             height: 'Height',
             weight: 'Weight',
+            visceralFat: 'Visceral Fat%',
+            bmr: 'BMR',
+            bodyFat: 'Body Fat%',
+            muscle: 'Muscle',
+            subFat: 'Sub Fat',
+            metabolicAge: 'Metabolic Age',
             energy: 'Energy Level',
             digestion: 'Digestion',
             sleepQuality: 'Sleep Quality',
@@ -150,6 +168,12 @@ const AdminEditRecordModal = ({ isOpen, onClose, record, userName, userId, onUpd
                 age: record.age || '',
                 height: record.height || '',
                 weight: record.lastWeight || record.weight || '',
+                visceralFat: record.visceralFat ?? '',
+                bmr: record.bmr ?? '',
+                bodyFat: record.bodyFat ?? '',
+                muscle: record.muscle ?? '',
+                subFat: record.subFat ?? '',
+                metabolicAge: record.metabolicAge ?? '',
                 energy: record.energy || '',
                 digestion: record.digestion || '',
                 sleepQuality: record.sleepQuality || '',
@@ -255,6 +279,90 @@ const AdminEditRecordModal = ({ isOpen, onClose, record, userName, userId, onUpd
                                     className={`bg-white border-gray-300 ${errors.waterIntake ? 'border-red-500' : ''}`}
                                 />
                                 {errors.waterIntake && <p className="text-red-500 text-xs mt-1">{errors.waterIntake}</p>}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-neutral-50 p-4 rounded-lg">
+                        <h3 className="text-xl font-semibold text-black mb-4">Body Composition</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-black mb-2">Visceral Fat% *</label>
+                                <Input
+                                    type="number"
+                                    value={formData.visceralFat}
+                                    onChange={(e) => handleChange('visceralFat', e.target.value)}
+                                    placeholder="Enter visceral fat percentage"
+                                    min="0"
+                                    step="0.1"
+                                    className={`bg-white border-gray-300 ${errors.visceralFat ? 'border-red-500' : ''}`}
+                                />
+                                {errors.visceralFat && <p className="text-red-500 text-xs mt-1">{errors.visceralFat}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-black mb-2">BMR *</label>
+                                <Input
+                                    type="number"
+                                    value={formData.bmr}
+                                    onChange={(e) => handleChange('bmr', e.target.value)}
+                                    placeholder="Enter BMR"
+                                    min="0"
+                                    step="1"
+                                    className={`bg-white border-gray-300 ${errors.bmr ? 'border-red-500' : ''}`}
+                                />
+                                {errors.bmr && <p className="text-red-500 text-xs mt-1">{errors.bmr}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-black mb-2">Body Fat% *</label>
+                                <Input
+                                    type="number"
+                                    value={formData.bodyFat}
+                                    onChange={(e) => handleChange('bodyFat', e.target.value)}
+                                    placeholder="Enter body fat percentage"
+                                    min="0"
+                                    step="0.1"
+                                    className={`bg-white border-gray-300 ${errors.bodyFat ? 'border-red-500' : ''}`}
+                                />
+                                {errors.bodyFat && <p className="text-red-500 text-xs mt-1">{errors.bodyFat}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-black mb-2">Muscle *</label>
+                                <Input
+                                    type="number"
+                                    value={formData.muscle}
+                                    onChange={(e) => handleChange('muscle', e.target.value)}
+                                    placeholder="Enter muscle value"
+                                    min="0"
+                                    step="0.1"
+                                    className={`bg-white border-gray-300 ${errors.muscle ? 'border-red-500' : ''}`}
+                                />
+                                {errors.muscle && <p className="text-red-500 text-xs mt-1">{errors.muscle}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-black mb-2">Sub Fat *</label>
+                                <Input
+                                    type="number"
+                                    value={formData.subFat}
+                                    onChange={(e) => handleChange('subFat', e.target.value)}
+                                    placeholder="Enter sub fat value"
+                                    min="0"
+                                    step="0.1"
+                                    className={`bg-white border-gray-300 ${errors.subFat ? 'border-red-500' : ''}`}
+                                />
+                                {errors.subFat && <p className="text-red-500 text-xs mt-1">{errors.subFat}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-black mb-2">Metabolic Age *</label>
+                                <Input
+                                    type="number"
+                                    value={formData.metabolicAge}
+                                    onChange={(e) => handleChange('metabolicAge', e.target.value)}
+                                    placeholder="Enter metabolic age"
+                                    min="0"
+                                    step="1"
+                                    className={`bg-white border-gray-300 ${errors.metabolicAge ? 'border-red-500' : ''}`}
+                                />
+                                {errors.metabolicAge && <p className="text-red-500 text-xs mt-1">{errors.metabolicAge}</p>}
                             </div>
                         </div>
                     </div>

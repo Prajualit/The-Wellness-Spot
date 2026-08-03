@@ -16,6 +16,12 @@ const addRecord = asyncHandler(async (req, res) => {
     height,
     startingWeight,
     lastWeight,
+    visceralFat,
+    bmr,
+    bodyFat,
+    muscle,
+    subFat,
+    metabolicAge,
     energy,
     digestion,
     sleepQuality,
@@ -29,6 +35,8 @@ const addRecord = asyncHandler(async (req, res) => {
 
   // Validate required fields
   if (!age || !height || !startingWeight || !lastWeight || 
+      visceralFat === undefined || bmr === undefined || bodyFat === undefined ||
+      muscle === undefined || subFat === undefined || metabolicAge === undefined ||
       !energy || !digestion || !sleepQuality || !snackingHabit || 
       !sugarSaltCravings || !waterIntake || !exercise || !stressLevel) {
     throw new apiError(400, "All required fields must be provided.");
@@ -47,6 +55,12 @@ const addRecord = asyncHandler(async (req, res) => {
     lastWeight,
     weight: lastWeight, // keeping for backward compatibility
     bmi,
+    visceralFat,
+    bmr,
+    bodyFat,
+    muscle,
+    subFat,
+    metabolicAge,
     energy,
     digestion,
     sleepQuality,
@@ -107,6 +121,12 @@ const updateRecord = asyncHandler(async (req, res) => {
       height,
       startingWeight,
       lastWeight,
+      visceralFat,
+      bmr,
+      bodyFat,
+      muscle,
+      subFat,
+      metabolicAge,
       energy,
       digestion,
       sleepQuality,
@@ -120,6 +140,8 @@ const updateRecord = asyncHandler(async (req, res) => {
 
     // Validate required fields
     if (!age || !height || !startingWeight || !lastWeight || 
+        visceralFat === undefined || bmr === undefined || bodyFat === undefined ||
+        muscle === undefined || subFat === undefined || metabolicAge === undefined ||
         !energy || !digestion || !sleepQuality || !snackingHabit || 
         !sugarSaltCravings || !waterIntake || !exercise || !stressLevel) {
       throw new apiError(400, "All required fields must be provided.");
@@ -149,6 +171,12 @@ const updateRecord = asyncHandler(async (req, res) => {
     user.records[recordIndex].lastWeight = lastWeight;
     user.records[recordIndex].weight = lastWeight; // keeping for backward compatibility
     user.records[recordIndex].bmi = bmi;
+    user.records[recordIndex].visceralFat = visceralFat;
+    user.records[recordIndex].bmr = bmr;
+    user.records[recordIndex].bodyFat = bodyFat;
+    user.records[recordIndex].muscle = muscle;
+    user.records[recordIndex].subFat = subFat;
+    user.records[recordIndex].metabolicAge = metabolicAge;
     user.records[recordIndex].energy = energy;
     user.records[recordIndex].digestion = digestion;
     user.records[recordIndex].sleepQuality = sleepQuality;

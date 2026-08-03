@@ -29,6 +29,8 @@ const AdminRecordDetailModal = ({ isOpen, onClose, record, userName, onCreateDie
         </div>
     );
 
+    const formatMetric = (value, suffix = "") => (value ?? value === 0 ? `${value}${suffix}` : 'N/A');
+
     const getColorForValue = (value, type) => {
         const colorMaps = {
             energy: {
@@ -124,6 +126,18 @@ const AdminRecordDetailModal = ({ isOpen, onClose, record, userName, onCreateDie
                                     : 'N/A'
                                 }
                             />
+                        </div>
+                    </div>
+
+                    <div className="bg-neutral-50 p-4 rounded-lg">
+                        <h3 className="text-xl font-semibold text-black mb-3">Body Composition</h3>
+                        <div className="space-y-3">
+                            <DetailItem label="Visceral Fat%" value={formatMetric(record.visceralFat, ' %')} />
+                            <DetailItem label="BMR" value={formatMetric(record.bmr, ' kcal')} />
+                            <DetailItem label="Body Fat%" value={formatMetric(record.bodyFat, ' %')} />
+                            <DetailItem label="Muscle" value={formatMetric(record.muscle, ' kg')} />
+                            <DetailItem label="Sub Fat" value={formatMetric(record.subFat, ' kg')} />
+                            <DetailItem label="Metabolic Age" value={formatMetric(record.metabolicAge, ' years')} />
                         </div>
                     </div>
 

@@ -22,6 +22,12 @@ const EditRecordModal = ({ isOpen, onClose, record }) => {
         height: '',
         startingWeight: '',
         lastWeight: '',
+        visceralFat: '',
+        bmr: '',
+        bodyFat: '',
+        muscle: '',
+        subFat: '',
+        metabolicAge: '',
         energy: '',
         digestion: '',
         sleepQuality: '',
@@ -43,6 +49,12 @@ const EditRecordModal = ({ isOpen, onClose, record }) => {
                 height: record.height || '',
                 startingWeight: record.startingWeight || record.weight || '',
                 lastWeight: record.lastWeight || record.weight || '',
+                visceralFat: record.visceralFat ?? '',
+                bmr: record.bmr ?? '',
+                bodyFat: record.bodyFat ?? '',
+                muscle: record.muscle ?? '',
+                subFat: record.subFat ?? '',
+                metabolicAge: record.metabolicAge ?? '',
                 energy: record.energy || '',
                 digestion: record.digestion || '',
                 sleepQuality: record.sleepQuality || '',
@@ -90,6 +102,12 @@ const EditRecordModal = ({ isOpen, onClose, record }) => {
                 height: record.height || '',
                 startingWeight: record.startingWeight || record.weight || '',
                 lastWeight: record.lastWeight || record.weight || '',
+                visceralFat: record.visceralFat ?? '',
+                bmr: record.bmr ?? '',
+                bodyFat: record.bodyFat ?? '',
+                muscle: record.muscle ?? '',
+                subFat: record.subFat ?? '',
+                metabolicAge: record.metabolicAge ?? '',
                 energy: record.energy || '',
                 digestion: record.digestion || '',
                 sleepQuality: record.sleepQuality || '',
@@ -175,6 +193,84 @@ const EditRecordModal = ({ isOpen, onClose, record }) => {
                                                 placeholder="Enter current weight"
                                                 value={formData.lastWeight}
                                                 onChange={(e) => handleInputChange('lastWeight', e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-neutral-50 p-4 rounded-lg">
+                                    <h3 className="text-lg font-semibold mb-4 text-gray-900">Body Composition</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="visceralFat">Visceral Fat%</Label>
+                                            <Input
+                                                id="visceralFat"
+                                                type="number"
+                                                step="0.1"
+                                                placeholder="Enter visceral fat percentage"
+                                                value={formData.visceralFat}
+                                                onChange={(e) => handleInputChange('visceralFat', e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="bmr">BMR</Label>
+                                            <Input
+                                                id="bmr"
+                                                type="number"
+                                                step="1"
+                                                placeholder="Enter BMR"
+                                                value={formData.bmr}
+                                                onChange={(e) => handleInputChange('bmr', e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="bodyFat">Body Fat%</Label>
+                                            <Input
+                                                id="bodyFat"
+                                                type="number"
+                                                step="0.1"
+                                                placeholder="Enter body fat percentage"
+                                                value={formData.bodyFat}
+                                                onChange={(e) => handleInputChange('bodyFat', e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="muscle">Muscle</Label>
+                                            <Input
+                                                id="muscle"
+                                                type="number"
+                                                step="0.1"
+                                                placeholder="Enter muscle value"
+                                                value={formData.muscle}
+                                                onChange={(e) => handleInputChange('muscle', e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="subFat">Sub Fat</Label>
+                                            <Input
+                                                id="subFat"
+                                                type="number"
+                                                step="0.1"
+                                                placeholder="Enter sub fat value"
+                                                value={formData.subFat}
+                                                onChange={(e) => handleInputChange('subFat', e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            <Label htmlFor="metabolicAge">Metabolic Age</Label>
+                                            <Input
+                                                id="metabolicAge"
+                                                type="number"
+                                                step="1"
+                                                placeholder="Enter metabolic age"
+                                                value={formData.metabolicAge}
+                                                onChange={(e) => handleInputChange('metabolicAge', e.target.value)}
                                                 required
                                             />
                                         </div>

@@ -33,6 +33,12 @@ const bmiRecordSchema = new mongoose.Schema({
   startingWeight: { type: Number, required: true }, // in kg
   lastWeight: { type: Number, required: true }, // in kg (current weight)
   bmi: { type: Number, required: true },
+  visceralFat: { type: Number, default: null },
+  bmr: { type: Number, default: null },
+  bodyFat: { type: Number, default: null },
+  muscle: { type: Number, default: null },
+  subFat: { type: Number, default: null },
+  metabolicAge: { type: Number, default: null },
   energy: { 
     type: String, 
     enum: ['Low', 'Moderate', 'High', 'Very High'],
