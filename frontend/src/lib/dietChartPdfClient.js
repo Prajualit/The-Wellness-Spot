@@ -3,23 +3,39 @@ import TemplatePdfUrl from "../app/assets/templates/Green and Beige Simple Diet 
 import MontserratRegularUrl from "../app/assets/fonts/Montserrat-Regular.ttf";
 import MontserratSemiBoldUrl from "../app/assets/fonts/Montserrat-SemiBold.ttf";
 import MontserratBoldUrl from "../app/assets/fonts/Montserrat-Bold.ttf";
+import MuktaRegularUrl from "../app/assets/fonts/Mukta-Regular.ttf";
+import MuktaSemiBoldUrl from "../app/assets/fonts/Mukta-SemiBold.ttf";
+import MuktaBoldUrl from "../app/assets/fonts/Mukta-Bold.ttf";
 
 const fetchBytes = (url) => fetch(url).then((response) => response.arrayBuffer());
 
 export const generateDietChartPdf = async ({ chart, dateLabel }) => {
-    const [templateBuffer, regularFontBuffer, semiboldFontBuffer, boldFontBuffer] =
-        await Promise.all([
-            fetchBytes(TemplatePdfUrl),
-            fetchBytes(MontserratRegularUrl),
-            fetchBytes(MontserratSemiBoldUrl),
-            fetchBytes(MontserratBoldUrl),
-        ]);
+    const [
+        templateBuffer,
+        regularFontBuffer,
+        semiboldFontBuffer,
+        boldFontBuffer,
+        hindiRegularFontBuffer,
+        hindiSemiboldFontBuffer,
+        hindiBoldFontBuffer,
+    ] = await Promise.all([
+        fetchBytes(TemplatePdfUrl),
+        fetchBytes(MontserratRegularUrl),
+        fetchBytes(MontserratSemiBoldUrl),
+        fetchBytes(MontserratBoldUrl),
+        fetchBytes(MuktaRegularUrl),
+        fetchBytes(MuktaSemiBoldUrl),
+        fetchBytes(MuktaBoldUrl),
+    ]);
 
     return buildDietChartPdf({
         templateBytes: new Uint8Array(templateBuffer),
         regularFontBytes: new Uint8Array(regularFontBuffer),
         semiboldFontBytes: new Uint8Array(semiboldFontBuffer),
         boldFontBytes: new Uint8Array(boldFontBuffer),
+        hindiRegularFontBytes: new Uint8Array(hindiRegularFontBuffer),
+        hindiSemiboldFontBytes: new Uint8Array(hindiSemiboldFontBuffer),
+        hindiBoldFontBytes: new Uint8Array(hindiBoldFontBuffer),
         chart,
         dateLabel,
     });

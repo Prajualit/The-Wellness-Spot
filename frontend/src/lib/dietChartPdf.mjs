@@ -1,11 +1,17 @@
 import {
     PDFDocument,
+    PDFHexString,
     rgb,
     pushGraphicsState,
     popGraphicsState,
     setFillingRgbColor,
     setStrokingRgbColor,
     setLineWidth,
+    beginText,
+    endText,
+    setFontAndSize,
+    setTextMatrix,
+    showText,
     moveTo,
     lineTo,
     appendQuadraticCurve,
@@ -16,7 +22,7 @@ import {
     clip,
     endPath,
 } from "pdf-lib";
-import fontkit from "@pdf-lib/fontkit";
+import * as fontkit from "fontkit";
 
 export const PAGE_WIDTH = 595.5;
 export const PAGE_HEIGHT = 842.25;
@@ -34,9 +40,67 @@ const CONTINUATION_CONTENT_TOP = 770;
 
 const CARD_PADDING = 12;
 const SECTION_GAP = 12;
-const BODY_SIZE = 10.5;
-const BODY_LINE_HEIGHT = 14.8;
 const TITLE_SIZE = 12.5;
+
+const TYPOGRAPHY = {
+    en: { bodySize: 10.5, bodyLineHeight: 14.8, shaped: false },
+    hi: { bodySize: 10.5, bodyLineHeight: 18, shaped: true },
+};
+
+const DEVANAGARI_PATTERN = /[\u0900-\u097F\uA8E0-\uA8FF\u1CD0-\u1CFF]/;
+
+const containsDevanagari = (text) => DEVANAGARI_PATTERN.test(String(text || ""));
+
+const chartHasHindi = (chart) => {
+    if (!chart) return false;
+    return Object.values(chart).some((value) => containsDevanagari(value));
+};
+
+const HINDI_LABELS = {
+    client: "ग्राहक",
+    bmi: "बीएमआई",
+    weightChange: "वज़न बदलाव",
+    hydrationTarget: "पानी की मात्रा",
+    date: "दिनांक",
+};
+
+const HINDI_MONTHS = {
+    January: "जनवरी",
+    February: "फ़रवरी",
+    March: "मार्च",
+    April: "अप्रैल",
+    May: "मई",
+    June: "जून",
+    July: "जुलाई",
+    August: "अगस्त",
+    September: "सितंबर",
+    October: "अक्टूबर",
+    November: "नवंबर",
+    December: "दिसंबर",
+};
+
+const HINDI_SECTION_TITLES = {
+    Goal: "लक्ष्य",
+    "Focus Areas": "फोकस क्षेत्र",
+    "Recommended Foods": "अनुशंसित खाद्य पदार्थ",
+    Breakfast: "नाश्ता",
+    "Mid-Morning Snack": "मध्य-सुबह का नाश्ता",
+    Lunch: "दोपहर का भोजन",
+    "Evening Snack": "शाम का नाश्ता",
+    Dinner: "रात का खाना",
+    "Bedtime Routine": "सोने की दिनचर्या",
+    "Quick Summary": "त्वरित सारांश",
+    "Foods to Limit": "सीमित करने योग्य खाद्य पदार्थ",
+    Notes: "नोट्स",
+};
+
+const localizeDateLabel = (label) => {
+    let text = String(label || "").replace(/^Date\s*:/i, `${HINDI_LABELS.date}:`);
+    return text.replace(
+        /\b(January|February|March|April|May|June|July|August|September|October|November|December)\b/g,
+        (month) => HINDI_MONTHS[month] || month
+    );
+};
 
 const COLORS = {
     ink: rgb(0.063, 0.082, 0.094),
@@ -117,6 +181,64 @@ const drawAccentBar = ({
     );
 };
 
+const toGlyphHex = (glyphId) => glyphId.toString(16).padStart(4, "0");
+
+const shapedFontKeys = new WeakMap();
+
+const fontKeyFor = (page, font) => {
+    let pageKeys = shapedFontKeys.get(page);
+    if (!pageKeys) {
+        pageKeys = new Map();
+        shapedFontKeys.set(page, pageKeys);
+    }
+    let key = pageKeys.get(font);
+    if (!key) {
+        key = page.node.newFontDictionary(font.name, font.ref);
+        pageKeys.set(font, key);
+    }
+    return key;
+};
+
+const drawShapedText = ({ page, text, font, size, x, y, color }) => {
+    const fontkitFont = font.embedder.font;
+    const scale = size / fontkitFont.unitsPerEm;
+    const paragraphs = String(text || "")
+        .split(/\r?\n/)
+        .filter((line) => line.trim());
+    const runs = paragraphs.length
+        ? paragraphs.map((paragraph) => fontkitFont.layout(paragraph))
+        : [fontkitFont.layout("")];
+    const ops = [];
+    runs.forEach((run) => {
+        let cursorX = x;
+        run.glyphs.forEach((glyph, index) => {
+            const position = run.positions[index];
+            const glyphX = cursorX + position.xOffset * scale;
+            const glyphY = y + position.yOffset * scale;
+            ops.push(
+                setTextMatrix(1, 0, 0, 1, glyphX, glyphY),
+                showText(PDFHexString.of(toGlyphHex(glyph.id)))
+            );
+            cursorX += (position.xAdvance || glyph.advanceWidth) * scale;
+        });
+    });
+    page.pushOperators(
+        setFillingRgbColor(color.red, color.green, color.blue),
+        beginText(),
+        setFontAndSize(fontKeyFor(page, font), size),
+        ...ops,
+        endText()
+    );
+};
+
+const drawTextLine = ({ page, text, font, size, x, y, color, shaped }) => {
+    if (shaped) {
+        drawShapedText({ page, text, font, size, x, y, color });
+    } else {
+        page.drawText(text, { x, y, size, font, color });
+    }
+};
+
 const wrapParagraph = (text, font, size, maxWidth) => {
     const words = String(text).trim().split(/\s+/).filter(Boolean);
     if (!words.length) return [];
@@ -148,13 +270,15 @@ const wrapText = (text, font, size, maxWidth) => {
     return lines;
 };
 
-const computeSectionHeight = (title, bodyLines) => {
+const computeSectionHeight = (title, bodyLines, typography) => {
     const titleHeight = TITLE_SIZE * 1.45;
-    const bodyHeight = bodyLines.length ? bodyLines.length * BODY_LINE_HEIGHT : 0;
+    const bodyHeight = bodyLines.length
+        ? bodyLines.length * typography.bodyLineHeight
+        : 0;
     return CARD_PADDING * 2 + titleHeight + (bodyLines.length ? 5 + bodyHeight : 0);
 };
 
-const drawHeader = ({ page, chart, dateLabel, nameFont, dateFont }) => {
+const drawHeader = ({ page, chart, dateLabel, nameFont, dateFont, shaped }) => {
     const centerX = PAGE_WIDTH / 2;
     const clientName = String(chart.clientName || "Client");
     let nameSize = 19;
@@ -164,22 +288,28 @@ const drawHeader = ({ page, chart, dateLabel, nameFont, dateFont }) => {
     ) {
         nameSize -= 0.5;
     }
-    page.drawText(clientName, {
+    drawTextLine({
+        page,
+        text: clientName,
         x: centerX - nameFont.widthOfTextAtSize(clientName, nameSize) / 2,
         y: 704,
         size: nameSize,
         font: nameFont,
         color: COLORS.deepGreen,
+        shaped,
     });
 
     const dateText = String(dateLabel || "");
     const dateSize = 11.5;
-    page.drawText(dateText, {
+    drawTextLine({
+        page,
+        text: dateText,
         x: centerX - dateFont.widthOfTextAtSize(dateText, dateSize) / 2,
         y: 681,
         size: dateSize,
         font: dateFont,
         color: COLORS.muted,
+        shaped,
     });
 
     const dividerWidth = 140;
@@ -191,10 +321,11 @@ const drawHeader = ({ page, chart, dateLabel, nameFont, dateFont }) => {
     });
 };
 
-const drawMetaCards = ({ page, top, items, labelFont, valueFont }) => {
+const drawMetaCards = ({ page, top, items, labelFont, valueFont, shaped }) => {
     const gap = 10;
     const cardWidth = (CONTENT_WIDTH - gap * (items.length - 1)) / items.length;
     const cardHeight = 54;
+    const labelMaxWidth = cardWidth - 20;
     let x = CONTENT_LEFT;
     items.forEach((item) => {
         drawRoundedRect({
@@ -208,28 +339,51 @@ const drawMetaCards = ({ page, top, items, labelFont, valueFont }) => {
             borderColor: COLORS.cardBorder,
             borderWidth: 1,
         });
-        page.drawText(String(item.label).toUpperCase(), {
+        const labelText = String(item.label).toUpperCase();
+        let labelSize = 8.5;
+        while (
+            labelSize > 6 &&
+            labelFont.widthOfTextAtSize(labelText, labelSize) > labelMaxWidth
+        ) {
+            labelSize -= 0.25;
+        }
+        drawTextLine({
+            page,
+            text: labelText,
             x: x + 10,
             y: top - 17,
-            size: 8.5,
+            size: labelSize,
             font: labelFont,
             color: COLORS.muted,
+            shaped,
         });
-        page.drawText(String(item.value || "N/A"), {
+        drawTextLine({
+            page,
+            text: String(item.value || "N/A"),
             x: x + 10,
             y: top - 34,
             size: 11.5,
             font: valueFont,
             color: COLORS.deepGreen,
+            shaped,
         });
         x += cardWidth + gap;
     });
     return cardHeight + gap;
 };
 
-const drawSectionCard = ({ page, top, title, bodyLines, titleFont, bodyFont }) => {
+const drawSectionCard = ({
+    page,
+    top,
+    title,
+    bodyLines,
+    titleFont,
+    bodyFont,
+    typography,
+}) => {
+    const { bodySize, bodyLineHeight } = typography;
     const titleHeight = TITLE_SIZE * 1.45;
-    const bodyHeight = bodyLines.length ? bodyLines.length * BODY_LINE_HEIGHT : 0;
+    const bodyHeight = bodyLines.length ? bodyLines.length * bodyLineHeight : 0;
     const cardHeight =
         CARD_PADDING * 2 + titleHeight + (bodyLines.length ? 5 + bodyHeight : 0);
     const cardTop = top;
@@ -259,25 +413,31 @@ const drawSectionCard = ({ page, top, title, bodyLines, titleFont, bodyFont }) =
     });
 
     const titleBaseline = cardTop - CARD_PADDING - TITLE_SIZE * 0.72;
-    page.drawText(String(title).toUpperCase(), {
+    drawTextLine({
+        page,
+        text: String(title).toUpperCase(),
         x: innerX,
         y: titleBaseline,
         size: TITLE_SIZE,
         font: titleFont,
         color: COLORS.deepGreenTitle,
+        shaped: typography.shaped,
     });
 
     if (bodyLines.length) {
-        let baseline = titleBaseline - 7 - BODY_SIZE;
+        let baseline = titleBaseline - 7 - bodySize;
         bodyLines.forEach((line) => {
-            page.drawText(line, {
+            drawTextLine({
+                page,
+                text: line,
                 x: innerX,
                 y: baseline,
-                size: BODY_SIZE,
+                size: bodySize,
                 font: bodyFont,
                 color: COLORS.ink,
+                shaped: typography.shaped,
             });
-            baseline -= BODY_LINE_HEIGHT;
+            baseline -= bodyLineHeight;
         });
     }
     return cardHeight;
@@ -298,6 +458,9 @@ const drawSectionCard = ({ page, top, title, bodyLines, titleFont, bodyFont }) =
  * @param {Uint8Array} options.regularFontBytes - Montserrat Regular TTF bytes
  * @param {Uint8Array} options.semiboldFontBytes - Montserrat SemiBold TTF bytes
  * @param {Uint8Array} options.boldFontBytes - Montserrat Bold TTF bytes
+ * @param {Uint8Array} [options.hindiRegularFontBytes] - Mukta Regular TTF bytes (Devanagari)
+ * @param {Uint8Array} [options.hindiSemiboldFontBytes] - Mukta SemiBold TTF bytes (Devanagari)
+ * @param {Uint8Array} [options.hindiBoldFontBytes] - Mukta Bold TTF bytes (Devanagari)
  * @param {Object} options.chart - normalized diet chart object
  * @param {string} [options.dateLabel] - date string shown under the heading
  * @returns {Promise<Uint8Array>} the generated PDF bytes
@@ -307,6 +470,9 @@ export const buildDietChartPdf = async ({
     regularFontBytes,
     semiboldFontBytes,
     boldFontBytes,
+    hindiRegularFontBytes,
+    hindiSemiboldFontBytes,
+    hindiBoldFontBytes,
     chart,
     dateLabel,
 }) => {
@@ -314,9 +480,35 @@ export const buildDietChartPdf = async ({
     const doc = await PDFDocument.create();
     doc.registerFontkit(fontkit);
 
-    const regularFont = await doc.embedFont(regularFontBytes, { subset: true });
-    const semiboldFont = await doc.embedFont(semiboldFontBytes, { subset: true });
-    const boldFont = await doc.embedFont(boldFontBytes, { subset: true });
+    const regularFont = await doc.embedFont(regularFontBytes);
+    const semiboldFont = await doc.embedFont(semiboldFontBytes);
+    const boldFont = await doc.embedFont(boldFontBytes);
+
+    const hindiFontsAvailable = Boolean(
+        hindiRegularFontBytes && hindiSemiboldFontBytes && hindiBoldFontBytes
+    );
+    const isHindi = hindiFontsAvailable && chartHasHindi(chart);
+
+    const hindiRegularFont = isHindi
+        ? await doc.embedFont(hindiRegularFontBytes)
+        : null;
+    const hindiSemiboldFont = isHindi
+        ? await doc.embedFont(hindiSemiboldFontBytes)
+        : null;
+    const hindiBoldFont = isHindi
+        ? await doc.embedFont(hindiBoldFontBytes)
+        : null;
+
+    const typography = isHindi ? TYPOGRAPHY.hi : TYPOGRAPHY.en;
+    const nameFont = isHindi ? hindiBoldFont : boldFont;
+    const titleFont = isHindi ? hindiSemiboldFont : semiboldFont;
+    const bodyFont = isHindi ? hindiRegularFont : regularFont;
+    const metaLabelFont = isHindi ? hindiRegularFont : regularFont;
+    const metaValueFont = isHindi ? hindiSemiboldFont : semiboldFont;
+
+    if (isHindi) {
+        dateLabel = localizeDateLabel(dateLabel);
+    }
 
     doc.setTitle(`Diet Chart - ${chart.clientName || "Client"}`);
     doc.setSubject("Personalized Diet Chart");
@@ -360,28 +552,42 @@ export const buildDietChartPdf = async ({
         { title: "Quick Summary", body: chart.quickSummary },
         { title: "Foods to Limit", body: chart.foodsToLimit },
         { title: "Notes", body: chart.notes },
-    ];
+    ].map((section) => ({
+        ...section,
+        title: isHindi
+            ? HINDI_SECTION_TITLES[section.title] || section.title
+            : section.title,
+    }));
 
     drawHeader({
         page: templateFirstPage,
         chart,
         dateLabel,
-        nameFont: boldFont,
-        dateFont: regularFont,
+        nameFont,
+        dateFont: bodyFont,
+        shaped: typography.shaped,
     });
 
     let cursor = FIRST_PAGE_CONTENT_TOP;
     cursor -= drawMetaCards({
         page: templateFirstPage,
         top: cursor,
-        items: [
-            { label: "Client", value: chart.clientName || "N/A" },
-            { label: "BMI", value: chart.bmi || "N/A" },
-            { label: "Weight Change", value: chart.weightChange || "N/A" },
-            { label: "Water Target", value: chart.hydrationTarget || "N/A" },
-        ],
-        labelFont: regularFont,
-        valueFont: semiboldFont,
+        items: isHindi
+            ? [
+                { label: HINDI_LABELS.client, value: chart.clientName || "N/A" },
+                { label: HINDI_LABELS.bmi, value: chart.bmi || "N/A" },
+                { label: HINDI_LABELS.weightChange, value: chart.weightChange || "N/A" },
+                { label: HINDI_LABELS.hydrationTarget, value: chart.hydrationTarget || "N/A" },
+            ]
+            : [
+                { label: "Client", value: chart.clientName || "N/A" },
+                { label: "BMI", value: chart.bmi || "N/A" },
+                { label: "Weight Change", value: chart.weightChange || "N/A" },
+                { label: "Water Target", value: chart.hydrationTarget || "N/A" },
+            ],
+        labelFont: metaLabelFont,
+        valueFont: metaValueFont,
+        shaped: typography.shaped,
     });
 
     let continuationPages = [preserveTemplateBoxes(templateSecondPage)];
@@ -398,11 +604,11 @@ export const buildDietChartPdf = async ({
     for (const section of sections) {
         const bodyLines = wrapText(
             section.body,
-            regularFont,
-            BODY_SIZE,
+            bodyFont,
+            typography.bodySize,
             CONTENT_WIDTH - CARD_PADDING * 2 - 8
         );
-        const cardHeight = computeSectionHeight(section.title, bodyLines);
+        const cardHeight = computeSectionHeight(section.title, bodyLines, typography);
 
         if (cursor - cardHeight < BOTTOM_MARGIN) {
             outputIndex += 1;
@@ -416,8 +622,9 @@ export const buildDietChartPdf = async ({
             top: cursor,
             title: section.title,
             bodyLines,
-            titleFont: semiboldFont,
-            bodyFont: regularFont,
+            titleFont,
+            bodyFont,
+            typography,
         });
         cursor -= height + SECTION_GAP;
     }
