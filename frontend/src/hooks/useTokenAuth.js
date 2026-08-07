@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import axios from '@/lib/axios.js';
+import { getApiBaseURL } from '@/lib/apiConfig.js';
 
 /**
  * Simple authentication hook that checks for user data and validates with backend
@@ -25,7 +26,7 @@ export const useTokenAuth = () => {
 
             // User exists in Redux, now test if backend auth is working
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1"}/users/me`, {
+                const response = await fetch(`${getApiBaseURL()}/users/me`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',

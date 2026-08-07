@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../Navbar';
 import Footer from '../footer';
+import { getApiBaseURL } from '../../lib/apiConfig.js';
 
 const QueryPage = () => {
   const [name, setName] = useState('');
@@ -11,7 +12,7 @@ const QueryPage = () => {
   const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/submit-query`, {
+    const response = await fetch(`${getApiBaseURL()}/submit-query`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, query }),

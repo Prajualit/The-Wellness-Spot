@@ -1,8 +1,8 @@
 import axios from "axios";
+import { getApiBaseURL } from "./apiConfig.js";
 
 const instance = axios.create({
-  baseURL:
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1",
+  baseURL: getApiBaseURL(),
   withCredentials: true,
   // Increase timeout to 5 minutes for large media uploads
   timeout: 5 * 60 * 1000,

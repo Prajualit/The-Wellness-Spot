@@ -31,6 +31,16 @@ const nextConfig = {
   // Enable compression
   compress: true,
   
+  // Proxy API requests through Vercel so auth cookies are same-origin
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: "https://client-work-jyoti-prakash.onrender.com/api/v1/:path*",
+      },
+    ];
+  },
+  
   // Security headers
   async headers() {
     return [

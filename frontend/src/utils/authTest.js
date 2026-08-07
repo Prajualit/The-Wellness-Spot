@@ -1,8 +1,9 @@
 // Direct authentication test utility
 import axios from 'axios';
+import { getApiBaseURL } from '../lib/apiConfig.js';
 
 export const testAuth = async () => {
-    const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+    const baseURL = getApiBaseURL();
 
     try {
         const response = await axios.get(`${baseURL}/users/me`, {
