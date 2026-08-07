@@ -58,12 +58,6 @@ const nextConfig = {
     ]
   },
 
-  // Optimize for better Core Web Vitals
-  swcMinify: true,
-  
-  // Enable PWA-like features
-  swcMinify: true,
-  
   // Performance optimizations
   poweredByHeader: false,
   generateEtags: false,
