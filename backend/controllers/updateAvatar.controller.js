@@ -13,17 +13,13 @@ const updateAvatar = asyncHandler(async (req, res) => {
       throw new apiError(401, "Unauthorized: User not authenticated.");
     }
 
-    console.log(req.body);
-    console.log(req.file);
     if (!req.file) {
       throw new apiError(400, "File is required.");
     }
 
     const fileLocalPath = path.normalize(req.file.path);
-    console.log("File local path:", fileLocalPath);
 
     const uploadedFile = await uploadOnCloudinary(fileLocalPath);
-    console.log("Uploaded file response:", uploadedFile);
 
     if (!uploadedFile || !uploadedFile.url) {
       throw new apiError(500, "File upload failed.");
@@ -39,8 +35,6 @@ const updateAvatar = asyncHandler(async (req, res) => {
 
     await user.save();
 
-    console.log("User avatar updated:", user.avatarUrl);
-
     res.status(200).json(
       new apiResponse(200, {
         message: "Avatar uploaded and user updated successfully.",
@@ -48,11 +42,10 @@ const updateAvatar = asyncHandler(async (req, res) => {
       })
     );
   } catch (error) {
-    console.error("Error in updateAvatar:", error);
+    console.error("Error in updateAvatar:", error?.message || error);
     res.status(error.statusCode || 500).json({
       success: false,
       message: error.message || "Internal Server Error",
-      stack: error.stack,
     });
   }
 });

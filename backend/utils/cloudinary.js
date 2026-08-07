@@ -33,6 +33,10 @@ const uploadOnCloudinary = async (localFilePath, options = {}) => {
 
     console.log("File uploaded to Cloudinary:", response.url);
 
+    // Prefer the HTTPS URL so images/media are never served over mixed content
+    response.url = response.secure_url || response.url;
+    response.secure_url = response.url;
+
     // Delete local file after successful upload
     fs.unlinkSync(normalizedPath);
 

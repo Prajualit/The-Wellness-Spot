@@ -190,7 +190,7 @@ const DietChartModal = ({ isOpen, onClose, record, userName, userId }) => {
             if (!silent) setStatusMessage("Draft saved.");
             return true;
         } catch (error) {
-            console.error("Failed to save diet chart draft:", error);
+            console.error("Failed to save diet chart draft:", error?.message || error);
             if (!silent) setStatusMessage("Could not save the draft. Please try again.");
             return false;
         } finally {
@@ -244,7 +244,7 @@ const DietChartModal = ({ isOpen, onClose, record, userName, userId }) => {
             });
             setStatusMessage(`PDF downloaded (${Math.ceil(bytes / 1024)} KB).`);
         } catch (error) {
-            console.error("Diet chart PDF generation failed:", error);
+            console.error("Diet chart PDF generation failed:", error?.message || error);
             setStatusMessage("Could not generate the PDF. Please try again.");
         } finally {
             setDownloading(false);

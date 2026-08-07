@@ -138,16 +138,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Debug middleware to log all cookies
-app.use((req, res, next) => {
-  if (req.cookies && Object.keys(req.cookies).length > 0) {
-    console.log("🍪 GLOBAL: Cookies received:", Object.keys(req.cookies));
-  } else {
-    console.log("🍪 GLOBAL: No cookies received for", req.method, req.path);
-  }
-  next();
-});
-
 // Handle preflight requests explicitly
 app.use((req, res, next) => {
   const origin = req.headers.origin;

@@ -78,37 +78,16 @@ const loginUser = asyncHandler(async (req, res) => {
     // Don't set domain to let browser handle it automatically
   };
 
-  console.log('🍪 BACKEND: Setting cookies with options:', {
-    isProduction,
-    isSecureConnection,
-    options,
-    accessTokenLength: accessToken?.length,
-    refreshTokenLength: refreshToken?.length,
-    requestOrigin: req.headers.origin,
-    requestHost: req.headers.host,
-    userAgent: req.headers['user-agent'],
-    forwardedProto: req.headers['x-forwarded-proto'],
-    secure: req.secure
-  });
-
   const response = res
     .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options);
 
-  // Log response headers to see if cookies are being set
-  console.log('🍪 BACKEND: Response headers with cookies:', response.getHeaders());
-
-  // For cross-origin scenarios, also return tokens in response body
-  // The frontend can store them as backup if cookies don't work
   return response.json(
     new apiResponse(
       200,
-      { 
-        user: loggedInUser, 
-        accessToken: accessToken, // Include for fallback auth
-        refreshToken: refreshToken, // Include for fallback auth
-        authMethod: 'cookies_with_fallback'
+      {
+        user: loggedInUser,
       },
       "User logged in successfully"
     )

@@ -138,7 +138,7 @@ const AdminEditRecordModal = ({ isOpen, onClose, record, userName, userId, onUpd
                 onClose();
             }
         } catch (error) {
-            console.error('Error updating record:', error);
+            console.error('Error updating record:', error?.message || error);
 
             // Handle specific validation errors from backend
             if (error.response?.status === 400) {

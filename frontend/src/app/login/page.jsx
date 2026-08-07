@@ -185,56 +185,24 @@ export default function LoginPage() {
                 name: name.trim()
             });
 
-            console.log('🔐 Login Response Debug:');
-            console.log('- Response status:', response.status);
-            console.log('- Response headers:', response.headers);
-            console.log('- Response data:', response.data);
-            console.log('- Document cookies after login:', document.cookie);
-            console.log('- Window location:', window.location.href);
-            console.log('- Is secure context:', window.isSecureContext);
-
             if (response.status === 200 && response.data?.data?.user) {
-                // Store tokens temporarily in localStorage for debugging
-                if (response.data?.data?.accessToken) {
-                    localStorage.setItem('debug_accessToken', response.data.data.accessToken);
-                    console.log('💾 Stored debug access token in localStorage');
-                }
-                if (response.data?.data?.refreshToken) {
-                    localStorage.setItem('debug_refreshToken', response.data.data.refreshToken);
-                    console.log('💾 Stored debug refresh token in localStorage');
-                }
-                
                 dispatch(setUser(response.data.data.user));
                 
-                // Extended delay to check state persistence
+                // Small delay to allow auth cookies to settle before redirecting
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 
-                // Double-check state after setting user
-                console.log('🔍 Post-login state check:');
-                console.log('- Document cookies after wait:', document.cookie);
-                console.log('- Redux user data just set:', response.data.data.user);
-                console.log('- LocalStorage debug tokens:', {
-                    accessToken: localStorage.getItem('debug_accessToken') ? 'exists' : 'missing',
-                    refreshToken: localStorage.getItem('debug_refreshToken') ? 'exists' : 'missing'
-                });
-                
-                // Try to make an authenticated request to verify everything is working
+                // Verify an authenticated request works before redirecting
                 try {
-                    // Import the direct auth test
                     const { testAuth } = await import('@/utils/authTest.js');
                     const authSuccess = await testAuth();
                     
                     if (!authSuccess) {
                         throw new Error('Direct authentication test failed');
                     }
-                    
-                    console.log('✅ Authentication verified successfully');
                 } catch (testError) {
-                    console.error('❌ Auth verification failed:', testError);
                     throw new Error('Authentication verification failed: ' + testError.message);
                 }
                 
-                console.log('🔄 Redirecting to dashboard...');
                 router.push("/dashboard");
             } else {
                 throw new Error(response.data?.message || "Login failed");

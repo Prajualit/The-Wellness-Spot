@@ -109,7 +109,7 @@ const AdminAddUserModal = ({ isOpen, onClose, onAdd, existingPhones = [] }) => {
       setIsOtpSent(true);
       setErrors({});
     } catch (error) {
-      console.error('Error sending OTP:', error);
+      console.error('Error sending OTP:', error?.message || error);
       let message = 'Failed to send OTP. Please try again.';
       if (error.code === 'auth/invalid-phone-number') {
         message = 'Invalid phone number. Please check and try again.';
@@ -157,7 +157,7 @@ const AdminAddUserModal = ({ isOpen, onClose, onAdd, existingPhones = [] }) => {
         onClose();
       }
     } catch (error) {
-      console.error('Error adding user:', error);
+      console.error('Error adding user:', error?.message || error);
 
       if (error.response?.status === 409) {
         setErrors({

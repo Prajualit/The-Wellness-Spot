@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
+import { toSecureUrl } from "../utils/secureUrl.js";
 
 const dietChartSchema = new mongoose.Schema(
   {
@@ -103,8 +104,15 @@ const userSchema = new Schema(
   },
   {
     timestamps: true,
+    toJSON: { transform: secureUserTransform },
+    toObject: { transform: secureUserTransform },
   }
 );
+
+function secureUserTransform(doc, ret) {
+  ret.avatarUrl = toSecureUrl(ret.avatarUrl);
+  return ret;
+}
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

@@ -87,7 +87,7 @@ const EditRecordModal = ({ isOpen, onClose, record }) => {
                 onClose();
             }
         } catch (error) {
-            console.error('Error updating record:', error);
+            console.error('Error updating record:', error?.message || error);
         } finally {
             setPending(false);
         }

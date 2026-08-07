@@ -68,7 +68,7 @@ const ViewRecord = ({ records, userName, userId, onUpdateRecord }) => {
                 setRecordToDelete(null);
             }
         } catch (error) {
-            console.error('Error deleting record:', error);
+            console.error('Error deleting record:', error?.message || error);
             alert('Failed to delete record. Please try again.');
         } finally {
             setIsDeleting(false);

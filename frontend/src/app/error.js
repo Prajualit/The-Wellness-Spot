@@ -5,8 +5,8 @@ import { useEffect } from "react";
 
 export default function Error({ error, reset }) {
   useEffect(() => {
-    // Log the error to an error reporting service
-    console.error("Global error caught:", error);
+    // Log the error to an error reporting service (message only, not the stack)
+    console.error("Global error caught:", error?.message || error);
   }, [error]);
 
   return (

@@ -1,4 +1,5 @@
-import admin from "firebase-admin";
+import { initializeApp, getApps, cert } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -92,10 +93,15 @@ const serviceAccount = parseServiceAccountKey(
 // Fix the PEM format of private_key (handles real newlines, "\n" and "\\n" escapes)
 serviceAccount.private_key = serviceAccount.private_key.replace(/\\+n/g, "\n");
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+if (!getApps().length) {
+  initializeApp({
+    credential: cert(serviceAccount),
   });
 }
+
+const admin = {
+  apps: getApps(),
+  auth: getAuth,
+};
 
 export default admin;

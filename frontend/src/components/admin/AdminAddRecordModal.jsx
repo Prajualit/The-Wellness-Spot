@@ -106,7 +106,7 @@ const AdminAddRecordModal = ({ isOpen, onClose, userName, userId, onUpdate }) =>
         onClose();
       }
     } catch (error) {
-      console.error('Error adding record:', error);
+      console.error('Error adding record:', error?.message || error);
       
       // Handle specific validation errors from backend
       if (error.response?.status === 400) {

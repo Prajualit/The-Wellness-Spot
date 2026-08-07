@@ -16,13 +16,8 @@ export const useTokenAuth = () => {
 
     useEffect(() => {
         const checkAuth = async () => {
-            console.log('🔐 useTokenAuth: Starting auth check');
-            console.log('- User from Redux:', user ? 'exists' : 'null');
-            console.log('- Document cookies:', document.cookie);
-            
             // If no user in Redux, redirect to login
             if (!user) {
-                console.log('❌ useTokenAuth: No user in Redux, redirecting to login');
                 router.push('/login');
                 setIsChecking(false);
                 return;
@@ -30,18 +25,9 @@ export const useTokenAuth = () => {
 
             // User exists in Redux, now test if backend auth is working
             try {
-                console.log('🔍 useTokenAuth: Testing backend auth with direct request');
-                
-                // Use direct axios call with explicit Authorization header
-                const debugToken = localStorage.getItem('debug_accessToken');
-                if (!debugToken) {
-                    throw new Error('No auth token available');
-                }
-                
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1"}/users/me`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${debugToken}`,
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
@@ -52,12 +38,8 @@ export const useTokenAuth = () => {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
-                const data = await response.json();
-                console.log('✅ useTokenAuth: Direct auth successful:', data);
                 setIsAuthenticated(true);
             } catch (error) {
-                console.error('❌ useTokenAuth: Direct auth failed:', error);
-                console.log('- Redirecting to login due to auth failure');
                 router.push('/login');
             }
             

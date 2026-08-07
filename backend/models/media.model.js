@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { toSecureUrl } from "../utils/secureUrl.js";
 
 const mediaSchema = new Schema(
   {
@@ -23,7 +24,14 @@ const mediaSchema = new Schema(
   },
   {
     timestamps: true,
+    toJSON: { transform: secureMediaTransform },
+    toObject: { transform: secureMediaTransform },
   }
 );
+
+function secureMediaTransform(doc, ret) {
+  ret.url = toSecureUrl(ret.url);
+  return ret;
+}
 
 export const Media = mongoose.model("Media", mediaSchema);
